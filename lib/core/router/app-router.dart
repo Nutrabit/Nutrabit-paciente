@@ -10,20 +10,33 @@ import 'package:nutrabit_paciente/presentaciones/screens/login.dart';
 import 'package:nutrabit_paciente/presentaciones/screens/notificaciones/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentaciones/screens/notificaciones/notificaciones.dart';
 import 'package:nutrabit_paciente/presentaciones/screens/perfil/perfil.dart';
+import 'package:nutrabit_paciente/presentaciones/screens/publicidades/detallePublicidad.dart';
 import 'package:nutrabit_paciente/presentaciones/screens/publicidades/publicidades.dart';
+import 'package:nutrabit_paciente/presentaciones/screens/perfil/turnos/turnos.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
   routes: [
     GoRoute(path: '/', builder: (context, state) => Home()),
     GoRoute(path: '/login', builder: (context, state) => Login()),
-    GoRoute(path: '/perfil', builder: (context, state) => Perfil()),
+    GoRoute(
+      path: '/perfil',
+      builder: (context, state) => Perfil(),
+      routes: [
+        GoRoute(
+          path: '/turnos', 
+          builder: (context, state) => Turnos()
+          )],
+    ),
     GoRoute(
       path: '/archivos',
       builder: (context, state) => Archivos(),
       routes: [
         GoRoute(path: '/subir', builder: (context, state) => SubirArchivos()),
-        GoRoute(path: '/subir', builder: (context, state) => DetalleArchivo(id: state.pathParameters['id'] as String)),
+        GoRoute(
+          path: '/subir',
+          builder:(context, state) => DetalleArchivo(id: state.pathParameters['id'] as String),
+        ),
       ],
     ),
     GoRoute(
@@ -32,27 +45,33 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/:fecha',
-          builder: (context, state) => DetalleDiaCalendario(fecha: state.pathParameters['fecha'] as String)          
+          builder: (context, state) => DetalleDiaCalendario( fecha: state.pathParameters['fecha'] as String,),
         ),
       ],
     ),
     GoRoute(
       path: '/publicidades',
-      builder: (context, state) => Publicidades(),    
+      builder: (context, state) => Publicidades(),
+      routes: [
+        GoRoute(
+          path: '/:id',
+          builder:(context, state) => DetallePublicidad(id: state.pathParameters['id'] as String),
+        ),
+      ],
     ),
     GoRoute(
       path: '/notificaciones',
-      builder: (context, state) => Notificaciones(),    
-      routes:[
+      builder: (context, state) => Notificaciones(),
+      routes: [
         GoRoute(
           path: '/:id',
-          builder: (context, state) => DetalleNotificacion(id: state.pathParameters['id'] as String),
-        )
-      ]
+          builder:(context, state) => DetalleNotificacion(id: state.pathParameters['id'] as String),
+        ),
+      ],
     ),
     GoRoute(
       path: '/listasInteres',
-      builder: (context, state) => ListaInteres(),    
-    )
+      builder: (context, state) => ListaInteres(),
+    ),
   ],
 );
