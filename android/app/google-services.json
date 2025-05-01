@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "977116124631",
+    "project_id": "nutrabit",
+    "storage_bucket": "nutrabit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977116124631:android:e11305f9d3c1ae04b52792",
+        "android_client_info": {
+          "package_name": "com.example.nutrabit_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9fxWe_BrT17puFt-FNVuvBnhGZ3UPev4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977116124631:android:758e417cdec9479bb52792",
+        "android_client_info": {
+          "package_name": "com.example.nutrabit_paciente"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9fxWe_BrT17puFt-FNVuvBnhGZ3UPev4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
