@@ -33,10 +33,7 @@ final appRouter = GoRouter(
       builder: (context, state) => Archivos(),
       routes: [
         GoRoute(path: '/subir', builder: (context, state) => SubirArchivos()),
-        GoRoute(
-          path: '/subir',
-          builder:(context, state) => DetalleArchivo(id: state.pathParameters['id'] as String),
-        ),
+        GoRoute(path: '/:id', builder: (context, state) => DetalleArchivo(id: state.pathParameters['id'] as String)),
       ],
     ),
     GoRoute(
