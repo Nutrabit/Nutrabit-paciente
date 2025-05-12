@@ -41,46 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDetcAEEAyHBPbbRW7X7M6hj2jjsacM2gw',
-    appId: '1:977116124631:web:527efa6e5901b561b52792',
-    messagingSenderId: '977116124631',
-    projectId: 'nutrabit',
-    authDomain: 'nutrabit.firebaseapp.com',
-    storageBucket: 'nutrabit.firebasestorage.app',
+    apiKey: 'AIzaSyDsWRBYaecVhDALW1Ico-gwfYWL4OkFfug',
+    appId: '1:1018369904543:web:81f065db5d12e4278837aa',
+    messagingSenderId: '1018369904543',
+    projectId: 'nutrabit-7a4ce',
+    authDomain: 'nutrabit-7a4ce.firebaseapp.com',
+    storageBucket: 'nutrabit-7a4ce.firebasestorage.app',
+    measurementId: 'G-Z9F4HS816P',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB9fxWe_BrT17puFt-FNVuvBnhGZ3UPev4',
-    appId: '1:977116124631:android:758e417cdec9479bb52792',
-    messagingSenderId: '977116124631',
-    projectId: 'nutrabit',
-    storageBucket: 'nutrabit.firebasestorage.app',
+    apiKey: 'AIzaSyBFVkgF_HiU4DxbbJnfMikt0pbh8j5ycvw',
+    appId: '1:1018369904543:android:e27421020e40bfd38837aa',
+    messagingSenderId: '1018369904543',
+    projectId: 'nutrabit-7a4ce',
+    storageBucket: 'nutrabit-7a4ce.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCGAA9EpzEhgkbKEf8PhbgK0qwqBuEMfsU',
-    appId: '1:977116124631:ios:a2d3a03b83e6e46db52792',
-    messagingSenderId: '977116124631',
-    projectId: 'nutrabit',
-    storageBucket: 'nutrabit.firebasestorage.app',
+    apiKey: 'AIzaSyAe4fmud8Nytby7SS68sR7EmwpsAYFdjng',
+    appId: '1:1018369904543:ios:101c1570fd4ffdc48837aa',
+    messagingSenderId: '1018369904543',
+    projectId: 'nutrabit-7a4ce',
+    storageBucket: 'nutrabit-7a4ce.firebasestorage.app',
     iosBundleId: 'com.example.nutrabitPaciente',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCGAA9EpzEhgkbKEf8PhbgK0qwqBuEMfsU',
-    appId: '1:977116124631:ios:a2d3a03b83e6e46db52792',
-    messagingSenderId: '977116124631',
-    projectId: 'nutrabit',
-    storageBucket: 'nutrabit.firebasestorage.app',
+    apiKey: 'AIzaSyAe4fmud8Nytby7SS68sR7EmwpsAYFdjng',
+    appId: '1:1018369904543:ios:101c1570fd4ffdc48837aa',
+    messagingSenderId: '1018369904543',
+    projectId: 'nutrabit-7a4ce',
+    storageBucket: 'nutrabit-7a4ce.firebasestorage.app',
     iosBundleId: 'com.example.nutrabitPaciente',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDetcAEEAyHBPbbRW7X7M6hj2jjsacM2gw',
-    appId: '1:977116124631:web:c87d4c4e12ea5f35b52792',
-    messagingSenderId: '977116124631',
-    projectId: 'nutrabit',
-    authDomain: 'nutrabit.firebaseapp.com',
-    storageBucket: 'nutrabit.firebasestorage.app',
+    apiKey: 'AIzaSyDsWRBYaecVhDALW1Ico-gwfYWL4OkFfug',
+    appId: '1:1018369904543:web:067731ffffe5589f8837aa',
+    messagingSenderId: '1018369904543',
+    projectId: 'nutrabit-7a4ce',
+    authDomain: 'nutrabit-7a4ce.firebaseapp.com',
+    storageBucket: 'nutrabit-7a4ce.firebasestorage.app',
+    measurementId: 'G-P6XWXS1EMK',
   );
+
 }
