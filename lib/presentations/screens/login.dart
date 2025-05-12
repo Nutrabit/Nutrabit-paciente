@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:flutter/gestures.dart';
 
-
 class Login extends ConsumerStatefulWidget {
   const Login({super.key});
 
@@ -57,6 +56,7 @@ class _LoginState extends ConsumerState<Login> {
                 ),
               ),
               const SizedBox(height: 20),
+
               /// Contraseña
               TextField(
                 controller: passwordController,
@@ -112,17 +112,10 @@ class _LoginState extends ConsumerState<Login> {
                         .read(authProvider.notifier)
                         .login(email, password)
                         .then((r) {
+                          // Si el usuario es paciente, redirigir a la pantalla de inicio
                           if (r == true) {
                             context.go('/');
                           } else if (r == false) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                            // Si el usuario no es admin, mostrar un mensaje
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('El usuario no es admin')),
-                            );
-                          } else if (r == null) {
                             setState(() {
                               isLoading = false;
                             });
@@ -130,7 +123,7 @@ class _LoginState extends ConsumerState<Login> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Usuario y/o contraseña incorrectos',
+                                  'Usuario y/o contraseña inválidos',
                                 ),
                               ),
                             );
@@ -171,7 +164,7 @@ class _LoginState extends ConsumerState<Login> {
                       text: 'términos de servicio',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.purple, 
+                        color: Colors.purple,
                       ),
                       recognizer:
                           TapGestureRecognizer()
