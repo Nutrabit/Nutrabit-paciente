@@ -1,18 +1,18 @@
 import 'package:go_router/go_router.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/archivos/archivos.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/archivos/detalleArchivo.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/archivos/subirArchivos.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/calendario/calendario.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/calendario/detalleDiaCalendario.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/home.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/listaInteres/listaInteres.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/login.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/notificaciones/detalleNotificacion.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/notificaciones/notificaciones.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/perfil/perfil.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/publicidades/detallePublicidad.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/publicidades/publicidades.dart';
-import 'package:nutrabit_paciente/presentaciones/screens/perfil/turnos/turnos.dart';
+import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
+import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
+import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/calendario.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/detalleDiaCalendario.dart';
+import 'package:nutrabit_paciente/presentations/screens/home.dart';
+import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInteres.dart';
+import 'package:nutrabit_paciente/presentations/screens/login.dart';
+import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
+import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
+import 'package:nutrabit_paciente/presentations/screens/profiles/perfil.dart';
+import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
+import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
+import 'package:nutrabit_paciente/presentations/screens/profiles/appointments/turnos.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
