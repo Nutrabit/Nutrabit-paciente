@@ -16,13 +16,15 @@ class AuthNotifier extends AsyncNotifier<void> {
 
   FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<bool> login(String emailAddress, String password) async {
+  Future<bool?> login(String emailAddress, String password) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailAddress,
         password: password,
       );
-      return true;
+      String uid = credential.user!.uid;
+
+      return await isPatient(uid);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
@@ -33,13 +35,25 @@ class AuthNotifier extends AsyncNotifier<void> {
     }
   }
 
-Future<bool> logout() async {
-  try {
-    await FirebaseAuth.instance.signOut();
-    return true;
-  } catch(e){
-    print("Error al hacer logout: $e");
-    return false;
+  Future<bool?> isPatient(String uid) async {
+    try {
+      final doc = await db.collection("users").doc(uid).get();
+       if (doc.exists) {
+        return doc.data()?['isActive'];
+       }
+    } catch (e) {
+      print("Error al verificar patient: $e");
+      return false;
+    }
   }
-}
+
+  Future<bool> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      return true;
+    } catch (e) {
+      print("Error al hacer logout: $e");
+      return false;
+    }
+  }
 }
