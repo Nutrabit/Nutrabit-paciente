@@ -2,47 +2,42 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nutrabit_paciente/core/models/app_user.dart';
 
-final authProvider = AsyncNotifierProvider<AuthNotifier, void>(
+final authProvider = AsyncNotifierProvider<AuthNotifier, AppUser?>(
   () => AuthNotifier(),
 );
 
-class AuthNotifier extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-
+class AuthNotifier extends AsyncNotifier<AppUser?> {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<bool?> login(String emailAddress, String password) async {
-    try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailAddress,
-        password: password,
-      );
-      String uid = credential.user!.uid;
-
-      return await isPatient(uid);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-      return false;
-    }
+  @override
+  FutureOr<AppUser?> build() {
+    return null;
   }
 
-  Future<bool?> isPatient(String uid) async {
+  Future<bool?> login(String email, String password) async {
     try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final uid = credential.user!.uid;
       final doc = await db.collection("users").doc(uid).get();
-       if (doc.exists) {
-        return doc.data()?['isActive'];
-       }
-    } catch (e) {
-      print("Error al verificar patient: $e");
+
+      if (!doc.exists) return false;
+
+      final user = AppUser.fromFirestore(doc);
+
+      if (user.isActive) {
+        state = AsyncData(user);
+        return true;
+      } else {
+        return false;
+      }
+    } on FirebaseAuthException catch (e) {
+      print("Error de login: ${e.code}");
       return false;
     }
   }
@@ -50,6 +45,7 @@ class AuthNotifier extends AsyncNotifier<void> {
   Future<bool> logout() async {
     try {
       await FirebaseAuth.instance.signOut();
+      state = AsyncData(null);
       return true;
     } catch (e) {
       print("Error al hacer logout: $e");

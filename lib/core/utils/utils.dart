@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 String normalize(String value) {
   return value
@@ -29,6 +30,11 @@ extension StringCasingExtension on String {
     return this[0].toUpperCase() + substring(1);
   }
 }
+
+ String formatDate(DateTime date) {
+    final DateFormat dateFormat = DateFormat('dd/MM/yyyy HH:mm');
+    return dateFormat.format(date);
+  }
 
 Future<void> showCustomDialog({
   required BuildContext context,
