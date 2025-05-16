@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/utils/decorations.dart';
 
-class AmIPatient extends StatefulWidget {
+class AmIPatient extends StatelessWidget {
   const AmIPatient({super.key});
 
-  @override
-  State<AmIPatient> createState() => _AmIPatient();
-}
-
-class _AmIPatient extends State<AmIPatient> {
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
