@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';  
-import 'package:nutrabit_paciente/core/router/app-router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/modifyProfile.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +12,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const ProviderScope(child: MainApp())); 
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatefulWidget {
@@ -24,9 +25,9 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      routerConfig: appRouter,
+      home: ModifyProfile(id: 'ttjf1jUYTgcb4jMy19GmdK6QmJD3'),
     );
   }
 }
