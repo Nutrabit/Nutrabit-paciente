@@ -6,7 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import '/widgets/logout.dart';
 import '/core/utils/decorations.dart';
-//import 'patient_modifier.dart';
+import 'patient_modifier.dart';
+
 
 class PatientDetail extends ConsumerWidget {
   const PatientDetail({Key? key}) : super(key: key);
@@ -86,12 +87,12 @@ class PatientDetail extends ConsumerWidget {
                       diet: diet,
                       profilePic: profilePic,
                       onEdit: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => PatientModifier(id: id),
-                      //   ),
-                      // );
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) => PatientModifier(id: id),
+                      ),
+                      );
                       },
                     ),
                     const SizedBox(height: 16),

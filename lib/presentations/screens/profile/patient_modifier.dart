@@ -4,16 +4,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class ModifyProfile extends StatefulWidget {
+class PatientModifier extends StatefulWidget {
   final String id;
 
-  const ModifyProfile({Key? key, required this.id}) : super(key: key);
+  const PatientModifier({Key? key, required this.id}) : super(key: key);
 
   @override
-  State<ModifyProfile> createState() => _PatientModifierState();
+  State<PatientModifier> createState() => _PatientModifierState();
 }
 
-class _PatientModifierState extends State<ModifyProfile> {
+class _PatientModifierState extends State<PatientModifier> {
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
   final List<String> activity = ['Sedentario', 'Ligero', 'Moderado', 'Activo'];
