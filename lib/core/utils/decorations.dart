@@ -11,6 +11,7 @@ InputDecoration textFieldDecoration(String label) {
   ButtonStyle mainButtonDecoration() {
     return ElevatedButton.styleFrom(
       backgroundColor: const Color(0xFFDC607A),
+      foregroundColor: Color(0xFFFDEEDB),
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
