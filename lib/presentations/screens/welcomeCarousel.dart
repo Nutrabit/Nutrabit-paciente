@@ -40,7 +40,7 @@ class _WelcomeCarouselState extends State<WelcomeCarousel> {
 
   void _goToLogin() {
     _timer?.cancel();
-    context.go('/login');
+    context.go('/soyPaciente');
   }
 
   @override

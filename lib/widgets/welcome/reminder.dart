@@ -7,13 +7,14 @@ class Reminder extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image(image: AssetImage('../assets/img/rectangle13.png'),width: screenWidth,
+            Image(image: AssetImage('../assets/img/rectangleGreen.png'),width: screenWidth,
               fit: BoxFit.cover,),
             //Column(
              // mainAxisAlignment: MainAxisAlignment.start,

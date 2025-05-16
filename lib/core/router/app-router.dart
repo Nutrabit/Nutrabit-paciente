@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:nutrabit_paciente/presentations/screens/amIPatient.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/download_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
@@ -16,6 +17,7 @@ import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.d
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcomeCarousel.dart';
 
+
 final appRouter = GoRouter(
   initialLocation: '/welcome',
   routes: [
@@ -23,6 +25,7 @@ final appRouter = GoRouter(
     GoRoute(path: '/', builder: (context, state) => Home()),
     GoRoute(path: '/descargas', builder: (context, state) => DownloadScreen()),
     GoRoute(path: '/login', builder: (context, state) => Login()),
+    GoRoute(path: '/soyPaciente', builder:(context, state) => AmIPatient()),
     GoRoute(
       path: '/perfil',
       builder: (context, state) => PatientDetail(),
