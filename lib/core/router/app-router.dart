@@ -10,7 +10,7 @@ import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInter
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
-import 'package:nutrabit_paciente/presentations/screens/profile/perfil.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
@@ -23,8 +23,12 @@ final appRouter = GoRouter(
     GoRoute(path: '/login', builder: (context, state) => Login()),
     GoRoute(
       path: '/perfil',
-      builder: (context, state) => Perfil(),
-      routes: [GoRoute(path: '/turnos', builder: (context, state) => Turnos())],
+      builder: (context, state) => PatientDetail(),
+      routes: [
+        GoRoute(
+          path: '/turnos', 
+          builder: (context, state) => Turnos()
+          )],
     ),
     GoRoute(
       path: '/archivos',
