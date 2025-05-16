@@ -114,7 +114,7 @@ class _LoginState extends ConsumerState<Login> {
                         .then((r) {
                           // Si el usuario es paciente, redirigir a la pantalla de inicio
                           if (r == true) {
-                            context.go('/');
+                            context.go('/descargas');
                           } else if (r == false) {
                             setState(() {
                               isLoading = false;
