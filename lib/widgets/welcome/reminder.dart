@@ -5,39 +5,62 @@ class Reminder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var freeSpace = screenHeight * 0.35;
+    var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: Color.fromRGBO(253, 238, 219, 1),
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.15,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: freeSpace),
+      body: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image(image: AssetImage('../assets/img/rectangle13.png'),width: screenWidth,
+              fit: BoxFit.cover,),
+            //Column(
+             // mainAxisAlignment: MainAxisAlignment.start,
+             // children: [
                 Text(
-                  '¡Bienveni2',
+                  '¡Importante recordar!',
                   style: TextStyle(
-                    fontSize: 50,
+                    fontSize: 32,
                     color: Color.fromRGBO(227, 126, 142, 1),
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                   ),
                 ),
-                Text(
-                  'a tu nuevo estilo de vida!',
-                  style: TextStyle(
-                    fontSize: 50,
-                    fontWeight: FontWeight.w900,
-                    color: Color.fromRGBO(153, 159, 127, 1),
+                Image(image: AssetImage('../assets/img/meditation.png')),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.15,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'La salud es multifactorial. ¿Qué significa esto?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300,
+                          color: Color.fromRGBO(153, 159, 127, 1),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Tener una alimentación saludable es sumamente importante, pero recordá poner el mismo énfasis en regular los niveles de estrés, realizar actividad física, descansar adecuadamente y trabajar en tu salud mental.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300,
+                          color: Color.fromRGBO(153, 159, 127, 1),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-      );
+          //],
+        //),
+      ),
+    );
   }
 }

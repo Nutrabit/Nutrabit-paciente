@@ -5,39 +5,50 @@ class Disclaimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var freeSpace = screenHeight * 0.35;
     return Scaffold(
-        backgroundColor: Color.fromRGBO(253, 238, 219, 1),
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.15,
-            ),
-            child: Column(
+      backgroundColor: Color.fromRGBO(220, 96, 122, 1),
+      body: Center(
+        child: Column(
+          children: [
+            Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: freeSpace),
+                SizedBox(height: 120),
                 Text(
-                  '¡Bienveni3',
+                  '¡Atención!',
                   style: TextStyle(
-                    fontSize: 50,
-                    color: Color.fromRGBO(227, 126, 142, 1),
-                    fontWeight: FontWeight.w400,
+                    fontSize: 40,
+                    color: Color.fromRGBO(255, 255, 255, 1),
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                Text(
-                  'a tu nuevo estilo de vida!',
-                  style: TextStyle(
-                    fontSize: 50,
-                    fontWeight: FontWeight.w900,
-                    color: Color.fromRGBO(153, 159, 127, 1),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.15,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 15),
+                      Text(
+                        'Esta app no busca reemplazar tu consulta con un profesional de la salud. Busca poder acompañarte y motivarte para que logres generar hábitos de bienestar y salud, abarcando diversas áreas: alimento, movimiento, descanso adecuado y gestión del estrés.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w300,
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Image(image: AssetImage('../assets/img/nutriaAbrazo.png')),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }
