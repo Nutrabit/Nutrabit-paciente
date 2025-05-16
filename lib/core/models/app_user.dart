@@ -6,8 +6,8 @@ class AppUser {
   final String lastname;
   final String email;
   final DateTime? birthday;
-  final int height;
-  final int weight;
+  final double height;
+  final double weight;
   final String gender;
   final bool isActive;
   final String profilePic;
@@ -50,8 +50,8 @@ class AppUser {
       birthday: data['birthday'] != null
           ? (data['birthday'] as Timestamp).toDate()
           : null,
-      height: data['height'] ?? 0,
-      weight: data['weight'] ?? 0,
+      height: double.tryParse(data['height'].toString()) ?? 0.0,
+      weight: double.tryParse(data['weight'].toString()) ?? 0.0,
       gender: data['gender'] ?? '',
       isActive: data['isActive'] ?? false,
       profilePic: data['profilePic'] ?? '',
@@ -108,8 +108,8 @@ class AppUser {
     String? lastname,
     String? email,
     DateTime? birthday,
-    int? height,
-    int? weight,
+    double? height,
+    double? weight,
     String? gender,
     bool? isActive,
     String? profilePic,
