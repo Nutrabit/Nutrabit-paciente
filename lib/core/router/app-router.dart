@@ -13,10 +13,12 @@ import 'package:nutrabit_paciente/presentations/screens/profile/perfil.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
+import 'package:nutrabit_paciente/presentations/screens/welcomeCarousel.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/welcome',
   routes: [
+    GoRoute(path: '/welcome', builder: (context, state) => WelcomeCarousel()),
     GoRoute(path: '/', builder: (context, state) => Home()),
     GoRoute(path: '/login', builder: (context, state) => Login()),
     GoRoute(
