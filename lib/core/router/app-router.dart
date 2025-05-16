@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:nutrabit_paciente/presentations/screens/files/download_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart';
@@ -20,6 +21,7 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(path: '/welcome', builder: (context, state) => WelcomeCarousel()),
     GoRoute(path: '/', builder: (context, state) => Home()),
+    GoRoute(path: '/descargas', builder: (context, state) => DownloadScreen()),
     GoRoute(path: '/login', builder: (context, state) => Login()),
     GoRoute(
       path: '/perfil',
@@ -35,7 +37,12 @@ final appRouter = GoRouter(
       builder: (context, state) => Archivos(),
       routes: [
         GoRoute(path: '/subir', builder: (context, state) => SubirArchivos()),
-        GoRoute(path: '/:id', builder: (context, state) => DetalleArchivo(id: state.pathParameters['id'] as String)),
+        GoRoute(
+          path: '/:id',
+          builder:
+              (context, state) =>
+                  DetalleArchivo(id: state.pathParameters['id'] as String),
+        ),
       ],
     ),
     GoRoute(
@@ -44,7 +51,10 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/:fecha',
-          builder: (context, state) => DetalleDiaCalendario( fecha: state.pathParameters['fecha'] as String,),
+          builder:
+              (context, state) => DetalleDiaCalendario(
+                fecha: state.pathParameters['fecha'] as String,
+              ),
         ),
       ],
     ),
@@ -54,7 +64,9 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/:id',
-          builder:(context, state) => DetallePublicidad(id: state.pathParameters['id'] as String),
+          builder:
+              (context, state) =>
+                  DetallePublicidad(id: state.pathParameters['id'] as String),
         ),
       ],
     ),
@@ -64,7 +76,9 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/:id',
-          builder:(context, state) => DetalleNotificacion(id: state.pathParameters['id'] as String),
+          builder:
+              (context, state) =>
+                  DetalleNotificacion(id: state.pathParameters['id'] as String),
         ),
       ],
     ),
