@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
 
 String normalize(String value) {
   return value
@@ -88,4 +89,14 @@ Future<void> showCustomDialog({
       );
     },
   );
+}
+
+String generateRandomPassword({int length = 6}) {
+  const chars =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  final rand = Random.secure();
+  return List.generate(
+    length,
+    (index) => chars[rand.nextInt(chars.length)],
+  ).join();
 }
