@@ -23,7 +23,7 @@ class FileModel {
       'title': title,
       'type': type.name,
       'url': url,
-      'date': Timestamp.fromDate(date), // Convertir a Timestamp
+      'date': Timestamp.fromDate(date),
       'userId': userId,
     };
   }

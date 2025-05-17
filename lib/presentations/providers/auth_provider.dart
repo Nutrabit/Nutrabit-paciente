@@ -9,11 +9,18 @@ final authProvider = AsyncNotifierProvider<AuthNotifier, AppUser?>(
 );
 
 class AuthNotifier extends AsyncNotifier<AppUser?> {
-  FirebaseFirestore db = FirebaseFirestore.instance;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
-  FutureOr<AppUser?> build() {
-    return null;
+  FutureOr<AppUser?> build() async { 
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) return null; 
+
+    final doc = await db.collection("users").doc(firebaseUser.uid).get();
+    if (!doc.exists) return null;
+
+    final user = AppUser.fromFirestore(doc);
+    return user.isActive ? user : null;
   }
 
   Future<bool?> login(String email, String password) async {

@@ -16,14 +16,12 @@ class PatientModifier extends StatefulWidget {
 class _PatientModifierState extends State<PatientModifier> {
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
-  final List<String> activity = ['Sedentario', 'Ligero', 'Moderado', 'Activo'];
+  final List<String> gender = ['Masculino', 'Femenino', 'Otro'];
 
-  String? _selectedActivity;
-  bool _vegetarian = false;
-  bool _vegan = false;
+  String? _selectedGender;
   Map<String, dynamic>? _userData;
 
-  File? _pickedImage; // Imagen seleccionada localmente, pero no subida aún
+  File? _pickedImage; 
 
   @override
   void initState() {
@@ -39,9 +37,9 @@ class _PatientModifierState extends State<PatientModifier> {
         _userData = data;
         _heightController.text = data['height']?.toString() ?? '';
         _weightController.text = data['weight']?.toString() ?? '';
-        _selectedActivity = data['actividad'] ?? 'Sedentario';
-        _vegetarian = data['vegetariano'] ?? false;
-        _vegan = data['vegano'] ?? false;
+        _selectedGender = data['gender'] ?? 'Otro';
+
+
       });
     }
   }
@@ -58,9 +56,7 @@ class _PatientModifierState extends State<PatientModifier> {
       await FirebaseFirestore.instance.collection('users').doc(widget.id).update({
         'height': int.tryParse(_heightController.text.trim()) ?? 0,
         'weight': int.tryParse(_weightController.text.trim()) ?? 0,
-        'actividad': _selectedActivity ?? '',
-        'vegetariano': _vegetarian,
-        'vegano': _vegan,
+        'gender': _selectedGender ?? '',
         'modifiedAt': FieldValue.serverTimestamp(),
         'deletedAt': null,
       });
@@ -96,7 +92,7 @@ class _PatientModifierState extends State<PatientModifier> {
               OutlinedButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: const Color(0xFFB5D6B2), // Verde pastel
+                  backgroundColor: const Color(0xFFB5D6B2),
                   side: const BorderSide(color: Colors.black),
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   minimumSize: Size.zero,
@@ -107,7 +103,7 @@ class _PatientModifierState extends State<PatientModifier> {
                   'VOLVER',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF706B66), // Gris oscuro
+                    color: Color(0xFF706B66), 
                   ),
                 ),
               ),
@@ -215,12 +211,12 @@ class _PatientModifierState extends State<PatientModifier> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
-                                  color: Color(0xFF8B8680), // Gris topo
+                                  color: Color(0xFF8B8680),
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 120), // Mueve el "+" más a la derecha
+                              padding: const EdgeInsets.only(left: 120),
                               child: IconButton(
                                 icon: const Icon(Icons.add, size: 28),
                                 onPressed: () {
@@ -241,7 +237,7 @@ class _PatientModifierState extends State<PatientModifier> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF8B8680), // Gris topo
+                                color: Color(0xFF8B8680),
                               ),
                             ),
                           ),
@@ -252,7 +248,7 @@ class _PatientModifierState extends State<PatientModifier> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFDC607A), // Color personalizado
+                              backgroundColor: const Color(0xFFDC607A),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                             ),
@@ -342,39 +338,51 @@ class _PatientModifierState extends State<PatientModifier> {
               ],
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: activity.contains(_selectedActivity) ? _selectedActivity : null,
-              decoration: InputDecoration(
-                hintText: 'Nivel de actividad',
-                hintStyle: const TextStyle(color: Colors.grey),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Color(0xFFDC607A), width: 2.0),
-                  borderRadius: BorderRadius.circular(8),
+              DropdownButtonFormField<String>(
+                value: gender.contains(_selectedGender) ? _selectedGender : null,
+                isExpanded: true,
+                decoration: InputDecoration(
+                  hintText: 'Nivel de actividad',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFFDC607A), width: 2.0),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFFDC607A), width: 1.5),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Color(0xFFDC607A), width: 1.5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w600),
+                
+                selectedItemBuilder: (BuildContext context) {
+                  return gender.map((nivel) {
+                    return Center(
+                      child: Text(
+                        nivel,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                    );
+                  }).toList();
+                },
+
+                items: gender.map((nivel) {
+                  return DropdownMenuItem(
+                    value: nivel,
+                    child: Center(
+                      child: Text(
+                        nivel,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                
+                onChanged: (value) => setState(() => _selectedGender = value),
               ),
-              style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w600),
-              items: activity.map((nivel) => DropdownMenuItem(
-                value: nivel,
-                child: Text(nivel),
-              )).toList(),
-              onChanged: (value) => setState(() => _selectedActivity = value),
-            ),
-            const SizedBox(height: 12),
-            SwitchListTile(
-              title: const Text('Vegetariano/a'),
-              value: _vegetarian,
-              onChanged: (value) => setState(() => _vegetarian = value),
-            ),
-            SwitchListTile(
-              title: const Text('Vegano/a'),
-              value: _vegan,
-              onChanged: (value) => setState(() => _vegan = value),
-            ),
+           
             const SizedBox(height: 280),
             Center(
               child: ElevatedButton(
