@@ -13,6 +13,8 @@ import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.d
 import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
+
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -21,13 +23,19 @@ final appRouter = GoRouter(
     GoRoute(path: '/login', builder: (context, state) => Login()),
     GoRoute(
       path: '/perfil',
-      builder: (context, state) => PatientDetail(),
+      builder: (context, state) => PatientDetail(id: 'id'),
       routes: [
         GoRoute(
-          path: '/turnos', 
-          builder: (context, state) => Turnos()
-          )],
+          path: 'turnos',
+          builder: (context, state) => Turnos(),
+        ),
+        GoRoute(
+          path: 'modificar',
+          builder: (context, state) => PatientModifier(id: state.extra as String),
+        ),
+      ],
     ),
+
     GoRoute(
       path: '/archivos',
       builder: (context, state) => Archivos(),

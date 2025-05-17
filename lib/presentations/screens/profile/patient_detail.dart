@@ -10,7 +10,7 @@ import 'patient_modifier.dart';
 
 
 class PatientDetail extends ConsumerWidget {
-  const PatientDetail({Key? key}) : super(key: key);
+  const PatientDetail({Key? key, required String id}) : super(key: key);
 
   
   @override
