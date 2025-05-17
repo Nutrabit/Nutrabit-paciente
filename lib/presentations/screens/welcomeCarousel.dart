@@ -71,6 +71,7 @@ class _WelcomeCarouselState extends State<WelcomeCarousel> {
         PageView(
           controller: _controller,
           children: _pages,
+          
         ),
         Positioned(
           bottom: 40,
