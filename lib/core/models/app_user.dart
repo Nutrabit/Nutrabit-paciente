@@ -35,59 +35,53 @@ class AppUser {
     DateTime? createdAtParam,
     DateTime? modifiedAtParam,
     DateTime? deletedAtParam,
-  }) : createdAt = createdAtParam ?? DateTime.now(),
-       modifiedAt = modifiedAtParam ?? DateTime.now(),
-       deletedAt = deletedAtParam;
+  })  : createdAt = createdAtParam ?? DateTime.now(),
+        modifiedAt = modifiedAtParam ?? DateTime.now(),
+        deletedAt = deletedAtParam;
 
   factory AppUser.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-
     return AppUser(
-      id: data['id'] ?? '',
-      name: data['name'] ?? '',
-      lastname: data['lastname'] ?? '',
-      email: data['email'] ?? '',
+      id: doc.id,
+      name: data['name'] as String? ?? '',
+      lastname: data['lastname'] as String? ?? '',
+      email: data['email'] as String? ?? '',
       birthday: data['birthday'] != null
           ? (data['birthday'] as Timestamp).toDate()
           : null,
-      height: data['height'] ?? 0,
-      weight: data['weight'] ?? 0,
-      gender: data['gender'] ?? '',
-      isActive: data['isActive'] ?? false,
-      profilePic: data['profilePic'] ?? '',
-      goal: data['goal'] ?? '',
-      events:
-          (data['events'] as List?)
+      height: (data['height'] as num?)?.toInt() ?? 0,
+      weight: (data['weight'] as num?)?.toInt() ?? 0,
+      gender: data['gender'] as String? ?? '',
+      isActive: data['isActive'] as bool? ?? false,
+      profilePic: data['profilePic'] as String? ?? '',
+      goal: data['goal'] as String? ?? '',
+      events: (data['events'] as List?)
               ?.map((e) => Map<String, Object?>.from(e as Map))
               .toList() ??
           [],
-      appointments:
-          (data['appointments'] as List?)
+      appointments: (data['appointments'] as List?)
               ?.map((e) => e as Timestamp)
               .toList() ??
           [],
-      createdAtParam:
-          data['createdAt'] != null
-              ? (data['createdAt'] as Timestamp).toDate()
-              : DateTime.now(),
-      modifiedAtParam:
-          data['modifiedAt'] != null
-              ? (data['modifiedAt'] as Timestamp).toDate()
-              : DateTime.now(),
-      deletedAtParam:
-          data['deletedAt'] != null
-              ? (data['deletedAt'] as Timestamp).toDate()
-              : null,
+      createdAtParam: data['createdAt'] != null
+          ? (data['createdAt'] as Timestamp).toDate()
+          : null,
+      modifiedAtParam: data['modifiedAt'] != null
+          ? (data['modifiedAt'] as Timestamp).toDate()
+          : null,
+      deletedAtParam: data['deletedAt'] != null
+          ? (data['deletedAt'] as Timestamp).toDate()
+          : null,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
       'lastname': lastname,
       'email': email,
-      'birthday': birthday != null ? Timestamp.fromDate(birthday!) : null,
+      'birthday':
+          birthday != null ? Timestamp.fromDate(birthday!) : null,
       'height': height,
       'weight': weight,
       'gender': gender,
@@ -98,7 +92,9 @@ class AppUser {
       'appointments': appointments,
       'createdAt': Timestamp.fromDate(createdAt),
       'modifiedAt': Timestamp.fromDate(modifiedAt),
-      'deletedAt': deletedAt != null ? Timestamp.fromDate(deletedAt!) : null,
+      'deletedAt': deletedAt != null
+          ? Timestamp.fromDate(deletedAt!)
+          : null,
     };
   }
 
@@ -137,6 +133,26 @@ class AppUser {
       createdAtParam: createdAtParam ?? this.createdAt,
       modifiedAtParam: modifiedAtParam ?? this.modifiedAt,
       deletedAtParam: deletedAtParam ?? this.deletedAt,
+    );
+  }
+
+  /// Aplica solo los cambios recibidos usando copyWith
+  AppUser merge(Map<String, dynamic> changes) {
+    return copyWith(
+      name: changes['name'] as String? ?? name,
+      lastname: changes['lastname'] as String? ?? lastname,
+      email: changes['email'] as String? ?? email,
+      birthday: changes['birthday'] as DateTime? ?? birthday,
+      height: changes['height'] as int? ?? height,
+      weight: changes['weight'] as int? ?? weight,
+      gender: changes['gender'] as String? ?? gender,
+      isActive: changes['isActive'] as bool? ?? isActive,
+      profilePic: changes['profilePic'] as String? ?? profilePic,
+      goal: changes['goal'] as String? ?? goal,
+      events: changes['events'] as List<Map<String, Object?>>? ?? events,
+      appointments: changes['appointments'] as List<Timestamp>? ?? appointments,
+      modifiedAtParam: DateTime.now(),
+      deletedAtParam: changes['deletedAt'] as DateTime? ?? deletedAt,
     );
   }
 }
