@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import '/widgets/logout.dart';
 import '/core/utils/decorations.dart';
+import 'package:nutrabit_paciente/widgets/CustombottomNavBar.dart';
 //import 'patient_modifier.dart';
 
 class PatientDetail extends ConsumerWidget {
@@ -66,13 +67,32 @@ class PatientDetail extends ConsumerWidget {
 
             return Scaffold(
               appBar: AppBar(
-                leading: const BackButton(),
+                leading: BackButton(onPressed: () {
+                  context.go('/');
+                },),
                 actions: [
                   Logout(),
                 ],
                 backgroundColor: Colors.white,
                 elevation: 0,
               ),
+              bottomNavigationBar:
+        CustomBottomAppBar(
+          currentIndex: 0,
+          onItemSelected: (index) {
+            switch (index) {
+              case 0:
+                context.go('/');
+                break;
+              case 1:
+                //context.go('/notificaciones');
+                break;
+              case 2:
+                context.go('/perfil');
+                break;
+            }
+          },
+        ),
               body: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,7 +135,7 @@ class PatientDetail extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 250),
+                    const SizedBox(height: 180),
                     ElevatedButton(onPressed: () {}, child: const Text('Cambiar contraseña'), style: mainButtonDecoration(),),
                   ],
                 ),
@@ -177,7 +197,7 @@ class PatientInfoCard extends StatelessWidget {
                   children: [
                     Positioned(
                       top: -10,
-                      right: 20,
+                      right: MediaQuery.of(context).size.width * 0.001,
                       child: IconButton(
                         icon: const Icon(Icons.edit, color: Colors.grey),
                         onPressed: onEdit,

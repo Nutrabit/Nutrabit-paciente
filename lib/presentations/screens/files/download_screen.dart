@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/models/file_model.dart';
 import 'package:nutrabit_paciente/core/models/file_type.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
@@ -29,7 +30,9 @@ class DownloadScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Descargas'),
         centerTitle: true,
-        leading: const BackButton(),
+        leading: BackButton(onPressed: () {
+                  context.go('/');
+        },),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
