@@ -18,6 +18,7 @@ import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublici
 import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcomeCarousel.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
 
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/confirmation_aloha_comunite_screen.dart';
 
@@ -48,13 +49,19 @@ final appRouter = GoRouter(
     GoRoute(path: '/soyPaciente', builder:(context, state) => AmIPatient()),
     GoRoute(
       path: '/perfil',
-      builder: (context, state) => PatientDetail(),
+      builder: (context, state) => PatientDetail(id: 'id'),
       routes: [
         GoRoute(
-          path: '/turnos', 
-          builder: (context, state) => Turnos()
-          )],
+          path: 'turnos',
+          builder: (context, state) => Turnos(),
+        ),
+        GoRoute(
+          path: 'modificar',
+          builder: (context, state) => PatientModifier(id: state.extra as String),
+        ),
+      ],
     ),
+
     GoRoute(
       path: '/archivos',
       builder: (context, state) => Archivos(),

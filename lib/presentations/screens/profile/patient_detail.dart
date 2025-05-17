@@ -7,10 +7,11 @@ import 'package:go_router/go_router.dart';
 import '/widgets/logout.dart';
 import '/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/widgets/CustombottomNavBar.dart';
-//import 'patient_modifier.dart';
+import 'patient_modifier.dart';
+
 
 class PatientDetail extends ConsumerWidget {
-  const PatientDetail({Key? key}) : super(key: key);
+  const PatientDetail({Key? key, required String id}) : super(key: key);
 
   
   @override
@@ -106,12 +107,12 @@ class PatientDetail extends ConsumerWidget {
                       diet: diet,
                       profilePic: profilePic,
                       onEdit: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => PatientModifier(id: id),
-                      //   ),
-                      // );
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) => PatientModifier(id: id),
+                      ),
+                      );
                       },
                     ),
                     const SizedBox(height: 16),
