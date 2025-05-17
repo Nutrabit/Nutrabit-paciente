@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
@@ -136,7 +138,6 @@ class AppUser {
     );
   }
 
-  /// Aplica solo los cambios recibidos usando copyWith
   AppUser merge(Map<String, dynamic> changes) {
     return copyWith(
       name: changes['name'] as String? ?? name,
