@@ -11,6 +11,8 @@ import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInter
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
+import 'package:nutrabit_paciente/presentations/screens/password/change_password.dart';
+import 'package:nutrabit_paciente/presentations/screens/password/forgot_password.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/profile_dynamic_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/select_goal_screen.dart';
@@ -116,5 +118,7 @@ final appRouter = GoRouter(
       path: '/listasInteres',
       builder: (context, state) => ListaInteres(),
     ),
+    GoRoute(path: '/recuperar-clave', builder: (context, state) => ForgotPassword()),
+    GoRoute(path: '/cambiar-clave', builder: (context, state) =>  ChangePassword()),
   ],
 );

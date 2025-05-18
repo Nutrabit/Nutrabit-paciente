@@ -137,7 +137,7 @@ class PatientDetail extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 180),
-                    ElevatedButton(onPressed: () {}, child: const Text('Cambiar contraseña'), style: mainButtonDecoration(),),
+                    ElevatedButton(onPressed: () {context.go('/cambiar-clave');}, child: const Text('Cambiar contraseña'), style: mainButtonDecoration(),),
                   ],
                 ),
               ),
