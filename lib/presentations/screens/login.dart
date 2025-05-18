@@ -84,7 +84,7 @@ class _LoginState extends ConsumerState<Login> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        context.go('/forgot-password');
+                        context.go('/recuperar-clave');
                       },
                       child: Text(
                         '¿Olvidaste tu contraseña?',
