@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
+
 
 class PatientModifier extends StatefulWidget {
   final String id;
@@ -54,8 +57,8 @@ class _PatientModifierState extends State<PatientModifier> {
   Future<void> _updatePatient() async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(widget.id).update({
-        'height': int.tryParse(_heightController.text.trim()) ?? 0,
-        'weight': int.tryParse(_weightController.text.trim()) ?? 0,
+        'height': int.tryParse(_heightController.text.trim().substring(0, _heightController.text.trim().length.clamp(0, 3))) ?? 0,
+        'weight': int.tryParse(_weightController.text.trim().substring(0, _weightController.text.trim().length.clamp(0, 3))) ?? 0,
         'gender': _selectedGender ?? '',
         'modifiedAt': FieldValue.serverTimestamp(),
         'deletedAt': null,
@@ -66,7 +69,7 @@ class _PatientModifierState extends State<PatientModifier> {
     }
   }
 
-  void _showSuccessPopup() {
+void _showSuccessPopup() {
   showDialog(
     context: context,
     builder: (context) {
@@ -90,7 +93,14 @@ class _PatientModifierState extends State<PatientModifier> {
               const Divider(thickness: 1),
               const SizedBox(height: 6),
               OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Cierra el diálogo
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => PatientDetail(id: widget.id),
+                    ),
+                  );
+                },
                 style: OutlinedButton.styleFrom(
                   backgroundColor: const Color(0xFFB5D6B2),
                   side: const BorderSide(color: Colors.black),
@@ -116,6 +126,7 @@ class _PatientModifierState extends State<PatientModifier> {
 }
 
 
+
   Future<void> _pickImageFromGallery() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
@@ -137,7 +148,7 @@ class _PatientModifierState extends State<PatientModifier> {
       await FirebaseFirestore.instance.collection('users').doc(widget.id).update({
         'profilePic': url,
       });
-      _pickedImage = null; // Limpiar la imagen local después de subir
+      _pickedImage = null; 
      
     } catch (e) {
       print('Error al subir la imagen: $e');
@@ -332,9 +343,25 @@ class _PatientModifierState extends State<PatientModifier> {
             const SizedBox(height: 24),
             Row(
               children: [
-                Expanded(child: _buildTextField(_heightController, 'Altura', keyboardType: TextInputType.number, suffix: 'cm')),
+                Expanded(
+                  child: _buildTextField(
+                    _heightController,
+                    'Altura',
+                    keyboardType: TextInputType.number,
+                    suffix: 'cm',
+                    inputFormatters: [LengthLimitingTextInputFormatter(3), FilteringTextInputFormatter.digitsOnly],
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: _buildTextField(_weightController, 'Peso', keyboardType: TextInputType.number, suffix: 'kg')),
+                Expanded(
+                  child: _buildTextField(
+                    _weightController,
+                    'Peso',
+                    keyboardType: TextInputType.number,
+                    suffix: 'kg',
+                    inputFormatters: [LengthLimitingTextInputFormatter(3), FilteringTextInputFormatter.digitsOnly],
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -402,12 +429,13 @@ class _PatientModifierState extends State<PatientModifier> {
   }
 
   Widget _buildTextField(TextEditingController controller, String hint,
-      {TextInputType? keyboardType, String? suffix}) {
+      {TextInputType? keyboardType, String? suffix, List<TextInputFormatter>? inputFormatters}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
         style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w600),
         decoration: InputDecoration(
           hintText: hint,
