@@ -52,6 +52,7 @@ class _ProfileDynamicScreenState extends ConsumerState<ProfileDynamicScreen> {
 
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid || _gender == null || _birthday == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Completa todos los campos obligatorios.")),
       );
@@ -65,6 +66,7 @@ class _ProfileDynamicScreenState extends ConsumerState<ProfileDynamicScreen> {
       if (!mounted) return;
       context.go('/login/validation/select_goal');
     } catch (e) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error al guardar: $e")),
       );

@@ -35,6 +35,7 @@ class _LogoutState extends ConsumerState<Logout> {
                   if (mounted) context.go('/login');
                 } else {
                   if (mounted) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Error al cerrar sesión')),
                     );
