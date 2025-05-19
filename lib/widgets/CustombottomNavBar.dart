@@ -25,7 +25,7 @@ class CustomBottomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: backgroundColor,
-      height: 65,
+      height: MediaQuery.of(context).size.height * 0.08,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(icons.length, (index) {

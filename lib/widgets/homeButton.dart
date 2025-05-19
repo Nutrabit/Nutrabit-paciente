@@ -72,7 +72,7 @@ class HomeButton extends StatelessWidget {
               text,
               style: TextStyle(
                 color: textColor,
-                fontSize: 16,
+                fontSize: MediaQuery.of(context).size.width * 0.035,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -19,163 +19,204 @@ class Home extends ConsumerWidget {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-
-
     return Scaffold(
       backgroundColor: const Color(0xFFFEECDA),
-      bottomNavigationBar:
-        CustomBottomAppBar(
-          currentIndex: 0,
-          onItemSelected: (index) {
-            switch (index) {
-              case 0:
-                context.go('/');
-                break;
-              case 1:
-                //context.go('/notificaciones');
-                break;
-              case 2:
-                context.go('/perfil');
-                break;
-            }
-          },
-        ),
+      bottomNavigationBar: CustomBottomAppBar(
+        currentIndex: 0,
+        onItemSelected: (index) {
+          switch (index) {
+            case 0:
+              context.go('/');
+              break;
+            case 1:
+              //context.go('/notificaciones');
+              break;
+            case 2:
+              context.go('/perfil');
+              break;
+          }
+        },
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack (
+              Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  SvgPicture.asset('assets/img/encabezadoHome.svg'),
+                  SvgPicture.asset(
+                    'assets/img/encabezadoHome.svg',
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                  ),
                   Positioned(
-                    top: 70,
-                    left: 20,
+                    top: MediaQuery.of(context).size.height * 0.1,
+                    left: MediaQuery.of(context).size.width * 0.2,
+
                     child: Row(
                       children: [
-                        const SizedBox(width: 30),
-                        isLoggedIn 
-                        ? Text(
-                          '¡Aloha ${appUser.value?.name}!',
-                          style: TextStyle(
-                            fontSize: 28,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ): 
-                        Text(
-                          '¡Aloha!',
-                          style: TextStyle(
-                            fontSize: 28,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.01,
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                        SvgPicture.asset('assets/img/lemonsHome.svg'),
+                        isLoggedIn
+                            ? Text(
+                              '¡Aloha ${appUser.value?.name}!',
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.08,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                            : Text(
+                              '¡Aloha!',
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.08,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                        SvgPicture.asset(
+                          'assets/img/lemonsHome.svg',
+                          width: MediaQuery.of(context).size.width * 0.25,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.05,
+                        ),
                       ],
                     ),
                   ),
                   Positioned(
-                    top: 210,
-                    left: 10,
-                    right: 10,
+                    top: MediaQuery.of(context).size.height * 0.30,
+                    left: MediaQuery.of(context).size.width * 0.1,
+
                     child: Row(
                       children: [
-                        const SizedBox(width: 10),
                         HomeButton(
-                          imagePath: 'assets/img/ae36775c8e0c536b6c134e271841777229e6210a.png',
-                          text: 'Descargas',
+                          imagePath:
+                              'assets/img/ae36775c8e0c536b6c134e271841777229e6210a.png',
+                          text: 'Mis archivos',
                           onPressed: () {
-                           context.go('/descargas');
+                            context.go('/descargas');
                           },
-                          width: 150,
-                          imageHeight: 90,
-                          baseHeight: 50,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          imageHeight:
+                              MediaQuery.of(context).size.height * 0.11,
+                          baseHeight: MediaQuery.of(context).size.height * 0.05,
                         ),
-                        const SizedBox(width: 20),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1,
+                        ),
                         HomeButton(
-                          imagePath: 'assets/img/ee19a2bb0ba198a476f373bb3ee3f9e64b995714.png',
+                          imagePath:
+                              'assets/img/ee19a2bb0ba198a476f373bb3ee3f9e64b995714.png',
                           text: 'Talleres',
                           onPressed: () {
                             //context.go('/publicidades');
                           },
-                          width: 150,
-                          imageHeight: 90,
-                          baseHeight: 50,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          imageHeight:
+                              MediaQuery.of(context).size.height * 0.11,
+                          baseHeight: MediaQuery.of(context).size.height * 0.05,
                         ),
-                        const SizedBox(width: 10),
                       ],
                     ),
                   ),
                   Positioned(
-                    top: 365,
-                    left: 10,
-                    right: 10,
+                    top: MediaQuery.of(context).size.height * 0.50,
+                    left: MediaQuery.of(context).size.width * 0.1,
                     child: Row(
                       children: [
-                        const SizedBox(width: 10),
                         HomeButton(
-                          imagePath: 'assets/img/d4fbb7df798270b5e6d5c38f4faf310cc2cdf3fa.png',
+                          imagePath:
+                              'assets/img/d4fbb7df798270b5e6d5c38f4faf310cc2cdf3fa.png',
                           text: 'Envíos',
                           onPressed: () {
                             context.go('/archivos/subir');
                           },
-                          width: 150,
-                          imageHeight: 90,
-                          baseHeight: 50,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          imageHeight:
+                              MediaQuery.of(context).size.height * 0.11,
+                          baseHeight: MediaQuery.of(context).size.height * 0.05,
                         ),
-                        const SizedBox(width: 20),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1,
+                        ),
                         HomeButton(
-                          imagePath: 'assets/img/084fb2c3881361e7e5ce3fb5463622843c33bf3b.png',
+                          imagePath:
+                              'assets/img/084fb2c3881361e7e5ce3fb5463622843c33bf3b.png',
                           text: 'Calendario',
                           onPressed: () {
                             //context.go('/calendario');
                           },
-                          width: 150,
-                          imageHeight: 90,
-                          baseHeight: 50,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          imageHeight:
+                              MediaQuery.of(context).size.height * 0.11,
+                          baseHeight: MediaQuery.of(context).size.height * 0.05,
                         ),
-                        const SizedBox(width: 10),
                       ],
                     ),
                   ),
                   Positioned(
-                    top: 520,
-                    left: 100,
-                    right: 10,
+                    top: MediaQuery.of(context).size.height * 0.70,
+                    left: MediaQuery.of(context).size.width * 0.30,
                     child: Row(
                       children: [
                         const SizedBox(width: 10),
                         HomeButton(
-                          imagePath: 'assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png',
+                          imagePath:
+                              'assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png',
                           text: 'Recomendaciones',
                           onPressed: () {
                             //context.go('/listasInteres');
                           },
-                          width: 150,
-                          imageHeight: 90,
-                          baseHeight: 50,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          imageHeight:
+                              MediaQuery.of(context).size.height * 0.11,
+                          baseHeight: MediaQuery.of(context).size.height * 0.05,
                         ),
-                        
-                        
+
                         const SizedBox(width: 10),
                       ],
                     ),
                   ),
-                ]
-              )
+                ],
+              ),
             ],
           ),
         ),
       ),
-      floatingActionButton: UrlFloatingActionButton(
-        url: 'https://api.whatsapp.com/send?phone=5491167999237&text=Hola%20Flor!%20Me%20interesa%20m%C3%A1s%20informaci%C3%B3n%20sobre%20las%20consultas%20%F0%9F%A6%A6%20Gracias!',
-        iconImage: 'assets/img/whatsapp.svg',
-        iconSize: 35,
-        
-        
+
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.83,
+            left: MediaQuery.of(context).size.height * 0.389,
+            child: Column(
+              children: [
+                
+                
+                UrlFloatingActionButton(
+                  url: 'https://www.instagram.com/nutri.florcabral/',
+                  iconImage: 'assets/img/instagram.svg',
+                  iconSize: 45,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                UrlFloatingActionButton(
+                  url:
+                      'https://api.whatsapp.com/send?phone=5491167999237&text=Hola%20Flor!%20Me%20interesa%20m%C3%A1s%20informaci%C3%B3n%20sobre%20las%20consultas%20%F0%9F%A6%A6%20Gracias!',
+                  iconImage: 'assets/img/whatsapp.svg',
+                  iconSize: 35,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
