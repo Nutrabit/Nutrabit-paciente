@@ -26,6 +26,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
     final repeat = _repeatController.text.trim();
 
     if (current.isEmpty || next.isEmpty || repeat.isEmpty) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor, complete todos los campos.')),
       );
@@ -79,6 +80,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
               err is FirebaseAuthException
                   ? (err.message ?? err.code)
                   : err.toString();
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(msg)));
