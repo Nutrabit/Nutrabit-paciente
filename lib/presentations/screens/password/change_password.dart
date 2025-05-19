@@ -44,6 +44,63 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
           });
     }
   }
+  void showPopup() {
+    showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+        title: const Text(
+                '¡Contraseña actualizada correctamente!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Color(0xFF2F2F2F),
+                ),
+              ),
+        content: SizedBox(
+          width: 250,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Por favor, vuelva a iniciar sesión.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                  color: Color(0xFF2F2F2F),
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Divider(thickness: 1),
+              const SizedBox(height: 6),
+              OutlinedButton(
+                onPressed: () => context.go('/login'),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB5D6B2),
+                  side: const BorderSide(color: Colors.black),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: const Text(
+                  'Aceptar',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF706B66), 
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,27 +109,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
       next.when(
         loading: () {},
         data: (_) {
-          showDialog(
-            context: context,
-            builder:
-                (_) => AlertDialog(
-                  title: const Text('¡Contraseña actualizada correctamente!'),
-                  content: const Text('Por favor, vuelva a iniciar sesión.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => {context.go('/login')},
-                      style: TextButton.styleFrom(
-                        backgroundColor: Color(0xFFD7F9DE),
-                        foregroundColor: Color(0xFF606060),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text('Aceptar'),
-                    ),
-                  ],
-                ),
-          );
+          showPopup();
         },
         error: (err, _) {
           final msg =
