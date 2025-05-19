@@ -26,6 +26,7 @@ class _SelectGoalScreenState extends ConsumerState<SelectGoalScreen> {
         context.go('/login/validation/select_goal/confirmation');
       }
     } catch (e) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al guardar: $e')),
       );

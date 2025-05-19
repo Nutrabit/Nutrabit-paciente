@@ -113,12 +113,18 @@ class _LoginState extends ConsumerState<Login> {
                           .then((r) {
                             // Si el usuario es paciente, redirigir a la pantalla de inicio
                             if (r == true) {
-                              context.go('/login/validation');
+                              final appUser = ref.watch(authProvider);
+                              if(appUser.value?.createdAt == appUser.value?.modifiedAt){
+                                context.go('/login/validation');
+                              } else {
+                                context.go('/');
+                              }
                             } else if (r == false) {
                               setState(() {
                                 isLoading = false;
                               });
                               // Si el usuario no existe o la contraseña es incorrecta, mostrar un mensaje
+                              ScaffoldMessenger.of(context).clearSnackBars();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Usuario y/o contraseña inválidos'),

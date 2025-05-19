@@ -19,6 +19,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
   void sendEmail() {
     final email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Ingrese un email válido.')));
@@ -104,14 +105,15 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
             showPopup();
           }
         },
-        error: (err, _) {
-          final msg =
-              (err is FirebaseAuthException)
-                  ? err.message ?? err.code
-                  : err.toString();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Error: $msg')));
+
+       error: (err, _) {
+          final msg = (err is FirebaseAuthException)
+              ? err.message ?? err.code
+              : err.toString();
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Error: $msg')));
+
         },
       ); // ← así, dentro de los paréntesis de ref.listen
     });
