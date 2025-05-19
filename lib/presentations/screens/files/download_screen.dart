@@ -6,6 +6,7 @@ import 'package:nutrabit_paciente/core/models/file_type.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/file_provider.dart';
+import 'package:nutrabit_paciente/presentations/screens/files/pdfViewer.dart';
 
 class DownloadScreen extends ConsumerWidget {
   const DownloadScreen({super.key});
@@ -30,10 +31,13 @@ class DownloadScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Descargas'),
         centerTitle: true,
-        leading: BackButton(onPressed: () {
-                  context.go('/');
-        },),
+        leading: BackButton(
+          onPressed: () {
+            context.go('/');
+          },
+        ),
       ),
+      backgroundColor: Color(0xFFFDEEDB),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -60,13 +64,12 @@ class FileTypeExpansionTile extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
+        color: Colors.grey.shade100,
         border: Border.all(color: Colors.grey.shade400),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent, 
-        ),
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           key: PageStorageKey(type),
           title: Text(
@@ -116,14 +119,36 @@ class FileListTile extends ConsumerWidget {
     return ListTile(
       title: Text(file.title),
       subtitle: Text('Fecha: ${formatDate(file.date)}'),
-      trailing:
+      trailing: Wrap(
+        spacing: 8,
+        children: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => PdfViewerScreen(url: file.url, title: file.title),
+                ),
+              );
+            },
+            icon: const Icon(Icons.picture_as_pdf, size: 20),
+            // label: const Text(''),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey.shade100,
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
           isDownloading
               ? const SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-              : ElevatedButton.icon(
+              : IconButton(
                 onPressed:
                     isDownloaded
                         ? null
@@ -139,7 +164,7 @@ class FileListTile extends ConsumerWidget {
                   isDownloaded ? Icons.check_circle : Icons.download,
                   size: 20,
                 ),
-                label: Text(isDownloaded ? 'Descargado' : 'Descargar'),
+                //label: Text(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey.shade100,
                   foregroundColor: Colors.black,
@@ -148,6 +173,8 @@ class FileListTile extends ConsumerWidget {
                   ),
                 ),
               ),
+        ],
+      ),
     );
   }
 }

@@ -11,13 +11,18 @@ import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInter
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
+import 'package:nutrabit_paciente/presentations/screens/password/change_password.dart';
+import 'package:nutrabit_paciente/presentations/screens/password/forgot_password.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/profile_dynamic_screen.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/select_goal_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcomeCarousel.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
 
+import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/confirmation_aloha_comunite_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/welcome',
@@ -25,7 +30,24 @@ final appRouter = GoRouter(
     GoRoute(path: '/welcome', builder: (context, state) => WelcomeCarousel()),
     GoRoute(path: '/', builder: (context, state) => Home()),
     GoRoute(path: '/descargas', builder: (context, state) => DownloadScreen()),
-    GoRoute(path: '/login', builder: (context, state) => Login()),
+    GoRoute(
+      path: '/login', 
+      builder: (context, state) => Login(),
+      routes: [
+        GoRoute(
+          path: 'validation',
+          builder:  (context, state) => ProfileDynamicScreen(),
+          routes: [
+            GoRoute(
+              path: 'select_goal',
+              builder:  (context, state) => SelectGoalScreen(),
+              routes: [
+                GoRoute(path: 'confirmation', builder: (context, state) => ConfirmationScreen()),
+              ]
+            ),
+          ],
+        ),
+      ]),
     GoRoute(path: '/soyPaciente', builder:(context, state) => AmIPatient()),
     GoRoute(
       path: '/perfil',
@@ -96,5 +118,7 @@ final appRouter = GoRouter(
       path: '/listasInteres',
       builder: (context, state) => ListaInteres(),
     ),
+    GoRoute(path: '/recuperar-clave', builder: (context, state) => ForgotPassword()),
+    GoRoute(path: '/cambiar-clave', builder: (context, state) =>  ChangePassword()),
   ],
 );

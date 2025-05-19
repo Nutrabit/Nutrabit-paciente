@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 
 class PatientModifier extends StatefulWidget {
@@ -155,64 +157,65 @@ void _showSuccessPopup() {
     }
   }
 
-  void _showImagePickerPopup() {
-    final profilePic = _userData?['profilePic'];
+void _showImagePickerPopup() {
+  final profilePic = _userData?['profilePic'];
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(106)),
-          child: Container(
-            width: 240,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFD7F1CE),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                  ),
-                  child: const Text(
-                    'Adjuntar archivo',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        child: StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return Container(
+              width: 240,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFD7F1CE),
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                     ),
-                    textAlign: TextAlign.center,
+                    child: const Text(
+                      'Adjuntar archivo',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                const Divider(height: 1, thickness: 1, color: Colors.black),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFEECDa),
-                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade400),
+                  const Divider(height: 1, thickness: 1, color: Colors.black),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFEECDa),
+                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade400),
+                          ),
+                          child: Text(
+                            _pickedImage != null
+                                ? _pickedImage!.path.split('/').last
+                                : (profilePic != null && profilePic.isNotEmpty
+                                    ? 'Imagen actual seleccionada'
+                                    : 'No hay imagen'),
+                            style: const TextStyle(fontSize: 16, color: Colors.black87),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                          ),
                         ),
-                        child: Text(
-                          _pickedImage != null
-                              ? _pickedImage!.path
-                              : (profilePic ?? '<img src="images/picture.jpg">'),
-                          style: const TextStyle(fontSize: 16, color: Colors.black87),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          softWrap: false,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Row(
                           children: [
                             const Padding(
@@ -226,60 +229,150 @@ void _showSuccessPopup() {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 120),
-                              child: IconButton(
-                                icon: const Icon(Icons.add, size: 28),
-                                onPressed: () {
-                                  _pickImageFromGallery();
-                                },
-                              ),
+                            const Spacer(),
+                            // Botón "+" para seleccionar imagen
+                            IconButton(
+                              icon: const Icon(Icons.add, size: 28),
+                              onPressed: () async {
+                                final picker = ImagePicker();
+                                final picked = await picker.pickImage(source: ImageSource.gallery);
+                                if (picked != null) {
+                                  setStateDialog(() {
+                                    _pickedImage = File(picked.path);
+                                  });
+                                }
+                              },
+                            ),
+                            // Botón "-" para quitar imagen / borrar imagen
+                            IconButton(
+                              icon: const Icon(Icons.remove, size: 28),
+                              onPressed: () async {
+                                try {
+                                  if (_pickedImage != null) {
+                                    // Descartar la imagen en memoria
+                                    setStateDialog(() {
+                                      _pickedImage = null;
+                                    });
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Imagen nueva descartada')),
+                                      );
+                                    }
+                                  } else {
+                                    // Borrar imagen almacenada en Firestore + Storage
+                                    if (profilePic != null && profilePic.isNotEmpty) {
+                                      final ref = FirebaseStorage.instance.refFromURL(profilePic);
+                                      await ref.delete();
+
+                                      await FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(widget.id)
+                                          .update({'profilePic': ''});
+
+                                      setState(() {
+                                        _userData!['profilePic'] = '';
+                                      });
+                                      setStateDialog(() {});
+
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Imagen eliminada correctamente')),
+                                        );
+                                      }
+                                    } else {
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('No hay imagen para eliminar')),
+                                        );
+                                      }
+                                    }
+                                  }
+                                } catch (e) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Error al eliminar la imagen: $e')),
+                                    );
+                                  }
+                                }
+                              },
                             ),
                           ],
                         ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text(
-                              'Cancelar',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF8B8680),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                'Cancelar',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF8B8680),
+                                ),
                               ),
                             ),
-                          ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                if (_pickedImage != null) {
+                                  // Subir la imagen seleccionada
+                                  String fileName =
+                                      'profilePics/${widget.id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+                                  final storageRef = FirebaseStorage.instance.ref().child(fileName);
 
-                          ElevatedButton(
-                            onPressed: () async {
-                              await _uploadPickedImage();
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFDC607A),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  try {
+                                    await storageRef.putFile(_pickedImage!);
+                                    final url = await storageRef.getDownloadURL();
+
+                                    await FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(widget.id)
+                                        .update({'profilePic': url});
+
+                                    setState(() {
+                                      _userData!['profilePic'] = url;
+                                      _pickedImage = null;
+                                    });
+
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Imagen subida correctamente')),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Error al subir la imagen: $e')),
+                                      );
+                                    }
+                                  }
+                                }
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFDC607A),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                              ),
+                              child: const Text('Confirmar', style: TextStyle(fontSize: 18)),
                             ),
-                            child: const Text(
-                              'Confirmar',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+                ],
+              ),
+            );
+          },
+        ),
+      );
+    },
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {
