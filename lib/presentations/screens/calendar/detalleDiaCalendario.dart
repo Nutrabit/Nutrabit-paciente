@@ -6,6 +6,27 @@ class DetalleDiaCalendario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    
+    // #####################################
+    //HICE ESTO PARA PROBAR LA REDIRECCION
+    // #####################################
+
+    return Scaffold( body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Detalles del día',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Fecha seleccionada: $fecha',
+            style: TextStyle(fontSize: 18),
+          ),
+        
+        ],
+      ),
+    ));
   }
 }
