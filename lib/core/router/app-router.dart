@@ -4,7 +4,7 @@ import 'package:nutrabit_paciente/presentations/screens/files/download_screen.da
 import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart';
-import 'package:nutrabit_paciente/presentations/screens/calendar/calendario.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/detalleDiaCalendario.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInteres.dart';
@@ -79,7 +79,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/calendario',
-      builder: (context, state) => Calendario(),
+      builder: (context, state) => Calendar(),
       routes: [
         GoRoute(
           path: '/:fecha',
