@@ -7,6 +7,7 @@ import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart
 import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/detalleDiaCalendario.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
+import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
 import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInteres.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
@@ -29,6 +30,7 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(path: '/welcome', builder: (context, state) => WelcomeCarousel()),
     GoRoute(path: '/', builder: (context, state) => Home()),
+    GoRoute(path: '/homeOffline', builder: (context, state) => HomeOffline()),
     GoRoute(path: '/descargas', builder: (context, state) => DownloadScreen()),
     GoRoute(
       path: '/login', 
