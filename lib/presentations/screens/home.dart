@@ -137,7 +137,7 @@ class Home extends ConsumerWidget {
                             'assets/img/d4fbb7df798270b5e6d5c38f4faf310cc2cdf3fa.png',
                         text: 'Envíos',
                         onPressed: () {
-                          context.push('/archivos/subir');
+                          context.push('/envios');
                         },
                         width: MediaQuery.of(context).size.width * 0.35,
                         imageHeight: MediaQuery.of(context).size.height * 0.11,

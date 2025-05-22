@@ -9,11 +9,12 @@ class NewEventDialog {
     EventType? selectedEventType;
 
     handleEvents(){
-      if(selectedEventType == EventType.FOOD_PICTURE){
-        print('subir fotos: $selectedEventType');
-        // context.push('/envios');
+      if(selectedEventType == EventType.UPLOAD_FILE){
+        // print('subir fotos: $selectedEventType');
+        context.push('/envios/subir-comida', extra: selectedDate);
       } else {
-        //API
+        print('Fecha: $selectedDate');
+        print('Evento seleccionado: ${selectedEventType?.description}');
       }
     }
 
