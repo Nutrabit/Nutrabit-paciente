@@ -137,14 +137,13 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
+              borderRadius: BorderRadius.circular(30),
             ),
-            onPressed: () {},
+            onPressed: () {
+              if (_selectedDay != null) {
+                context.push('/envios/subir-comida', extra: _selectedDay);
+              }
+            },
           ),
         );
       },
