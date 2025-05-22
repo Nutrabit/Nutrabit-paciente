@@ -5,8 +5,8 @@ enum EventType {
   DRINK_WATER,
   EXERCISE,
   SUPLEMENT,
-  FOOD_PICTURE,
-  PERIOD
+  PERIOD,
+  UPLOAD_FILE,
 }
 
 extension EventTypeExtension on EventType {
@@ -18,10 +18,10 @@ extension EventTypeExtension on EventType {
         return "Hice ejercicio";
       case EventType.SUPLEMENT:
         return "Tomé un suplemento";
-      case EventType.FOOD_PICTURE:
-        return "Fotos de comida";
       case EventType.PERIOD:
         return "Tengo mi período";
+      case EventType.UPLOAD_FILE:
+        return "Subir archivos";
     }
   }
 
@@ -33,10 +33,10 @@ extension EventTypeExtension on EventType {
         return "¿Hiciste ejercicio?";
       case EventType.SUPLEMENT:
         return "¿Tomaste suplemento?";
-      case EventType.FOOD_PICTURE:
-        return "Subir fotos de comida";
       case EventType.PERIOD:
         return "¿Tienes tu período?";
+      case EventType.UPLOAD_FILE:
+        return "Subir archivos";
     }
   }
 
@@ -48,10 +48,10 @@ extension EventTypeExtension on EventType {
         return FaIcon(FontAwesomeIcons.personRunning);
       case EventType.SUPLEMENT:
         return FaIcon(FontAwesomeIcons.pills);
-      case EventType.FOOD_PICTURE:
-        return FaIcon(FontAwesomeIcons.appleWhole);
       case EventType.PERIOD:
         return FaIcon(FontAwesomeIcons.droplet);
+      case EventType.UPLOAD_FILE:
+        return FaIcon(FontAwesomeIcons.fileArrowUp);
     }
   }
 }

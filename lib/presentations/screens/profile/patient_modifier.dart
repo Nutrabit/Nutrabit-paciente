@@ -384,7 +384,7 @@ void _showImagePickerPopup() {
         ? FileImage(_pickedImage!)
         : (_userData!['profilePic'] != null && (_userData!['profilePic'] as String).isNotEmpty)
             ? NetworkImage(_userData!['profilePic'])
-            : const AssetImage('assets/images/avatar.png') as ImageProvider;
+            : const AssetImage('assets/img/avatar.jpg') as ImageProvider;
 
     return Scaffold(
       appBar: AppBar(

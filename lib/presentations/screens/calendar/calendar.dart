@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
+import 'package:nutrabit_paciente/widgets/newEventDialog.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutrabit_paciente/core/models/calendar_event.dart';
-import 'package:nutrabit_paciente/presentations/providers/events_proider.dart';
+import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 
 class Calendar extends ConsumerStatefulWidget {
   const Calendar({super.key});
@@ -140,9 +141,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
               borderRadius: BorderRadius.circular(30),
             ),
             onPressed: () {
-              if (_selectedDay != null) {
-                context.push('/envios/subir-comida', extra: _selectedDay);
-              }
+              NewEventDialog.show(context);
             },
           ),
         );
@@ -201,7 +200,7 @@ class cardPatient extends StatelessWidget {
                       backgroundImage:
                           profilePic != null && profilePic!.isNotEmpty
                               ? NetworkImage(profilePic!)
-                              : const AssetImage('assets/images/avatar.png')
+                              : const AssetImage('assets/img/avatar.jpg')
                                   as ImageProvider,
                     ),
                     const SizedBox(width: 16),
