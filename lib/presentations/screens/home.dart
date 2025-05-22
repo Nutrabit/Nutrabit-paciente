@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/widgets/contactButton.dart';
 import 'package:nutrabit_paciente/widgets/homeButton.dart';
-import 'package:nutrabit_paciente/widgets/CustombottomNavBar.dart';
+import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
