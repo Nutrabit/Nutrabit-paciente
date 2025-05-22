@@ -29,7 +29,7 @@ class DownloadScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Descargas'),
+        title: const Text('Mis archivos'),
         centerTitle: true,
         leading: BackButton(
           onPressed: () {

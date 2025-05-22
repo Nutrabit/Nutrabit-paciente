@@ -40,16 +40,13 @@ class UrlFloatingActionButton extends StatelessWidget {
           bottomRight: Radius.circular(30)),
         
       ),
-      child: Positioned(
-        bottom: 5,
-        left: 5,
-
-        child: SvgPicture.asset(
+      heroTag: null,
+      child: SvgPicture.asset(
         iconImage,
         width: iconSize,
         height: iconSize,
         
-      ),),
+      ),
       
     );
   }

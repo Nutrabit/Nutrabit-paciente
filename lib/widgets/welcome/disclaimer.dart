@@ -9,7 +9,7 @@ class Disclaimer extends StatelessWidget {
       backgroundColor: Color.fromRGBO(220, 96, 122, 1),
       body: SafeArea( child: 
         SingleChildScrollView( child: 
-          Center( child: 
+          //Center( child: 
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -53,7 +53,7 @@ class Disclaimer extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          //),
         ),
       ),
     );
