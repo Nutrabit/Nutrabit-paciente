@@ -83,10 +83,7 @@ class _UploadFoodScreenState extends State<UploadFoodScreen> {
               onPickTime: pickTime,
             ),
             const SizedBox(height: 24),
-            FilePickerField(
-              selectedFile: selectedFile,
-              onPickFile: pickFile,
-            ),
+            FilePickerField(selectedFile: selectedFile, onPickFile: pickFile),
             const SizedBox(height: 24),
             TitleField(controller: titleController),
             const SizedBox(height: 16),
@@ -97,7 +94,9 @@ class _UploadFoodScreenState extends State<UploadFoodScreen> {
                 await uploadAndSaveEvent();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Evento guardado correctamente')),
+                    const SnackBar(
+                      content: Text('Evento guardado correctamente'),
+                    ),
                   );
                   Navigator.of(context).pop();
                 }
@@ -126,7 +125,10 @@ class UploadFoodAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: () => Navigator.of(context).pop(),
       ),
       centerTitle: true,
-      title: const Text('Enviar archivos', style: TextStyle(color: Colors.black)),
+      title: const Text(
+        'Enviar archivos',
+        style: TextStyle(color: Colors.black),
+      ),
     );
   }
 }
@@ -190,7 +192,10 @@ class FilePickerField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Adjuntá una foto o archivo', style: TextStyle(color: Color(0xFFDC607A))),
+        const Text(
+          'Adjuntá una foto o archivo',
+          style: TextStyle(color: Color(0xFFDC607A)),
+        ),
         const SizedBox(height: 8),
         ElevatedButton(
           onPressed: onPickFile,
@@ -208,7 +213,7 @@ class FilePickerField extends StatelessWidget {
               Expanded(child: Text(selectedFile!.name)),
             ],
           ),
-        ]
+        ],
       ],
     );
   }
