@@ -13,6 +13,7 @@ class EventService {
     required String fileName,
     required String title,
     required String description,
+    required String type,
     required DateTime dateTime,
   }) async {
     final user = _auth.currentUser;
@@ -29,7 +30,7 @@ class EventService {
       'description': description.trim(),
       'file': fileUrl,
       'title': title.trim(),
-      'type': 'BEBER_AGUA',
+      'type': type.trim(),
       'userid': userId,
     });
   }

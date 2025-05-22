@@ -21,7 +21,7 @@ extension EventTypeExtension on EventType {
       case EventType.PERIOD:
         return "Tengo mi período";
       case EventType.UPLOAD_FILE:
-        return "Subir archivos";
+        return "Archivo";
     }
   }
 

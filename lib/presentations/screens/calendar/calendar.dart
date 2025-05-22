@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
@@ -18,6 +20,15 @@ class Calendar extends ConsumerStatefulWidget {
 class _CalendarScreenState extends ConsumerState<Calendar> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+
+  FaIcon _getEventTypeIcon(String typeName) {
+  try {
+    final type = EventType.values.firstWhere((t) => t.name == typeName);
+    return type.icon;
+  } catch (e) {
+    return const FaIcon(FontAwesomeIcons.circleQuestion); // ícono por defecto
+  }
+}
 
   @override
   void initState() {
@@ -122,6 +133,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                                 ),
                               ),
                               child: ListTile(
+                                leading: _getEventTypeIcon(e.type),
                                 title: Text(e.title),
                                 subtitle: Text(e.description),
                                 textColor: Color.fromARGB(255, 0, 0, 0),
