@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
 import 'package:nutrabit_paciente/core/utils/file_picker_util.dart';
 
@@ -63,6 +64,7 @@ class _UploadFoodScreenState extends State<UploadFoodScreen> {
       fileName: selectedFile!.name,
       title: titleController.text,
       description: descriptionController.text,
+      type: EventType.UPLOAD_FILE.name,
       dateTime: selectedDateTime!,
     );
   }

@@ -1,22 +1,33 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
+import 'package:nutrabit_paciente/core/services/event_service.dart';
 
 class NewEventDialog {
   static void show(BuildContext context) {
+      final EventService _eventService = EventService();
     DateTime? selectedDate = DateTime.now();
     EventType? selectedEventType;
 
-    handleEvents(){
-      if(selectedEventType == EventType.UPLOAD_FILE){
-        // print('subir fotos: $selectedEventType');
+ Future<void> uploadAndSaveEvent() async {
+  if(selectedEventType == EventType.UPLOAD_FILE){
         context.push('/envios/subir-comida', extra: selectedDate);
       } else {
-        print('Fecha: $selectedDate');
-        print('Evento seleccionado: ${selectedEventType?.description}');
+        if(selectedEventType != null){
+    await _eventService.uploadEvent(
+      fileBytes: Uint8List(0),
+      fileName: '',
+      title: selectedEventType!.description,
+      description: '',
+      type: selectedEventType!.name,
+      dateTime: selectedDate!
+      );
+        };
       }
-    }
+    
+
+  }
 
     showDialog(
       context: context,
@@ -80,7 +91,7 @@ class NewEventDialog {
                 TextButton(
                   child: Text('Aceptar'),
                   onPressed: () {
-                    handleEvents();
+                    uploadAndSaveEvent();
                     Navigator.of(context).pop();
                    // print('Fecha: $selectedDate');
                    // print('Evento seleccionado: ${selectedEventType?.description}');
