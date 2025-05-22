@@ -266,7 +266,8 @@ Widget _buildDayCell(
     onDoubleTap: () {
       if (isSelected && context != null) {
         // Redirigir a otra pantalla:
-        GoRouter.of(context).push('/calendario/${day.year}-${day.month}-${day.day}', extra: day);
+        GoRouter.of(context).push('/calendario/detalle', extra: day);
+        //formateo de fecha
       }
     },
     child: Container(
