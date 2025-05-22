@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrabit_paciente/core/models/calendar_event.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
+import 'package:nutrabit_paciente/widgets/newEventDialog.dart';
 
 class CalendarDayPatient extends ConsumerWidget {
   final DateTime fecha;
@@ -163,7 +164,9 @@ class CalendarDayPatient extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          NewEventDialog.show(context); 
+        },
         child: const Icon(Icons.add),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),

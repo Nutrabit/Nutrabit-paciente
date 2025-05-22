@@ -1,28 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/widgets/contactButton.dart';
 import 'package:nutrabit_paciente/widgets/homeButton.dart';
 import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
-import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Home extends ConsumerWidget {
-  const Home({super.key});
+class HomeOffline extends StatelessWidget {
+  const HomeOffline({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final appUser = ref.watch(authProvider);
-    final bool isLoggedIn = appUser.value != null;
-
-    if (appUser is AsyncLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
+  Widget build(BuildContext context) {
     
-
-
 
     return Scaffold(
       backgroundColor: const Color(0xFFFEECDA),
@@ -31,13 +19,13 @@ class Home extends ConsumerWidget {
         onItemSelected: (index) {
           switch (index) {
             case 0:
-              context.go('/');
+              context.go('/home');
               break;
             case 1:
               //context.push('/notificaciones');
               break;
             case 2:
-              context.push('/perfil');
+              context.push('/login');
               break;
           }
         },
@@ -56,50 +44,41 @@ class Home extends ConsumerWidget {
                 fit: BoxFit.cover,
               ),
               Positioned(
-                top: MediaQuery.of(context).size.height * 0.1,
+                top: MediaQuery.of(context).size.height * 0.15,
                 left: MediaQuery.of(context).size.width * 0.1,
 
                 child: Row(
                   children: [
-                    isLoggedIn
-                        ? Text(
-                          '¡Aloha ${appUser.value?.name.toString().capitalize()}!',
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.08,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )
-                        : Text(
-                          '¡Aloha!',
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.08,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                    Text(
+                      '¡Aloha!',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.08,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.25),
                     SvgPicture.asset(
                       'assets/img/lemonsHome.svg',
-                      width: MediaQuery.of(context).size.width * 0.25,
+                      width: MediaQuery.of(context).size.width * 0.3,
                     ),
                   ],
                 ),
               ),
               Positioned(
-                top: MediaQuery.of(context).size.height * 0.30,
+                top: MediaQuery.of(context).size.height * 0.40,
                 left: MediaQuery.of(context).size.width * 0.1,
 
                 child: Row(
                   children: [
                     Hero(
-                      tag: 'homebutton-mis-archivos',
+                      tag: 'homebutton-Calendario',
                       child: HomeButton(
                         imagePath:
-                            'assets/img/ae36775c8e0c536b6c134e271841777229e6210a.png',
-                        text: 'Mis archivos',
+                            'assets/img/084fb2c3881361e7e5ce3fb5463622843c33bf3b.png',
+                        text: 'Calendario',
                         onPressed: () {
-                          context.push('/descargas');
+                          //context.push('/calendario');
                         },
                         width: MediaQuery.of(context).size.width * 0.35,
                         imageHeight: MediaQuery.of(context).size.height * 0.11,
@@ -125,46 +104,9 @@ class Home extends ConsumerWidget {
                   ],
                 ),
               ),
+              
               Positioned(
-                top: MediaQuery.of(context).size.height * 0.50,
-                left: MediaQuery.of(context).size.width * 0.1,
-                child: Row(
-                  children: [
-                    Hero(
-                      tag: 'homebutton-Envíos',
-                      child: HomeButton(
-                        imagePath:
-                            'assets/img/d4fbb7df798270b5e6d5c38f4faf310cc2cdf3fa.png',
-                        text: 'Envíos',
-                        onPressed: () {
-                          context.push('/envios');
-                        },
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        imageHeight: MediaQuery.of(context).size.height * 0.11,
-                        baseHeight: MediaQuery.of(context).size.height * 0.05,
-                      ),
-                    ),
-
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-                    Hero(
-                      tag: 'homebutton-Calendario',
-                      child: HomeButton(
-                        imagePath:
-                            'assets/img/084fb2c3881361e7e5ce3fb5463622843c33bf3b.png',
-                        text: 'Calendario',
-                        onPressed: () {
-                          context.push('/calendario');
-                        },
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        imageHeight: MediaQuery.of(context).size.height * 0.11,
-                        baseHeight: MediaQuery.of(context).size.height * 0.05,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: MediaQuery.of(context).size.height * 0.70,
+                top: MediaQuery.of(context).size.height * 0.60,
                 left: MediaQuery.of(context).size.width * 0.30,
                 child: Row(
                   children: [
