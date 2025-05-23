@@ -6,7 +6,7 @@ enum EventType {
   EXERCISE,
   SUPLEMENT,
   PERIOD,
-  UPLOAD_FILE,
+  UPLOAD_FILE
 }
 
 extension EventTypeExtension on EventType {
@@ -33,10 +33,10 @@ extension EventTypeExtension on EventType {
         return "¿Hiciste ejercicio?";
       case EventType.SUPLEMENT:
         return "¿Tomaste suplemento?";
-      case EventType.PERIOD:
-        return "¿Tienes tu período?";
       case EventType.UPLOAD_FILE:
         return "Subir archivos";
+      case EventType.PERIOD:
+        return "¿Tienes tu período?";
     }
   }
 
@@ -47,11 +47,41 @@ extension EventTypeExtension on EventType {
       case EventType.EXERCISE:
         return FaIcon(FontAwesomeIcons.personRunning);
       case EventType.SUPLEMENT:
-        return FaIcon(FontAwesomeIcons.pills);
-      case EventType.PERIOD:
-        return FaIcon(FontAwesomeIcons.droplet);
+        return FaIcon(FontAwesomeIcons.capsules);
       case EventType.UPLOAD_FILE:
         return FaIcon(FontAwesomeIcons.fileArrowUp);
+      case EventType.PERIOD:
+        return FaIcon(FontAwesomeIcons.droplet);
+    }
+  }
+
+    IconData get iconData {
+    switch (this) {
+      case EventType.DRINK_WATER:
+        return FontAwesomeIcons.glassWaterDroplet;
+      case EventType.EXERCISE:
+        return FontAwesomeIcons.personRunning;
+      case EventType.SUPLEMENT:
+        return FontAwesomeIcons.capsules;
+      case EventType.PERIOD:
+        return FontAwesomeIcons.droplet;
+      case EventType.UPLOAD_FILE:
+        return FontAwesomeIcons.fileArrowUp;
+    }
+  }
+
+    Color get iconColor {
+    switch (this) {
+      case EventType.DRINK_WATER:
+        return Color(0xFF01C7F4);
+      case EventType.EXERCISE:
+        return Color(0xFF9DF726);
+      case EventType.SUPLEMENT:
+        return Color(0xFFF49F0A);
+      case EventType.PERIOD:
+        return Color(0xFFFF230A);
+      case EventType.UPLOAD_FILE:
+        return Color(0xFFf8e61b);
     }
   }
 }
