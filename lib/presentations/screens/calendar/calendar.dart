@@ -20,15 +20,18 @@ class Calendar extends ConsumerStatefulWidget {
 class _CalendarScreenState extends ConsumerState<Calendar> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-
-  FaIcon _getEventTypeIcon(String typeName) {
-  try {
-    final type = EventType.values.firstWhere((t) => t.name == typeName);
-    return type.icon;
-  } catch (e) {
-    return const FaIcon(FontAwesomeIcons.circleQuestion); // ícono por defecto
+  Widget _getEventTypeIcon(
+    String typeName, {
+    double size = 10.0,
+    Color color = const Color(0xFFDC607A),
+  }) {
+    try {
+      final type = EventType.values.firstWhere((t) => t.name == typeName);
+      return FaIcon(type.iconData, size: size, color: type.iconColor);
+    } catch (e) {
+      return FaIcon(FontAwesomeIcons.circleQuestion, size: size, color: color);
+    }
   }
-}
 
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
     final eventsByDateAsync = ref.watch(eventsByDateProvider);
 
     final appUser = ref.watch(authProvider);
+    var screenHeight = MediaQuery.of(context).size.height;
 
     return eventsByDateAsync.when(
       data: (eventsByDate) {
@@ -104,6 +108,32 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                       context: context,
                     );
                   },
+                  markerBuilder: (context, day, events) {
+                    if (events.isEmpty) return SizedBox.shrink();
+
+                    return Positioned(
+                      bottom: 1,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children:
+                            events
+                                .take(3)
+                                .map((e) {
+                                  final event = e;
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 1.0,
+                                    ),
+                                    child: _getEventTypeIcon(
+                                      event.type,
+                                      size: screenHeight * 0.015
+                                    ),
+                                  );
+                                })
+                                .toList(),
+                      ),
+                    );
+                  },
                 ),
               ),
 
@@ -133,7 +163,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                                 ),
                               ),
                               child: ListTile(
-                                leading: _getEventTypeIcon(e.type),
+                                leading: _getEventTypeIcon(e.type, size: screenHeight * 0.02),
                                 title: Text(e.title),
                                 subtitle: Text(e.description),
                                 textColor: Color.fromARGB(255, 0, 0, 0),
@@ -153,7 +183,15 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
               borderRadius: BorderRadius.circular(30),
             ),
             onPressed: () {
-              NewEventDialog.show(context, initialDate: DateTime.utc(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day, 3));
+              NewEventDialog.show(
+                context,
+                initialDate: DateTime.utc(
+                  _selectedDay!.year,
+                  _selectedDay!.month,
+                  _selectedDay!.day,
+                  3,
+                ),
+              );
             },
           ),
         );
@@ -252,15 +290,14 @@ Widget _buildDayCell(
   BuildContext? context,
 }) {
   Color bgColor = Colors.transparent;
-  Color textColor = const Color(0xFFDC607A); 
+  Color textColor = const Color(0xFFDC607A);
 
   if (isSelected) {
     bgColor = const Color(0xFFDC607A);
     textColor = Colors.white;
   } else if (isToday) {
-    bgColor = const Color.fromARGB(80, 220, 96, 123); 
+    bgColor = const Color.fromARGB(80, 220, 96, 123);
   }
-
 
   return GestureDetector(
     onDoubleTap: () {
@@ -274,10 +311,7 @@ Widget _buildDayCell(
       width: 32,
       height: 42,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: bgColor,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
       child: Text(
         '${day.day}',
         style: TextStyle(
