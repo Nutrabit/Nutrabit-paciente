@@ -153,7 +153,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
               borderRadius: BorderRadius.circular(30),
             ),
             onPressed: () {
-              NewEventDialog.show(context);
+              NewEventDialog.show(context, initialDate: DateTime.utc(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day, 3));
             },
           ),
         );
