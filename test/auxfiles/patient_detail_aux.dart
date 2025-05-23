@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import '/core/utils/utils.dart';
-import '/presentations/providers/auth_provider.dart';
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
+import 'package:nutrabit_paciente/core/utils/utils.dart';
+import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
-import '/widgets/logout.dart';
-import '/core/utils/decorations.dart';
-import 'package:nutrabit_paciente/widgets/CustombottomNavBar.dart';
-import 'patient_modifier.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
 
+import 'package:nutrabit_paciente/widgets/CustombottomNavBar.dart';
+import 'package:nutrabit_paciente/widgets/logout.dart';
 
 class PatientDetail extends ConsumerWidget {
-  const PatientDetail({Key? key, required String id}) : super(key: key);
+  const PatientDetail({super.key, required String id});
 
-  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appUser = ref.watch(authProvider);
 
     return appUser.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading:
+          () =>
+              const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, st) {
         Future.microtask(() => context.go('/login'));
         return const SizedBox.shrink();
@@ -34,7 +34,11 @@ class PatientDetail extends ConsumerWidget {
         final id = appUser.value!.id;
 
         return StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance.collection('users').doc(id).snapshots(),
+          stream:
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(id)
+                  .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
@@ -68,32 +72,31 @@ class PatientDetail extends ConsumerWidget {
 
             return Scaffold(
               appBar: AppBar(
-                leading: BackButton(onPressed: () {
-                  context.go('/');
-                },),
-                actions: [
-                  Logout(),
-                ],
+                leading: BackButton(
+                  onPressed: () {
+                    context.go('/');
+                  },
+                ),
+                actions: [Logout()],
                 backgroundColor: Colors.white,
                 elevation: 0,
               ),
-              bottomNavigationBar:
-        CustomBottomAppBar(
-          currentIndex: 0,
-          onItemSelected: (index) {
-            switch (index) {
-              case 0:
-                context.go('/');
-                break;
-              case 1:
-                //context.go('/notificaciones');
-                break;
-              case 2:
-                context.go('/perfil');
-                break;
-            }
-          },
-        ),
+              bottomNavigationBar: CustomBottomAppBar(
+                currentIndex: 0,
+                onItemSelected: (index) {
+                  switch (index) {
+                    case 0:
+                      context.go('/');
+                      break;
+                    case 1:
+                      //context.go('/notificaciones');
+                      break;
+                    case 2:
+                      context.go('/perfil');
+                      break;
+                  }
+                },
+              ),
               body: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,12 +110,12 @@ class PatientDetail extends ConsumerWidget {
                       diet: diet,
                       profilePic: profilePic,
                       onEdit: () {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) => PatientModifier(id: id),
-                      ),
-                      );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PatientModifier(id: id),
+                          ),
+                        );
                       },
                     ),
                     const SizedBox(height: 16),
@@ -137,7 +140,13 @@ class PatientDetail extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 180),
-                    ElevatedButton(onPressed: () {context.go('/cambiar-clave');}, style: mainButtonDecoration(), child: const Text('Cambiar contraseña'),),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.go('/cambiar-clave');
+                      },
+                      style: mainButtonDecoration(),
+                      child: const Text('Cambiar contraseña'),
+                    ),
                   ],
                 ),
               ),
@@ -175,10 +184,9 @@ class PatientInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-        children: [
-          SizedBox(height: 32),
-          Row (
-          
+      children: [
+        SizedBox(height: 32),
+        Row(
           children: [
             SizedBox(width: 25),
             Expanded(
@@ -188,11 +196,11 @@ class PatientInfoCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Color.fromRGBO(236, 218, 122, 0.2),
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
-                      topRight: Radius.circular(0),
-                      bottomRight: Radius.circular(0),
-                    ),
+                    topLeft: Radius.circular(20),
+                    bottomLeft: Radius.circular(20),
+                    topRight: Radius.circular(0),
+                    bottomRight: Radius.circular(0),
+                  ),
                 ),
                 child: Stack(
                   children: [
@@ -205,58 +213,90 @@ class PatientInfoCard extends StatelessWidget {
                       ),
                     ),
                     Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 15),
-                          CircleAvatar(
-                            radius: 60,
-                            backgroundImage: profilePic != null && profilePic!.isNotEmpty
-                                ? NetworkImage(profilePic!)
-                                : const AssetImage('assets/images/avatar.png') as ImageProvider,
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(name,
-                                    style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 18, fontWeight: FontWeight.bold)),
-                                Text(email, style: const TextStyle(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 15),
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundImage:
+                              (profilePic != null && profilePic!.isNotEmpty)
+                                  ? NetworkImage(profilePic!)
+                                  : null,
+                          child:
+                              (profilePic == null || profilePic!.isEmpty)
+                                  ? const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.grey,
+                                  )
+                                  : null,
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: const TextStyle(
                                   fontFamily: 'Inter',
-                                  color: Colors.black54)),
-                                const Divider(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    thickness: 0.5
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                Text('Edad: $age', style: const TextStyle(fontFamily: 'Inter',color: Colors.black54)),
-                                const Divider(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    thickness: 0.5
+                              ),
+                              Text(
+                                email,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  color: Colors.black54,
                                 ),
-                                Text('$weight kg / $height cm',
-                                    style: const TextStyle(fontFamily: 'Inter', color: Colors.black54)),
-                                const Divider(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    thickness: 0.5
+                              ),
+                              const Divider(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                thickness: 0.5,
+                              ),
+                              Text(
+                                'Edad: $age',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  color: Colors.black54,
                                 ),
-                                Text(diet, style: const TextStyle(fontFamily: 'Inter', color: Colors.black54)),
-                              ],
-                            ),
+                              ),
+                              const Divider(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                thickness: 0.5,
+                              ),
+                              Text(
+                                '$weight kg / $height cm',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              const Divider(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                thickness: 0.5,
+                              ),
+                              Text(
+                                diet,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
             ),
-            
           ],
         ),
-        ],
-      );
+      ],
+    );
   }
 }
 
@@ -285,8 +325,15 @@ class PatientActionButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title,
-                style: const TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w400, fontSize: 18, color : Colors.black)),
+            Text(
+              title,
+              style: const TextStyle(
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w400,
+                fontSize: 18,
+                color: Colors.black,
+              ),
+            ),
             const Icon(Icons.arrow_forward_ios, size: 16),
           ],
         ),

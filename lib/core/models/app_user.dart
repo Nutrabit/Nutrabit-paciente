@@ -1,9 +1,8 @@
-//import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
   final String id;
+  final String dni;
   final String name;
   final String lastname;
   final String email;
@@ -22,6 +21,7 @@ class AppUser {
 
   AppUser({
     required this.id,
+    required this.dni,
     required this.name,
     required this.lastname,
     required this.email,
@@ -45,6 +45,7 @@ class AppUser {
     final data = doc.data() as Map<String, dynamic>;
     return AppUser(
       id: doc.id,
+      dni: data['dni'] as String ?? '',
       name: data['name'] as String? ?? '',
       lastname: data['lastname'] as String? ?? '',
       email: data['email'] as String? ?? '',
@@ -79,6 +80,7 @@ class AppUser {
 
   Map<String, dynamic> toMap() {
     return {
+      'dni': dni,
       'name': name,
       'lastname': lastname,
       'email': email,
@@ -102,6 +104,7 @@ class AppUser {
 
   AppUser copyWith({
     String? id,
+    String? dni,
     String? name,
     String? lastname,
     String? email,
@@ -120,6 +123,7 @@ class AppUser {
   }) {
     return AppUser(
       id: id ?? this.id,
+      dni: dni ?? this.dni,
       name: name ?? this.name,
       lastname: lastname ?? this.lastname,
       email: email ?? this.email,
@@ -141,6 +145,7 @@ class AppUser {
   AppUser merge(Map<String, dynamic> changes) {
     return copyWith(
       name: changes['name'] as String? ?? name,
+      dni: changes['dni'] as String? ?? dni,
       lastname: changes['lastname'] as String? ?? lastname,
       email: changes['email'] as String? ?? email,
       birthday: changes['birthday'] as DateTime? ?? birthday,
