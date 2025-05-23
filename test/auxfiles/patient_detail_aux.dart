@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import '/core/utils/utils.dart';
-import '/presentations/providers/auth_provider.dart';
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
+import 'package:nutrabit_paciente/core/utils/utils.dart';
+import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
-import '/widgets/logout.dart';
-import '/core/utils/decorations.dart';
-import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
-import 'patient_modifier.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
+
+import 'package:nutrabit_paciente/widgets/CustombottomNavBar.dart';
+import 'package:nutrabit_paciente/widgets/logout.dart';
 
 class PatientDetail extends ConsumerWidget {
-  final String id;
-
-  const PatientDetail({super.key, required this.id});
+  const PatientDetail({super.key, required String id});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,16 +23,12 @@ class PatientDetail extends ConsumerWidget {
           () =>
               const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, st) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          context.go('/login');
-        });
+        Future.microtask(() => context.go('/login'));
         return const SizedBox.shrink();
       },
       data: (user) {
         if (user == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/login');
-          });
+          Future.microtask(() => context.go('/login'));
           return const SizedBox.shrink();
         }
         final id = appUser.value!.id;
@@ -58,8 +54,8 @@ class PatientDetail extends ConsumerWidget {
             }
 
             final data = snapshot.data!.data() as Map<String, dynamic>;
-            final name = data['name']?.toString().capitalize() ?? 'Sin nombre';
-            final lastname = data['lastname']?.toString().capitalize() ?? '';
+            final name = data['name'] ?? 'Sin nombre';
+            final lastname = data['lastname'] ?? '';
             final completeName = '$name $lastname';
             final email = data['email'] ?? '-';
             final weight = data['weight']?.toString() ?? '-';
@@ -127,31 +123,30 @@ class PatientDetail extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Column(
                         children: [
-                          Hero(
-                            tag: 'turnos',
-                            child: PatientActionButton(
-                              title: 'Ver historial de turnos',
-                              onTap: () {
-                                context.push('/perfil/turnos');
-                              },
-                            ),
+                          PatientActionButton(
+                            title: 'Ver historial de turnos',
+                            onTap: () {
+                              context.push('/perfil/turnos');
+                            },
                           ),
-
                           const SizedBox(height: 12),
-                          Hero(
-                            tag: 'calendario',
-                            child: PatientActionButton(
-                              title: 'Ver calendario',
-                              onTap: () {
-                                context.push('/calendario');
-                              },
-                            ),
+                          PatientActionButton(
+                            title: 'Ver calendario',
+                            onTap: () {
+                              context.push('/calendario');
+                            },
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 180),
-                    ElevatedButton(onPressed: () {context.go('/cambiar-clave');}, style: mainButtonDecoration(), child: const Text('Cambiar contraseña'),),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.go('/cambiar-clave');
+                      },
+                      style: mainButtonDecoration(),
+                      child: const Text('Cambiar contraseña'),
+                    ),
                   ],
                 ),
               ),
@@ -210,7 +205,7 @@ class PatientInfoCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     Positioned(
-                      top: MediaQuery.of(context).size.height * 0.001,
+                      top: -10,
                       right: MediaQuery.of(context).size.width * 0.001,
                       child: IconButton(
                         icon: const Icon(Icons.edit, color: Colors.grey),
@@ -224,10 +219,17 @@ class PatientInfoCard extends StatelessWidget {
                         CircleAvatar(
                           radius: 60,
                           backgroundImage:
-                              profilePic != null && profilePic!.isNotEmpty
+                              (profilePic != null && profilePic!.isNotEmpty)
                                   ? NetworkImage(profilePic!)
-                                  : const AssetImage('assets/img/avatar.jpg')
-                                      as ImageProvider,
+                                  : null,
+                          child:
+                              (profilePic == null || profilePic!.isEmpty)
+                                  ? const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.grey,
+                                  )
+                                  : null,
                         ),
                         const SizedBox(width: 16),
                         Expanded(
