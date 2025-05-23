@@ -5,15 +5,17 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:nutrabit_paciente/widgets/welcome/welcome.dart';
 import 'package:nutrabit_paciente/widgets/welcome/reminder.dart';
 import 'package:nutrabit_paciente/widgets/welcome/disclaimer.dart';
+import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WelcomeCarousel extends StatefulWidget {
+class WelcomeCarousel extends ConsumerStatefulWidget {
   const WelcomeCarousel({super.key});
 
   @override
-  State<WelcomeCarousel> createState() => _WelcomeCarouselState();
+  ConsumerState<WelcomeCarousel> createState() => _WelcomeCarouselState();
 }
 
-class _WelcomeCarouselState extends State<WelcomeCarousel> {
+class _WelcomeCarouselState extends ConsumerState<WelcomeCarousel> {
   final PageController _controller = PageController();
   int _currentPage = 0;
   Timer? _timer;
@@ -23,6 +25,8 @@ class _WelcomeCarouselState extends State<WelcomeCarousel> {
     Reminder(),
     Disclaimer(),
   ];
+
+  
 
   void _startAutoScroll() {
     _timer?.cancel();
@@ -66,6 +70,17 @@ class _WelcomeCarouselState extends State<WelcomeCarousel> {
 
   @override
   Widget build(BuildContext context) {
+
+
+    final appUser = ref.watch(authProvider);
+    final bool isLoading = appUser is AsyncLoading;
+
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    
     return Stack(
       children: [
         PageView(
