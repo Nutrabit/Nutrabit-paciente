@@ -5,29 +5,29 @@ import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
 
 class NewEventDialog {
-  static void show(BuildContext context) {
-      final EventService _eventService = EventService();
-    DateTime? selectedDate = DateTime.now();
+  static void show(BuildContext context, {DateTime? initialDate}) {
+    final EventService _eventService = EventService();
+    DateTime? selectedDate = initialDate ?? DateTime.now();
     EventType? selectedEventType;
 
- Future<void> uploadAndSaveEvent() async {
-  if(selectedEventType == EventType.UPLOAD_FILE){
+    Future<void> uploadAndSaveEvent() async {
+      if (selectedEventType == EventType.UPLOAD_FILE) {
         context.push('/envios/subir-comida', extra: selectedDate);
       } else {
-        if(selectedEventType != null){
-    await _eventService.uploadEvent(
-      fileBytes: Uint8List(0),
-      fileName: '',
-      title: selectedEventType!.description,
-      description: '',
-      type: selectedEventType!.name,
-      dateTime: selectedDate!
-      );
-        };
-      }
-    
+        if (selectedEventType != null) {
 
-  }
+          await _eventService.uploadEvent(
+            fileBytes: Uint8List(0),
+            fileName: '',
+            title: selectedEventType!.description,
+            description: '',
+            type: selectedEventType!.name,
+            dateTime: selectedDate!,
+          );
+        }
+        ;
+      }
+    }
 
     showDialog(
       context: context,
@@ -93,8 +93,6 @@ class NewEventDialog {
                   onPressed: () {
                     uploadAndSaveEvent();
                     Navigator.of(context).pop();
-                   // print('Fecha: $selectedDate');
-                   // print('Evento seleccionado: ${selectedEventType?.description}');
                   },
                 ),
               ],
