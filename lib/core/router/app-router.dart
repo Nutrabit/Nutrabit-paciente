@@ -5,7 +5,7 @@ import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
-import 'package:nutrabit_paciente/presentations/screens/calendar/detalleDiaCalendario.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
 import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInteres.dart';
@@ -81,18 +81,20 @@ final appRouter = GoRouter(
         ),
       ],
     ),
+   GoRoute(
+  path: '/calendario',
+  builder: (context, state) => Calendar(),
+  routes: [
     GoRoute(
-      path: '/calendario',
-      builder: (context, state) => Calendar(),
-      routes: [
-        GoRoute(
-          path: ':fecha',
-          builder: (context, state) => DetalleDiaCalendario(
-            fecha: state.pathParameters['fecha'] as String,
-          ),
-        ),
-      ],
+      path: 'detalle',
+      builder: (context, state) {
+        final fecha = state.extra as DateTime; // 👈 Recibimos el DateTime correctamente
+        return CalendarDayPatient(fecha: fecha);
+      },
     ),
+  ],
+),
+
     GoRoute(
       path: '/publicidades',
       builder: (context, state) => Publicidades(),

@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
@@ -57,17 +61,35 @@ class _UploadFoodScreenState extends State<UploadFoodScreen> {
   }
 
   Future<void> uploadAndSaveEvent() async {
-    if (selectedFile == null || selectedDateTime == null) return;
+  if (selectedFile == null || selectedDateTime == null) return;
 
-    await _eventService.uploadEvent(
-      fileBytes: selectedFile!.bytes!,
-      fileName: selectedFile!.name,
-      title: titleController.text,
-      description: descriptionController.text,
-      type: EventType.UPLOAD_FILE.name,
-      dateTime: selectedDateTime!,
-    );
+  // Determinar si estamos en Web o no, y obtener los bytes del archivo
+  Uint8List? fileBytes;
+
+  if (kIsWeb) {
+    fileBytes = selectedFile!.bytes;
+  } else {
+    if (selectedFile!.path != null) {
+    final file = File(selectedFile!.path!); // import 'dart:io';
+    fileBytes = await file.readAsBytes();
+}
   }
+
+  if (fileBytes == null) {
+    print('No se pudo leer el archivo.');
+    return;
+  }
+
+  await _eventService.uploadEvent(
+    fileBytes: fileBytes,
+    fileName: selectedFile!.name,
+    title: titleController.text,
+    description: descriptionController.text,
+    dateTime: selectedDateTime!, 
+    type: EventType.UPLOAD_FILE.name,
+    
+  );
+}
 
   @override
   Widget build(BuildContext context) {
