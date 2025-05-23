@@ -31,14 +31,18 @@ class AmIPatient extends StatelessWidget {
                   width: screenWidth * 0.4,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go('/login');
+                      context.push('/login');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromRGBO(220, 96, 122, 1),
                       foregroundColor: Colors.white,
+                      textStyle: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
+                      
                     ),
                     child: Text("Soy paciente"),
                   ),
@@ -49,11 +53,14 @@ class AmIPatient extends StatelessWidget {
                   width: screenWidth * 0.4,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go('/');
+                      context.push('/homeOffline');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromRGBO(220, 96, 122, 1),
                       foregroundColor: Colors.white,
+                      textStyle: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),

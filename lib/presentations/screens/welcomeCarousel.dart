@@ -74,8 +74,8 @@ class _WelcomeCarouselState extends State<WelcomeCarousel> {
           
         ),
         Positioned(
-          bottom: 40,
-          left: 20,
+          bottom: MediaQuery.of(context).size.height * 0.05,
+          left: MediaQuery.of(context).size.width * 0.1,
           right: 20,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

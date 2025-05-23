@@ -4,9 +4,10 @@ import 'package:nutrabit_paciente/presentations/screens/files/download_screen.da
 import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart';
-import 'package:nutrabit_paciente/presentations/screens/calendar/calendario.dart';
-import 'package:nutrabit_paciente/presentations/screens/calendar/detalleDiaCalendario.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
+import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
 import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInteres.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
@@ -21,7 +22,8 @@ import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.d
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcomeCarousel.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
-
+import 'package:nutrabit_paciente/presentations/screens/Shipments/select_shipments_screen.dart';
+import 'package:nutrabit_paciente/presentations/screens/Shipments/upload__screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/confirmation_aloha_comunite_screen.dart';
 
 final appRouter = GoRouter(
@@ -29,26 +31,31 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(path: '/welcome', builder: (context, state) => WelcomeCarousel()),
     GoRoute(path: '/', builder: (context, state) => Home()),
+    GoRoute(path: '/homeOffline', builder: (context, state) => HomeOffline()),
     GoRoute(path: '/descargas', builder: (context, state) => DownloadScreen()),
     GoRoute(
-      path: '/login', 
+      path: '/login',
       builder: (context, state) => Login(),
       routes: [
         GoRoute(
           path: 'validation',
-          builder:  (context, state) => ProfileDynamicScreen(),
+          builder: (context, state) => ProfileDynamicScreen(),
           routes: [
             GoRoute(
               path: 'select_goal',
-              builder:  (context, state) => SelectGoalScreen(),
+              builder: (context, state) => SelectGoalScreen(),
               routes: [
-                GoRoute(path: 'confirmation', builder: (context, state) => ConfirmationScreen()),
-              ]
+                GoRoute(
+                  path: 'confirmation',
+                  builder: (context, state) => ConfirmationScreen(),
+                ),
+              ],
             ),
           ],
         ),
-      ]),
-    GoRoute(path: '/soyPaciente', builder:(context, state) => AmIPatient()),
+      ],
+    ),
+    GoRoute(path: '/soyPaciente', builder: (context, state) => AmIPatient()),
     GoRoute(
       path: '/perfil',
       builder: (context, state) => PatientDetail(id: 'id'),
@@ -63,42 +70,38 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-
     GoRoute(
       path: '/archivos',
       builder: (context, state) => Archivos(),
       routes: [
-        GoRoute(path: '/subir', builder: (context, state) => SubirArchivos()),
+        GoRoute(path: 'subir', builder: (context, state) => SubirArchivos()),
         GoRoute(
-          path: '/:id',
-          builder:
-              (context, state) =>
-                  DetalleArchivo(id: state.pathParameters['id'] as String),
+          path: ':id',
+          builder: (context, state) => DetalleArchivo(id: state.pathParameters['id'] as String),
         ),
       ],
     ),
+   GoRoute(
+  path: '/calendario',
+  builder: (context, state) => Calendar(),
+  routes: [
     GoRoute(
-      path: '/calendario',
-      builder: (context, state) => Calendario(),
-      routes: [
-        GoRoute(
-          path: '/:fecha',
-          builder:
-              (context, state) => DetalleDiaCalendario(
-                fecha: state.pathParameters['fecha'] as String,
-              ),
-        ),
-      ],
+      path: 'detalle',
+      builder: (context, state) {
+        final fecha = state.extra as DateTime; // 👈 Recibimos el DateTime correctamente
+        return CalendarDayPatient(fecha: fecha);
+      },
     ),
+  ],
+),
+
     GoRoute(
       path: '/publicidades',
       builder: (context, state) => Publicidades(),
       routes: [
         GoRoute(
-          path: '/:id',
-          builder:
-              (context, state) =>
-                  DetallePublicidad(id: state.pathParameters['id'] as String),
+          path: ':id',
+          builder: (context, state) => DetallePublicidad(id: state.pathParameters['id'] as String),
         ),
       ],
     ),
@@ -107,18 +110,25 @@ final appRouter = GoRouter(
       builder: (context, state) => Notificaciones(),
       routes: [
         GoRoute(
-          path: '/:id',
-          builder:
-              (context, state) =>
-                  DetalleNotificacion(id: state.pathParameters['id'] as String),
+          path: ':id',
+          builder: (context, state) => DetalleNotificacion(id: state.pathParameters['id'] as String),
         ),
       ],
     ),
     GoRoute(
-      path: '/listasInteres',
-      builder: (context, state) => ListaInteres(),
+      path: '/envios',
+      builder: (context, state) => const SelectShipmentsScreen(),
+      routes: [
+        GoRoute(
+          path: 'subir-comida',
+          builder: (context, state) => UploadFoodScreen(
+            initialDate: state.extra as DateTime,
+          ),
+        ),
+      ],
     ),
+    GoRoute(path: '/listasInteres', builder: (context, state) => ListaInteres()),
     GoRoute(path: '/recuperar-clave', builder: (context, state) => ForgotPassword()),
-    GoRoute(path: '/cambiar-clave', builder: (context, state) =>  ChangePassword()),
+    GoRoute(path: '/cambiar-clave', builder: (context, state) => ChangePassword()),
   ],
 );
