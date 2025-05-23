@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
 import 'package:nutrabit_paciente/presentations/screens/amIPatient.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/download_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
@@ -25,110 +26,174 @@ import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier
 import 'package:nutrabit_paciente/presentations/screens/Shipments/select_shipments_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/Shipments/upload__screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/confirmation_aloha_comunite_screen.dart';
+import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final appRouter = GoRouter(
-  initialLocation: '/welcome',
-  routes: [
-    GoRoute(path: '/welcome', builder: (context, state) => WelcomeCarousel()),
-    GoRoute(path: '/', builder: (context, state) => Home()),
-    GoRoute(path: '/homeOffline', builder: (context, state) => HomeOffline()),
-    GoRoute(path: '/descargas', builder: (context, state) => DownloadScreen()),
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => Login(),
-      routes: [
-        GoRoute(
-          path: 'validation',
-          builder: (context, state) => ProfileDynamicScreen(),
-          routes: [
-            GoRoute(
-              path: 'select_goal',
-              builder: (context, state) => SelectGoalScreen(),
-              routes: [
-                GoRoute(
-                  path: 'confirmation',
-                  builder: (context, state) => ConfirmationScreen(),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    ),
-    GoRoute(path: '/soyPaciente', builder: (context, state) => AmIPatient()),
-    GoRoute(
-      path: '/perfil',
-      builder: (context, state) => PatientDetail(id: 'id'),
-      routes: [
-        GoRoute(
-          path: 'turnos',
-          builder: (context, state) => Turnos(),
-        ),
-        GoRoute(
-          path: 'modificar',
-          builder: (context, state) => PatientModifier(id: state.extra as String),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/archivos',
-      builder: (context, state) => Archivos(),
-      routes: [
-        GoRoute(path: 'subir', builder: (context, state) => SubirArchivos()),
-        GoRoute(
-          path: ':id',
-          builder: (context, state) => DetalleArchivo(id: state.pathParameters['id'] as String),
-        ),
-      ],
-    ),
-   GoRoute(
-  path: '/calendario',
-  builder: (context, state) => Calendar(),
-  routes: [
-    GoRoute(
-      path: 'detalle',
-      builder: (context, state) {
-        final fecha = state.extra as DateTime; // 👈 Recibimos el DateTime correctamente
-        return CalendarDayPatient(fecha: fecha);
-      },
-    ),
-  ],
-),
+final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authProvider);
 
-    GoRoute(
-      path: '/publicidades',
-      builder: (context, state) => Publicidades(),
-      routes: [
-        GoRoute(
-          path: ':id',
-          builder: (context, state) => DetallePublicidad(id: state.pathParameters['id'] as String),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/notificaciones',
-      builder: (context, state) => Notificaciones(),
-      routes: [
-        GoRoute(
-          path: ':id',
-          builder: (context, state) => DetalleNotificacion(id: state.pathParameters['id'] as String),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/envios',
-      builder: (context, state) => const SelectShipmentsScreen(),
-      routes: [
-        GoRoute(
-          path: 'subir-comida',
-          builder: (context, state) => UploadFoodScreen(
-            initialDate: state.extra as DateTime,
+  return GoRouter(
+    initialLocation: '/welcome',
+    
+    redirect: (context, state) {
+      if (authState.isLoading) return null;
+
+      final loggedIn      = authState.asData?.value != null;
+      final loc           = state.uri.toString();
+      final isWelcome     = loc == '/welcome';
+      final isAmIPatient  = loc == '/soyPaciente';
+      final isLogin       = loc == '/login';
+      final isNotPatient      = loc == '/homeOffline';
+      final isSplash      = loc == '/splash';
+
+      
+      if (!loggedIn) {
+        if (isWelcome || isAmIPatient || isLogin || isNotPatient) return null;
+        return '/welcome';
+      }
+
+      
+      if (loggedIn && (isWelcome || isAmIPatient || isLogin)) {
+        return '/splash';
+      }
+
+      
+      if (loggedIn && isSplash) {
+        return '/';
+      }
+
+      
+      return null;
+    },
+
+    routes: [
+      GoRoute(path: '/welcome', builder: (context, state) => WelcomeCarousel()),
+      GoRoute(path: '/', builder: (context, state) => Home()),
+      GoRoute(path: '/homeOffline', builder: (context, state) => HomeOffline()),
+      GoRoute(
+        path: '/descargas',
+        builder: (context, state) => DownloadScreen(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => Login(),
+        routes: [
+          GoRoute(
+            path: 'validation',
+            builder: (context, state) => ProfileDynamicScreen(),
+            routes: [
+              GoRoute(
+                path: 'select_goal',
+                builder: (context, state) => SelectGoalScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'confirmation',
+                    builder: (context, state) => ConfirmationScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ),
-      ],
-    ),
-    GoRoute(path: '/listasInteres', builder: (context, state) => ListaInteres()),
-    GoRoute(path: '/recuperar-clave', builder: (context, state) => ForgotPassword()),
-    GoRoute(path: '/cambiar-clave', builder: (context, state) => ChangePassword()),
-  ],
-);
+        ],
+      ),
+      GoRoute(path: '/soyPaciente', builder: (context, state) => AmIPatient()),
+      GoRoute(
+        path: '/perfil',
+        builder: (context, state) => PatientDetail(id: 'id'),
+        routes: [
+          GoRoute(path: 'turnos', builder: (context, state) => Turnos()),
+          GoRoute(
+            path: 'modificar',
+            builder:
+                (context, state) => PatientModifier(id: state.extra as String),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/archivos',
+        builder: (context, state) => Archivos(),
+        routes: [
+          GoRoute(path: 'subir', builder: (context, state) => SubirArchivos()),
+          GoRoute(
+            path: ':id',
+            builder:
+                (context, state) =>
+                    DetalleArchivo(id: state.pathParameters['id'] as String),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/calendario',
+        builder: (context, state) => Calendar(),
+        routes: [
+          GoRoute(
+            path: 'detalle',
+            builder: (context, state) {
+              final fecha =
+                  state.extra
+                      as DateTime; // 👈 Recibimos el DateTime correctamente
+              return CalendarDayPatient(fecha: fecha);
+            },
+          ),
+        ],
+      ),
+
+      GoRoute(
+        path: '/publicidades',
+        builder: (context, state) => Publicidades(),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder:
+                (context, state) =>
+                    DetallePublicidad(id: state.pathParameters['id'] as String),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/notificaciones',
+        builder: (context, state) => Notificaciones(),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder:
+                (context, state) => DetalleNotificacion(
+                  id: state.pathParameters['id'] as String,
+                ),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/envios',
+        builder: (context, state) => const SelectShipmentsScreen(),
+        routes: [
+          GoRoute(
+            path: 'subir-comida',
+            builder:
+                (context, state) =>
+                    UploadFoodScreen(initialDate: state.extra as DateTime),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/listasInteres',
+        builder: (context, state) => ListaInteres(),
+      ),
+      GoRoute(
+        path: '/recuperar-clave',
+        builder: (context, state) => ForgotPassword(),
+      ),
+      GoRoute(
+        path: '/cambiar-clave',
+        builder: (context, state) => ChangePassword(),
+      ),
+      GoRoute(
+        path: '/splash',
+        builder:
+            (_, __) => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+      ),
+    ],
+  );
+});

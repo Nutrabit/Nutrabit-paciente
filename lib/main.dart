@@ -6,7 +6,6 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -14,19 +13,17 @@ void main() async {
   runApp(const ProviderScope(child: MainApp())); 
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    
+    final router = ref.watch(routerProvider);
 
-class _MainAppState extends State<MainApp> {
-  @override
-  Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }

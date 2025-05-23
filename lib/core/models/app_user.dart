@@ -45,7 +45,7 @@ class AppUser {
     final data = doc.data() as Map<String, dynamic>;
     return AppUser(
       id: doc.id,
-      dni: data['dni'] as String ?? '',
+      dni: data['dni'] as String? ?? '',
       name: data['name'] as String? ?? '',
       lastname: data['lastname'] as String? ?? '',
       email: data['email'] as String? ?? '',
