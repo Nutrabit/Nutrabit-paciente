@@ -632,7 +632,7 @@ class _PatientModifierState extends State<PatientModifier> {
                             return Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                               child: _GoalBox(goal: goal,   isSelected: _selectedGoal == goal['label'],
- onTap: () => setState(() => _selectedGoal = goal['label'])),
+                              onTap: () => setState(() => _selectedGoal = goal['label'])),
                             );
                           }).toList(),
                     ),
@@ -645,7 +645,7 @@ class _PatientModifierState extends State<PatientModifier> {
                             return Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                               child: _GoalBox(goal: goal,   isSelected: _selectedGoal == goal['label'],
- onTap: () => setState(() => _selectedGoal = goal['label'])),
+                              onTap: () => setState(() => _selectedGoal = goal['label'])),
                             );
                           }).toList(),
                     ),

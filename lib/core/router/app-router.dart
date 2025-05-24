@@ -21,7 +21,7 @@ import 'package:nutrabit_paciente/presentations/screens/profile/validation_profi
 import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
 import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
-import 'package:nutrabit_paciente/presentations/screens/welcomeCarousel.dart';
+import 'package:nutrabit_paciente/presentations/screens/welcome/welcomeCarousel.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
 import 'package:nutrabit_paciente/presentations/screens/Shipments/select_shipments_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/Shipments/upload__screen.dart';
@@ -43,7 +43,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isWelcome     = loc == '/welcome';
       final isAmIPatient  = loc == '/soyPaciente';
       final isLogin       = loc == '/login';
-      final isNotPatient      = loc == '/homeOffline';
+      final isNotPatient  = loc == '/homeOffline';
       final isSplash      = loc == '/splash';
 
       
@@ -132,7 +132,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               final fecha =
                   state.extra
                       as DateTime; // 👈 Recibimos el DateTime correctamente
-              return CalendarDayPatient(fecha: fecha);
+              return CalendarDayPatient(date: fecha);
             },
           ),
         ],
