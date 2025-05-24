@@ -104,7 +104,7 @@ class CalendarDayPatient extends ConsumerWidget {
 
                         if (dayEvents.isEmpty) {
                           return const Center(
-                            child: Text("No hay _events para este día."),
+                            child: Text("No hay eventos para este día."),
                           );
                         }
 
