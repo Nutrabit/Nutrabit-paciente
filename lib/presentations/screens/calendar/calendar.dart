@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
@@ -110,27 +112,24 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                   },
                   markerBuilder: (context, day, events) {
                     if (events.isEmpty) return SizedBox.shrink();
-
+                    final uniqueEventTypes =
+                        events.map((e) => e.type).toSet().take(3).toList();
                     return Positioned(
                       bottom: 1,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children:
-                            events
-                                .take(3)
-                                .map((e) {
-                                  final event = e;
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 1.0,
-                                    ),
-                                    child: _getEventTypeIcon(
-                                      event.type,
-                                      size: screenHeight * 0.015
-                                    ),
-                                  );
-                                })
-                                .toList(),
+                            uniqueEventTypes.map((type) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 1.0,
+                                ),
+                                child: _getEventTypeIcon(
+                                  type,
+                                  size: screenHeight * 0.015,
+                                ),
+                              );
+                            }).toList(),
                       ),
                     );
                   },
@@ -163,7 +162,10 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                                 ),
                               ),
                               child: ListTile(
-                                leading: _getEventTypeIcon(e.type, size: screenHeight * 0.02),
+                                leading: _getEventTypeIcon(
+                                  e.type,
+                                  size: screenHeight * 0.02,
+                                ),
                                 title: Text(e.title),
                                 subtitle: Text(e.description),
                                 textColor: Color.fromARGB(255, 0, 0, 0),
