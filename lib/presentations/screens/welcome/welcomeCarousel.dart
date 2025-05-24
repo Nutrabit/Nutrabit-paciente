@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:nutrabit_paciente/widgets/welcome/welcome.dart';
-import 'package:nutrabit_paciente/widgets/welcome/reminder.dart';
-import 'package:nutrabit_paciente/widgets/welcome/disclaimer.dart';
+import 'package:nutrabit_paciente/presentations/screens/welcome/welcome.dart';
+import 'package:nutrabit_paciente/presentations/screens/welcome/reminder.dart';
+import 'package:nutrabit_paciente/presentations/screens/welcome/disclaimer.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
