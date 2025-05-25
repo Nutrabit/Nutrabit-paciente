@@ -34,4 +34,12 @@ class EventService {
       'userid': userId,
     });
   }
+
+  Future<void> deleteEvent(String eventId) async {
+    try {
+      await _firestore.collection('events').doc(eventId).delete();
+    } catch (e) {
+      print('Error deleting event: $e');
+    }
+  }
 }

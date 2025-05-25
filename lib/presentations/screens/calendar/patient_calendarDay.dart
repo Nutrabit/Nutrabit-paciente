@@ -2,20 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:nutrabit_paciente/core/models/calendar_event.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
+import 'package:nutrabit_paciente/core/services/event_service.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
-import 'package:nutrabit_paciente/widgets/newEventDialog.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
 
 class CalendarDayPatient extends ConsumerWidget {
   final DateTime date;
-  const CalendarDayPatient({required this.date, super.key});
+  final EventService _eventService = EventService();
+  CalendarDayPatient({required this.date, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fomatedDate = DateFormat('dd/MM/yyyy').format(date);
     final asyncEventsByDate = ref.watch(eventsByDateProvider);
     final keyDate = DateTime(date.year, date.month, date.day);
+
+    Future<void> deleteEvent(String eventId) async {
+      return await _eventService.deleteEvent(eventId);
+    }
+
     Widget _getEventTypeIcon(
       String typeName, {
       double size = 10.0,
@@ -38,7 +44,7 @@ class CalendarDayPatient extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFFF4E9F7),
         title: const Text(
-          "Día de calendario",
+          "Detalle",
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -91,16 +97,14 @@ class CalendarDayPatient extends ConsumerWidget {
                   Expanded(
                     child: asyncEventsByDate.when(
                       data: (eventsMap) {
-                        final dayEvents =
-                            eventsMap.entries
-                                .where(
-                                  (entry) =>
-                                      entry.key.year == keyDate.year &&
-                                      entry.key.month == keyDate.month &&
-                                      entry.key.day == keyDate.day,
-                                )
-                                .expand((entry) => entry.value)
-                                .toList();
+                        final dayEvents = eventsMap.entries
+                        .where((entry) =>
+                          entry.key.year == keyDate.year &&
+                          entry.key.month == keyDate.month &&
+                          entry.key.day == keyDate.day,
+                        )
+                        .expand((entry) => entry.value)
+                        .toList();
 
                         if (dayEvents.isEmpty) {
                           return const Center(
@@ -121,76 +125,81 @@ class CalendarDayPatient extends ConsumerWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    if (_event.file.isNotEmpty &&
-                                        _event.type != 'UPLOAD_FILE')
-                                      Row(
-                                        // mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(
-                                              MediaQuery.of(
-                                                    context,
-                                                  ).size.width *
-                                                  0.03,
-                                            ),
-                                            child: _getEventTypeIcon(
-                                              _event.type,
-                                              size: 30,
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(
+                                            MediaQuery.of(context).size.width *0.03),
+                                          child: _getEventTypeIcon(
+                                            _event.type,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              _event.title,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete),
+                                          onPressed: () async {
+                                            var showDialog2 = showDialog<bool>(
+                                              context: context,
+                                              builder:
+                                                  (_) => DeleteAlertDialog()
+                                            );
+                                            final confirm = await showDialog2;
+                                            if (confirm == true) {
+                                              await deleteEvent(_event.id);
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
 
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                _event.title,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                textAlign: TextAlign.center,
+                                    Row(
+                                      children: [
+                                        if (_event.file.isNotEmpty &&
+                                            _event.type == 'UPLOAD_FILE')
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Image.network(
+                                              _event.file,
+                                              width: MediaQuery.of(context).size.width * 0.8,
+                                              fit: BoxFit.contain,
+                                              errorBuilder: (
+                                                context,
+                                                error,
+                                                stackTrace,
+                                              ) => const Icon(
+                                                Icons.broken_image,
+                                                size: 100,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      )
-                                    else
-                                      Center(
-                                        child: Text(
-                                          _event.title,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          textAlign: TextAlign.center,
+                                          )
+                                        else
+                                          const SizedBox(height: 13),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          _event.description,
+                                          style: const TextStyle(fontSize: 16),
                                         ),
-                                      ),
-                                    const SizedBox(height: 12),
-
-                                    if (_event.file.isNotEmpty &&
-                                        _event.type == 'UPLOAD_FILE')
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Image.network(
-                                          _event.file,
-                                          width: double.infinity,
-                                          height: 160,
-                                          fit: BoxFit.contain,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  const Icon(
-                                                    Icons.broken_image,
-                                                    size: 100,
-                                                  ),
-                                        ),
-                                      )
-                                    else
-                                      const SizedBox(height: 13),
-
-                                    Text(
-                                      _event.description,
-                                      style: const TextStyle(fontSize: 16),
+                                        const SizedBox(height: 12),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -199,13 +208,8 @@ class CalendarDayPatient extends ConsumerWidget {
                           },
                         );
                       },
-                      loading:
-                          () =>
-                              const Center(child: CircularProgressIndicator()),
-                      error:
-                          (error, _) => Center(
-                            child: Text("Error al cargar _events: $error"),
-                          ),
+                      loading: () => const Center(child: CircularProgressIndicator()),
+                      error: (error, _) => Center(child: Text("Error al cargar _events: $error")),
                     ),
                   ),
                 ],
@@ -215,12 +219,36 @@ class CalendarDayPatient extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          NewEventDialog.show(context);
-        },
-        child: const Icon(Icons.add),
+        onPressed: () {NewEventDialog.show(context, initialDate: DateTime.utc(
+                  keyDate.year,
+                  keyDate.month,
+                  keyDate.day,
+                  3));},
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        child: const Icon(Icons.add),
       ),
+    );
+  }
+}
+
+class DeleteAlertDialog extends StatelessWidget {
+  const DeleteAlertDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Eliminar evento'),
+      content: const Text('¿Estás seguro de que deseas eliminar el evento del calendario?'),
+      actions: [
+        TextButton(
+          onPressed:() => Navigator.pop(context,false),
+          child: const Text('Cancelar')
+        ),
+        TextButton(
+          onPressed:() => Navigator.pop(context,true),
+          child: const Text('Eliminar'),
+        ),
+      ],
     );
   }
 }

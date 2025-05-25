@@ -6,7 +6,7 @@ import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
-import 'package:nutrabit_paciente/widgets/newEventDialog.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutrabit_paciente/core/models/calendar_event.dart';
