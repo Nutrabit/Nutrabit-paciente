@@ -21,7 +21,7 @@ class _LoginState extends ConsumerState<Login> {
     double screenWidth = MediaQuery.of(context).size.width;
     double dynamicPadding = screenWidth * 0.20;
     return Scaffold(
-      backgroundColor: Color.fromRGBO(253, 238, 219, 1),
+      backgroundColor: Color.fromRGBO(250, 236, 216, 1),
       body: SafeArea( child: 
         SingleChildScrollView( child: 
            MediaQuery.removePadding(
@@ -39,7 +39,10 @@ class _LoginState extends ConsumerState<Login> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                
+                Image(
+                  image: AssetImage('assets/img/logoInicio.png'), 
+                  width: MediaQuery.of(context).size.width * 0.3,
+                ),
                 const SizedBox(height: 20),
                 // Título
                 Text(

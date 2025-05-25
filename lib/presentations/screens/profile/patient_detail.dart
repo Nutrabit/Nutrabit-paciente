@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import '/widgets/logout.dart';
 import '/core/utils/decorations.dart';
-import 'package:nutrabit_paciente/widgets/CustombottomNavBar.dart';
+import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
 import 'patient_modifier.dart';
 
 class PatientDetail extends ConsumerWidget {
@@ -150,14 +150,8 @@ class PatientDetail extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.23),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.go('/cambiar-clave');
-                      },
-                      style: mainButtonDecoration(),
-                      child: const Text('Cambiar contraseña'),
-                    ),
+                    const SizedBox(height: 180),
+                    ElevatedButton(onPressed: () {context.go('/cambiar-clave');}, style: mainButtonDecoration(), child: const Text('Cambiar contraseña'),),
                   ],
                 ),
               ),
@@ -232,7 +226,7 @@ class PatientInfoCard extends StatelessWidget {
                           backgroundImage:
                               profilePic != null && profilePic!.isNotEmpty
                                   ? NetworkImage(profilePic!)
-                                  : const AssetImage('assets/images/avatar.png')
+                                  : const AssetImage('assets/img/avatar.jpg')
                                       as ImageProvider,
                         ),
                         const SizedBox(width: 16),

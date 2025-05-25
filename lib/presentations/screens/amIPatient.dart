@@ -31,7 +31,7 @@ class AmIPatient extends StatelessWidget {
                   width: screenWidth * 0.4,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go('/login');
+                      context.push('/login');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromRGBO(220, 96, 122, 1),
@@ -53,7 +53,7 @@ class AmIPatient extends StatelessWidget {
                   width: screenWidth * 0.4,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go('/');
+                      context.push('/homeOffline');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromRGBO(220, 96, 122, 1),

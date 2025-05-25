@@ -29,8 +29,9 @@ class Reminder extends StatelessWidget {
                         fontWeight: FontWeight.w300,
                       ),
                     ),
-                    Image(image: AssetImage('assets/img/meditation.png'), fit: BoxFit.fill,
+                    Image(image: AssetImage('assets/img/AlimentoMiCuerpo.png'), fit: BoxFit.fill,
                       width: screenWidth * 0.5,),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: MediaQuery.of(context).size.width * 0.15,
