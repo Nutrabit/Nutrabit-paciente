@@ -138,19 +138,11 @@ class PatientDetail extends ConsumerWidget {
                           ),
 
                           const SizedBox(height: 12),
-                          Hero(
-                            tag: 'calendario',
-                            child: PatientActionButton(
-                              title: 'Ver calendario',
-                              onTap: () {
-                                context.push('/calendario');
-                              },
-                            ),
-                          ),
+                          
                         ],
                       ),
                     ),
-                    const SizedBox(height: 180),
+                    const SizedBox(height: 200),
                     ElevatedButton(onPressed: () {context.go('/cambiar-clave');}, style: mainButtonDecoration(), child: const Text('Cambiar contraseña'),),
                   ],
                 ),
