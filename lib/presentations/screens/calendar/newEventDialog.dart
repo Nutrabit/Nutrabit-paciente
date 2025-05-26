@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
 
 class NewEventDialog {
   static void show(BuildContext context, {DateTime? initialDate}) {
     final EventService _eventService = EventService();
     DateTime? selectedDate = initialDate ?? DateTime.now();
     EventType? selectedEventType;
+    final TextEditingController descriptionController = TextEditingController();
+    const excludedTypes = {EventType.UPLOAD_FILE, EventType.PERIOD};
 
     Future<void> uploadAndSaveEvent() async {
       if (selectedEventType == EventType.UPLOAD_FILE) {
@@ -20,7 +23,7 @@ class NewEventDialog {
             fileBytes: Uint8List(0),
             fileName: '',
             title: selectedEventType!.description,
-            description: '',
+            description: descriptionController.text,
             type: selectedEventType!.name,
             dateTime: selectedDate!,
           );
@@ -58,38 +61,61 @@ class NewEventDialog {
                       },
                     ),
                     Divider(),
-                    ...EventType.values.map((eventType) {
-                      return RadioListTile<EventType>(
-                        title: Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(220, 96, 122, 0.4), // Fondo del icono
-                                shape: BoxShape.circle,
-                              ),
-                              padding: EdgeInsets.all(6),
-                              child: eventType.icon,
-                            ),
-                            // eventType.icon,
-                            SizedBox(width: 5),
-                            Expanded(child: Text(eventType.pluralDescription)),
-                          ],
-                        ),
-                        value: eventType,
-                        groupValue: selectedEventType,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedEventType = value;
-                          });
-                        },
-                      );
-                    }).toList(),
+                    ...EventType.values.expand((eventType) {
+  final isSelected = selectedEventType == eventType;
+  return [
+    RadioListTile<EventType>(
+      title: Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(220, 96, 122, 0.4),
+              shape: BoxShape.circle,
+            ),
+            padding: EdgeInsets.all(6),
+            child: eventType.icon,
+          ),
+          SizedBox(width: 5),
+          Expanded(child: Text(eventType.pluralDescription)),
+        ],
+      ),
+      value: eventType,
+      groupValue: selectedEventType,
+      onChanged: (value) {
+        setState(() {
+          selectedEventType = value;
+        });
+      },
+    ),
+    if (isSelected && !excludedTypes.contains(eventType))
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: TextField(
+          controller: descriptionController,
+          decoration: InputDecoration(
+            labelText: 'Descripción',
+            border: OutlineInputBorder(),
+          ),
+          maxLines: 2,
+        ),
+      ),
+  ];
+}).toList(),
+                    
+
                   ],
                 ),
               ),
               actions: [
                 TextButton(
+                  child: Text('Cancelar'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
                   child: Text('Aceptar'),
+                  style: mainButtonDecoration(),
                   onPressed: () {
                     uploadAndSaveEvent();
                     Navigator.of(context).pop();
