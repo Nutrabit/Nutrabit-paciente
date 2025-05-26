@@ -1,5 +1,4 @@
-import 'dart:collection';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
@@ -61,13 +60,14 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
           appBar: AppBar(title: const Text('')),
           body: Column(
             children: [
-              cardPatient(
+              CardPatient(
                 name: appUser.value!.name,
                 lastname: appUser.value!.lastname,
                 profilePic: appUser.value!.profilePic,
               ),
               const SizedBox(height: 8),
               TableCalendar<Event>(
+                locale: 'es_ES',
                 firstDay: DateTime.utc(2020, 1, 1),
                 lastDay: DateTime.utc(2030, 12, 31),
                 focusedDay: _focusedDay,
@@ -82,6 +82,14 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                     _focusedDay = focusedDay;
                   });
                 },
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
+                  titleTextFormatter: (date, locale) {
+                    final raw = DateFormat('MMMM yyyy', locale).format(date);
+                    return toBeginningOfSentenceCase(raw)!;
+                  },
+                ),
                 calendarStyle: CalendarStyle(
                   selectedDecoration: BoxDecoration(
                     color: Color(0xFFDC607A),
@@ -179,8 +187,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
+          floatingActionButton: FloatingActionButton( 
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
@@ -195,6 +202,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                 ),
               );
             },
+            child: const Icon(Icons.add),
           ),
         );
       },
@@ -209,12 +217,12 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
   }
 }
 
-class cardPatient extends StatelessWidget {
+class CardPatient extends StatelessWidget {
   final String name;
   final String lastname;
   final String? profilePic;
 
-  const cardPatient({
+  const CardPatient({
     super.key,
     required this.name,
     required this.lastname,
@@ -224,7 +232,7 @@ class cardPatient extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final completeName =
-        name.toString().capitalize() + ' ' + lastname.toString().capitalize();
+        '${name.toString().capitalize()} ${lastname.toString().capitalize()}';
     return Row(
       children: [
         SizedBox(width: MediaQuery.of(context).size.width * 0.2),
