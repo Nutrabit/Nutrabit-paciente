@@ -65,7 +65,6 @@ class PatientDetail extends ConsumerWidget {
             final weight = data['weight']?.toString() ?? '-';
             final height = data['height']?.toString() ?? '-';
             final diet = data['dieta'] ?? '-';
-            final isActive = data['isActive'] ?? true;
             final profilePic = data['profilePic'];
             final birthdayTimestamp = data['birthday'] as Timestamp?;
             String age = '-';
