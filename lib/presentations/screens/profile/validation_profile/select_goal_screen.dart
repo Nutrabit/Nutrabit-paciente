@@ -22,9 +22,9 @@ class _SelectGoalScreenState extends ConsumerState<SelectGoalScreen> {
   Future<void> _handleGoalSelection(String goal) async {
     try {
       await ref.read(userProvider.notifier).updateFields({'goal': goal});
-      if (mounted) {
-        context.go('/login/validation/select_goal/confirmation');
-      }
+
+      if (!mounted) return;
+      context.go('/login/validation/select_goal/confirmation');
     } catch (e) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
