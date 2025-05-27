@@ -710,10 +710,6 @@ class _PatientModifierState extends State<PatientModifier> {
     );
   }
 }
-
-class _GoalBox extends StatelessWidget {
-}
-
 class _GoalBox extends StatelessWidget {
   final Map<String, String> goal;
   final VoidCallback onTap;
@@ -725,24 +721,14 @@ class _GoalBox extends StatelessWidget {
     required this.isSelected,
     super.key,
   });
-  const _GoalBox({
-    required this.goal,
-    required this.onTap,
-    required this.isSelected,
-    super.key,
-  });
+
   @override
-  Widget build(BuildContext context) {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 80,
         decoration: BoxDecoration(
-          border:
-              isSelected
-                  ? Border.all(color: Color(0xFFDC607A), width: 2)
-                  : null,
           border:
               isSelected
                   ? Border.all(color: Color(0xFFDC607A), width: 2)
@@ -768,5 +754,4 @@ class _GoalBox extends StatelessWidget {
       ),
     );
   }
-}
 }

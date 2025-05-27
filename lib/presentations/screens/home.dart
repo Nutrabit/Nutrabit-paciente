@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
-  const Home({super.key});
 
   @override
   ConsumerState<Home> createState() => _HomeState();

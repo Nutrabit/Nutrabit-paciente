@@ -13,9 +13,9 @@ class SharedPreferencesService {
     await prefs.setBool('dontShowAgain', value);
   }
 
-  Future<void> dontShowAgain(bool estaSeleccionado) async {
+  Future<void> dontShowAgain(bool isSelected) async {
     final value = await getdontShowAgain();
-    if (estaSeleccionado == true &&  value == false) {
+    if (isSelected == true &&  value == false) {
       await setdontShowAgain(true);
     } else {
       await setdontShowAgain(false);

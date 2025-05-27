@@ -29,6 +29,8 @@ dependencies:
   url_launcher: ^6.1.5
   shared_preferences: ^2.0.15
   logger: ^2.0.2
+  flutter_localizations:
+    sdk: flutter
 
 
 dev_dependencies:
