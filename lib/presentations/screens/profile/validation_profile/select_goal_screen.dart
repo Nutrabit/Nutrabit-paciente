@@ -22,9 +22,9 @@ class _SelectGoalScreenState extends ConsumerState<SelectGoalScreen> {
   Future<void> _handleGoalSelection(String goal) async {
     try {
       await ref.read(userProvider.notifier).updateFields({'goal': goal});
-      if (mounted) {
-        context.go('/login/validation/select_goal/confirmation');
-      }
+
+      if (!mounted) return;
+      context.go('/login/validation/select_goal/confirmation');
     } catch (e) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -139,7 +139,7 @@ class GoalCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
-        overlayColor: MaterialStateProperty.all(Colors.black.withOpacity(0.05)),
+        overlayColor: WidgetStateProperty.all(const Color.fromARGB(13, 0, 0, 0)),
         child: Container(
           padding: const EdgeInsets.all(12),
           child: Column(
