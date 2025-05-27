@@ -710,7 +710,6 @@ class _PatientModifierState extends State<PatientModifier> {
     );
   }
 }
-
 class _GoalBox extends StatelessWidget {
   final Map<String, String> goal;
   final VoidCallback onTap;
@@ -722,6 +721,7 @@ class _GoalBox extends StatelessWidget {
     required this.isSelected,
     super.key,
   });
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

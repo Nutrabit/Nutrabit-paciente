@@ -41,9 +41,9 @@ final searchUsersProvider = FutureProvider.family<List<AppUser>, String>(
     final firestore = FirebaseFirestore.instance;
     final usersCollection = firestore.collection('users');
 
-    final usersByName = await usersCollection.orderBy('name').startAt([query]).endAt([query + '\uf8ff']).get();
-    final usersByLastName = await usersCollection.orderBy('lastname').startAt([query]).endAt([query + '\uf8ff']).get();
-    final usersByEmail = await usersCollection.orderBy('email').startAt([query]).endAt([query + '\uf8ff']).get();
+    final usersByName = await usersCollection.orderBy('name').startAt([query]).endAt(['$query\uf8ff']).get();
+    final usersByLastName = await usersCollection.orderBy('lastname').startAt([query]).endAt(['$query\uf8ff']).get();
+    final usersByEmail = await usersCollection.orderBy('email').startAt([query]).endAt(['$query\uf8ff']).get();
 
     final Map<String, QueryDocumentSnapshot> usersMap = {
       for (var doc in usersByName.docs) doc.id: doc,
@@ -94,3 +94,6 @@ class UserNotifier extends StateNotifier<AppUser?> {
 final userProvider = StateNotifierProvider<UserNotifier, AppUser?>((ref) {
   return UserNotifier();
 });
+
+
+final welcomeSessionProvider = StateProvider<bool>((_) => false);

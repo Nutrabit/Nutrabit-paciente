@@ -7,7 +7,7 @@ import 'package:nutrabit_paciente/widgets/homeButton.dart';
 import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
@@ -19,9 +19,12 @@ class _HomeState extends ConsumerState<Home> {
   bool _assetsLoaded = false;
 
   @override
-  void initState() {
-    super.initState();
-    _precacheAssets();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    if (!_assetsLoaded) {
+      _precacheAssets();
+    }
   }
 
   Future<void> _precacheAssets() async {
@@ -40,6 +43,40 @@ class _HomeState extends ConsumerState<Home> {
         ),
         null,
       ),
+      precacheImage(
+        const AssetImage('assets/img/ae36775c8e0c536b6c134e271841777229e6210a.png'),
+        context, 
+      ),
+      precacheImage(
+        const AssetImage('assets/img/ee19a2bb0ba198a476f373bb3ee3f9e64b995714.png'),
+        context, 
+      ),
+      precacheImage(
+        const AssetImage('assets/img/d4fbb7df798270b5e6d5c38f4faf310cc2cdf3fa.png'),
+        context, 
+      ),
+      precacheImage(
+        const AssetImage('assets/img/084fb2c3881361e7e5ce3fb5463622843c33bf3b.png'),
+        context, 
+      ),
+      precacheImage(
+        const AssetImage('assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png'),
+        context, 
+      ),
+      precachePicture(
+        ExactAssetPicture(
+          SvgPicture.svgStringDecoderBuilder,
+          'assets/img/instagram.svg',
+        ),
+        null,
+      ),
+      precachePicture(
+        ExactAssetPicture(
+          SvgPicture.svgStringDecoderBuilder,
+          'assets/img/whatsapp.svg',
+        ),
+        null,
+      ),
     ]);
     setState(() => _assetsLoaded = true);
   }
@@ -48,6 +85,7 @@ class _HomeState extends ConsumerState<Home> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final SharedPreferencesService sharedPreferencesService = SharedPreferencesService();
 
     if (!_assetsLoaded) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -71,6 +109,7 @@ class _HomeState extends ConsumerState<Home> {
               break;
             case 1:
               // context.push('/notificaciones');
+              sharedPreferencesService.dontShowAgain(false);
               break;
             case 2:
               context.push('/perfil');
