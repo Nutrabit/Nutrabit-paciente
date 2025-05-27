@@ -95,6 +95,7 @@ class CalendarDayPatient extends ConsumerWidget {
                   const SizedBox(height: 8),
 
                   Expanded(
+                    
                     child: asyncEventsByDate.when(
                       data: (eventsMap) {
                         final dayEvents = eventsMap.entries
@@ -113,6 +114,7 @@ class CalendarDayPatient extends ConsumerWidget {
                         }
 
                         return ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 3),
                           itemCount: dayEvents.length,
                           itemBuilder: (context, index) {
                             final _event = dayEvents[index];
@@ -133,7 +135,7 @@ class CalendarDayPatient extends ConsumerWidget {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.all(
-                                            MediaQuery.of(context).size.width *0.03),
+                                            MediaQuery.of(context).size.width *0.02),
                                           child: _getEventTypeIcon(
                                             _event.type,
                                             size: 20,

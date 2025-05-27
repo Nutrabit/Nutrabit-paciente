@@ -46,7 +46,7 @@ class SelectShipmentsBody extends StatelessWidget {
       children: [
         const SizedBox(height: 40),
         Center(
-          child: Image.asset('assets/img/clip.png', width: 120),
+          child: Image.asset('assets/img/clip.PNG', width: 120),
         ),
         const SizedBox(height: 40),
         const ShipmentOptionButton(label: 'Subir imagen de comida'),

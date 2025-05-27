@@ -630,9 +630,18 @@ class _PatientModifierState extends State<PatientModifier> {
                       children:
                           firstRow.map((goal) {
                             return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                              child: _GoalBox(goal: goal,   isSelected: _selectedGoal == goal['label'],
-                              onTap: () => setState(() => _selectedGoal = goal['label'])),
+                              padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.04,
+                              ),
+                              child: _GoalBox(
+                                goal: goal,
+                                isSelected: _selectedGoal == goal['label'],
+                                onTap:
+                                    () => setState(
+                                      () => _selectedGoal = goal['label'],
+                                    ),
+                              ),
                             );
                           }).toList(),
                     ),
@@ -643,9 +652,18 @@ class _PatientModifierState extends State<PatientModifier> {
                       children:
                           secondRow.map((goal) {
                             return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                              child: _GoalBox(goal: goal,   isSelected: _selectedGoal == goal['label'],
-                              onTap: () => setState(() => _selectedGoal = goal['label'])),
+                              padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.04,
+                              ),
+                              child: _GoalBox(
+                                goal: goal,
+                                isSelected: _selectedGoal == goal['label'],
+                                onTap:
+                                    () => setState(
+                                      () => _selectedGoal = goal['label'],
+                                    ),
+                              ),
                             );
                           }).toList(),
                     ),
@@ -718,24 +736,30 @@ class _PatientModifierState extends State<PatientModifier> {
       ),
     );
   }
+}
 
-  }
-  class _GoalBox extends StatelessWidget {
+class _GoalBox extends StatelessWidget {
   final Map<String, String> goal;
   final VoidCallback onTap;
   final bool isSelected;
 
-  const _GoalBox({required this.goal, required this.onTap, required this.isSelected, super.key});
+  const _GoalBox({
+    required this.goal,
+    required this.onTap,
+    required this.isSelected,
+    super.key,
+  });
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 80,
         decoration: BoxDecoration(
-          border: isSelected
-              ? Border.all(color: Color(0xFFDC607A), width: 2)
-              : null,
+          border:
+              isSelected
+                  ? Border.all(color: Color(0xFFDC607A), width: 2)
+                  : null,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -757,4 +781,4 @@ class _PatientModifierState extends State<PatientModifier> {
       ),
     );
   }
-  }
+}

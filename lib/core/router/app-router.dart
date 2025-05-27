@@ -27,42 +27,58 @@ import 'package:nutrabit_paciente/presentations/screens/Shipments/select_shipmen
 import 'package:nutrabit_paciente/presentations/screens/Shipments/upload__screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/confirmation_aloha_comunite_screen.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
+import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
+import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
-
+  final SharedPreferencesService sharedPreferencesService =
+      SharedPreferencesService();
+      final seenWelcomeState = ref.read(welcomeSessionProvider);
+  
   return GoRouter(
     initialLocation: '/welcome',
-    
-    redirect: (context, state) {
+
+    redirect: (context, state) async {
       if (authState.isLoading) return null;
 
-      final loggedIn      = authState.asData?.value != null;
-      final loc           = state.uri.toString();
-      final isWelcome     = loc == '/welcome';
-      final isAmIPatient  = loc == '/soyPaciente';
-      final isLogin       = loc == '/login';
-      final isNotPatient  = loc == '/homeOffline';
-      final isSplash      = loc == '/splash';
+      final loggedIn = authState.asData?.value != null;
+      final loc = state.uri.toString();
+      final isWelcome = loc == '/welcome';
+      final isAmIPatient = loc == '/soyPaciente';
+      final isLogin = loc == '/login';
+      final isNotPatient = loc == '/homeOffline';
+      final isSplash = loc == '/splash';
+      final seenWelcome = seenWelcomeState;
+      final dontShowWelcome = await sharedPreferencesService.getdontShowAgain();
 
-      
-      if (!loggedIn) {
+      if (dontShowWelcome == false && seenWelcome == false && isWelcome) {
+        ref.read(welcomeSessionProvider.notifier).state = true;
+      }
+
+      if (!loggedIn && dontShowWelcome == false) {
         if (isWelcome || isAmIPatient || isLogin || isNotPatient) return null;
         return '/welcome';
+      } else if (!loggedIn && dontShowWelcome == true) {
+        if (isAmIPatient || isLogin || isNotPatient) return null;
+        return '/soyPaciente';
       }
 
-      
-      if (loggedIn && (isWelcome || isAmIPatient || isLogin)) {
+      if (loggedIn && seenWelcome == true && dontShowWelcome == false && isWelcome) {
+        return '/';
+      }
+
+      if (loggedIn && dontShowWelcome == false && (isAmIPatient || isLogin)) {
         return '/splash';
-      }
+      } else if (loggedIn && dontShowWelcome == true && (isWelcome || isAmIPatient || isLogin)) {
+        return '/splash';
+      } 
 
-      
       if (loggedIn && isSplash) {
         return '/';
       }
 
-      
       return null;
     },
 
