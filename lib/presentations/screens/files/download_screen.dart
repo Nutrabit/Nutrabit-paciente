@@ -115,13 +115,17 @@ class FileListTile extends ConsumerWidget {
 
     final isDownloading = fileState.downloading[file.id] ?? false;
     final isDownloaded = fileState.downloaded[file.id] ?? false;
-
+    bool isPdf(file){
+      return this.file.url.contains('.pdf');
+    }
+    
     return ListTile(
       title: Text(file.title),
       subtitle: Text('Fecha: ${formatDate(file.date)}'),
       trailing: Wrap(
         spacing: 8,
         children: [
+          if (isPdf(file))
           IconButton(
             onPressed: () {
               Navigator.push(

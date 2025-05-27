@@ -4,7 +4,6 @@ enum FileType {
   EXERCISE_PLAN,
   MEAL_PLAN,
   RECOMMENDATIONS,
-  BASURA
 }
 
 extension FileTypeExtension on FileType {
@@ -18,8 +17,6 @@ extension FileTypeExtension on FileType {
         return "Plan de alimentación";
       case FileType.RECOMMENDATIONS:
         return "Recomendaciones";
-      case FileType.BASURA:
-        return "Basura";
     }
   }
 
@@ -33,8 +30,6 @@ extension FileTypeExtension on FileType {
         return "Planes de alimentación";
       case FileType.RECOMMENDATIONS:
         return "Recomendaciones";
-      case FileType.BASURA:
-        return "Basura"; 
     }
   }
 
@@ -48,8 +43,6 @@ extension FileTypeExtension on FileType {
         return Icons.restaurant_menu;
       case FileType.RECOMMENDATIONS:
         return Icons.thumb_up;
-      case FileType.BASURA:
-        return Icons.delete;
     }
   }
 }

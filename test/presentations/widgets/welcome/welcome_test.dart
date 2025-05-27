@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nutrabit_paciente/widgets/welcome/welcome.dart';
+import 'package:nutrabit_paciente/presentations/screens/welcome/welcome.dart';
 
 void main() {
   testWidgets('Welcome widget basic UI test', (WidgetTester tester) async {

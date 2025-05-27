@@ -49,7 +49,7 @@ class _LogoutState extends ConsumerState<Logout> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-              child: const Text('Cerrar sesión'),
+              child: const Text('Confirmar'),
             ),
           ],
         );
