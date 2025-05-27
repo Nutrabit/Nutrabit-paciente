@@ -13,10 +13,13 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      context.go('/');
+      if (mounted) {
+        context.go('/');
+      }
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFDC607A),

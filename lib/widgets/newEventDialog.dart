@@ -12,7 +12,7 @@ class NewEventDialog {
 
     Future<void> uploadAndSaveEvent() async {
       if (selectedEventType == EventType.UPLOAD_FILE) {
-        context.push('/envios/subir-comida', extra: selectedDate);
+        context.push('/envios', extra: selectedDate);
       } else {
         if (selectedEventType != null) {
 

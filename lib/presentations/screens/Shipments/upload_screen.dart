@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
-
+import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,22 +8,24 @@ import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
 import 'package:nutrabit_paciente/core/utils/file_picker_util.dart';
 
-class UploadFoodScreen extends StatefulWidget {
+class UploadScreen extends StatefulWidget {
   final DateTime initialDate;
 
-  const UploadFoodScreen({super.key, required this.initialDate});
+  const UploadScreen({super.key, required this.initialDate});
 
   @override
-  State<UploadFoodScreen> createState() => _UploadFoodScreenState();
+  State<UploadScreen> createState() => _UploadScreenState();
 }
 
-class _UploadFoodScreenState extends State<UploadFoodScreen> {
+class _UploadScreenState extends State<UploadScreen> {
   final EventService _eventService = EventService();
 
   PlatformFile? selectedFile;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   DateTime? selectedDateTime;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -61,78 +62,93 @@ class _UploadFoodScreenState extends State<UploadFoodScreen> {
   }
 
   Future<void> uploadAndSaveEvent() async {
-  if (selectedFile == null || selectedDateTime == null) return;
+    if (selectedFile == null || selectedDateTime == null) return;
 
-  // Determinar si estamos en Web o no, y obtener los bytes del archivo
-  Uint8List? fileBytes;
+    setState(() => _isLoading = true);
 
-  if (kIsWeb) {
-    fileBytes = selectedFile!.bytes;
-  } else {
-    if (selectedFile!.path != null) {
-    final file = File(selectedFile!.path!); // import 'dart:io';
-    fileBytes = await file.readAsBytes();
-}
+    Uint8List? fileBytes;
+
+    if (kIsWeb) {
+      fileBytes = selectedFile!.bytes;
+    } else {
+      if (selectedFile!.path != null) {
+        final file = File(selectedFile!.path!);
+        fileBytes = await file.readAsBytes();
+      }
+    }
+
+    if (fileBytes == null) {
+      developer.log('No se pudo leer el archivo.', name: 'FilePicker');
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    await _eventService.uploadEvent(
+      fileBytes: fileBytes,
+      fileName: selectedFile!.name,
+      title: titleController.text,
+      description: descriptionController.text,
+      dateTime: selectedDateTime!,
+      type: EventType.UPLOAD_FILE.name,
+    );
+
+    setState(() => _isLoading = false);
   }
-
-  if (fileBytes == null) {
-    print('No se pudo leer el archivo.');
-    return;
-  }
-
-  await _eventService.uploadEvent(
-    fileBytes: fileBytes,
-    fileName: selectedFile!.name,
-    title: titleController.text,
-    description: descriptionController.text,
-    dateTime: selectedDateTime!, 
-    type: EventType.UPLOAD_FILE.name,
-    
-  );
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFDEEDB),
-      appBar: const UploadFoodAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: ListView(
-          children: [
-            PickTimeField(
-              selectedDateTime: selectedDateTime,
-              onPickTime: pickTime,
+      appBar: const UploadAppBar(),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: ListView(
+              children: [
+                PickTimeField(
+                  selectedDateTime: selectedDateTime,
+                  onPickTime: pickTime,
+                ),
+                const SizedBox(height: 24),
+                FilePickerField(
+                    selectedFile: selectedFile, onPickFile: pickFile),
+                const SizedBox(height: 24),
+                TitleField(controller: titleController),
+                const SizedBox(height: 16),
+                DescriptionField(controller: descriptionController),
+                const SizedBox(height: 32),
+                SubmitButton(
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          await uploadAndSaveEvent();
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Evento guardado correctamente'),
+                              ),
+                            );
+                            Navigator.of(context).pop();
+                          }
+                        },
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            FilePickerField(selectedFile: selectedFile, onPickFile: pickFile),
-            const SizedBox(height: 24),
-            TitleField(controller: titleController),
-            const SizedBox(height: 16),
-            DescriptionField(controller: descriptionController),
-            const SizedBox(height: 32),
-            SubmitButton(
-              onPressed: () async {
-                await uploadAndSaveEvent();
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Evento guardado correctamente'),
-                    ),
-                  );
-                  Navigator.of(context).pop();
-                }
-              },
+          ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(child: CircularProgressIndicator()),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
 }
 
-class UploadFoodAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const UploadFoodAppBar({super.key});
+class UploadAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const UploadAppBar({super.key});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -305,7 +321,7 @@ class DescriptionField extends StatelessWidget {
 }
 
 class SubmitButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const SubmitButton({super.key, required this.onPressed});
 

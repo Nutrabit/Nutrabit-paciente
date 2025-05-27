@@ -139,7 +139,7 @@ class GoalCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
-        overlayColor: MaterialStateProperty.all(Colors.black.withOpacity(0.05)),
+        overlayColor: WidgetStateProperty.all(const Color.fromARGB(13, 0, 0, 0)),
         child: Container(
           padding: const EdgeInsets.all(12),
           child: Column(
