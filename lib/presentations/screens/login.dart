@@ -105,11 +105,20 @@ class _LoginState extends ConsumerState<Login> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
+                      final email = emailController.text;
+                      final password = passwordController.text;
+                      if(emailController.text.isEmpty || passwordController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Por favor complete todos los campos'),
+                          )
+                        );
+                        return; 
+                      }
                       setState(() {
                         isLoading = true;
                       });
-                      final email = emailController.text;
-                      final password = passwordController.text;
                       final cred = ref
                           .read(authProvider.notifier)
                           .login(email, password)
@@ -130,7 +139,7 @@ class _LoginState extends ConsumerState<Login> {
                               ScaffoldMessenger.of(context).clearSnackBars();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Usuario y/o contraseña inválidos'),
+                                  content: emailController.text.isEmpty || passwordController.text.isEmpty ? Text('Por favor complete todos los campos') : Text('Usuario y/o contraseña inválidos'),
                                 ),
                               );
                             }
