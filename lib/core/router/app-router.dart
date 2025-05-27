@@ -23,8 +23,7 @@ import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.d
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcome/welcomeCarousel.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
-import 'package:nutrabit_paciente/presentations/screens/Shipments/select_shipments_screen.dart';
-import 'package:nutrabit_paciente/presentations/screens/Shipments/upload__screen.dart';
+import 'package:nutrabit_paciente/presentations/screens/Shipments/upload_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/confirmation_aloha_comunite_screen.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
@@ -181,15 +180,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/envios',
-        builder: (context, state) => const SelectShipmentsScreen(),
-        routes: [
-          GoRoute(
-            path: 'subir-comida',
-            builder:
-                (context, state) =>
-                    UploadFoodScreen(initialDate: state.extra as DateTime),
-          ),
-        ],
+        builder: (context, state) => UploadScreen(initialDate: state.extra as DateTime),
       ),
       GoRoute(
         path: '/listasInteres',

@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/models/app_user.dart';
 
 class ProfileDynamicScreen extends ConsumerStatefulWidget {
-  const ProfileDynamicScreen({Key? key}) : super(key: key);
+  const ProfileDynamicScreen({super.key});
 
   @override
   ConsumerState<ProfileDynamicScreen> createState() => _ProfileDynamicScreenState();

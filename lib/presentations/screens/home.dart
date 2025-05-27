@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
+  const Home({super.key});
 
   @override
   ConsumerState<Home> createState() => _HomeState();
@@ -189,25 +190,12 @@ class _HomeState extends ConsumerState<Home> {
                   ],
                 ),
               ),
-              // Envíos y Calendario
+              // Calendario y Recomendaciones
               Positioned(
                 top: screenHeight * 0.50,
                 left: screenWidth * 0.1,
                 child: Row(
                   children: [
-                    Hero(
-                      tag: 'homebutton-envios',
-                      child: HomeButton(
-                        imagePath:
-                            'assets/img/d4fbb7df798270b5e6d5c38f4faf310cc2cdf3fa.png',
-                        text: 'Envíos',
-                        onPressed: () => context.push('/envios'),
-                        width: screenWidth * 0.35,
-                        imageHeight: screenHeight * 0.11,
-                        baseHeight: screenHeight * 0.05,
-                      ),
-                    ),
-                    SizedBox(width: screenWidth * 0.1),
                     Hero(
                       tag: 'homebutton-calendario',
                       child: HomeButton(
@@ -220,15 +208,7 @@ class _HomeState extends ConsumerState<Home> {
                         baseHeight: screenHeight * 0.05,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              // Recomendaciones
-              Positioned(
-                top: screenHeight * 0.70,
-                left: screenWidth * 0.30,
-                child: Row(
-                  children: [
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     Hero(
                       tag: 'homebutton-recomendaciones',
                       child: HomeButton(
@@ -241,7 +221,6 @@ class _HomeState extends ConsumerState<Home> {
                         baseHeight: screenHeight * 0.05,
                       ),
                     ),
-                    SizedBox(width: screenWidth * 0.1),
                   ],
                 ),
               ),

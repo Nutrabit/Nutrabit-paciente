@@ -611,63 +611,36 @@ class _PatientModifierState extends State<PatientModifier> {
 
               onChanged: (value) => setState(() => _selectedGender = value),
             ),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                    const Text(
-                      "Objetivo",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:
-                          firstRow.map((goal) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.04,
-                              ),
-                              child: _GoalBox(
-                                goal: goal,
-                                isSelected: _selectedGoal == goal['label'],
-                                onTap:
-                                    () => setState(
-                                      () => _selectedGoal = goal['label'],
-                                    ),
-                              ),
-                            );
-                          }).toList(),
-                    ),
-
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:
-                          secondRow.map((goal) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.04,
-                              ),
-                              child: _GoalBox(
-                                goal: goal,
-                                isSelected: _selectedGoal == goal['label'],
-                                onTap:
-                                    () => setState(
-                                      () => _selectedGoal = goal['label'],
-                                    ),
-                              ),
-                            );
-                          }).toList(),
-                    ),
-                  ],
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                const Text(
+                  "Objetivo",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Align(
+                  alignment: Alignment.center,
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceAround,
+                    spacing: 16.0,
+                    runSpacing: 12.0,
+                    children:
+                        goals.map((goal) {
+                          return SizedBox(
+                            width: 100,
+                            child: _GoalBox(
+                              goal: goal,
+                              isSelected: _selectedGoal == goal['label'],
+                              onTap:
+                                  () => setState(
+                                    () => _selectedGoal = goal['label'],
+                                  ),
+                            ),
+                          );
+                        }).toList(),
+                  ),
                 ),
               ],
             ),
@@ -739,6 +712,9 @@ class _PatientModifierState extends State<PatientModifier> {
 }
 
 class _GoalBox extends StatelessWidget {
+}
+
+class _GoalBox extends StatelessWidget {
   final Map<String, String> goal;
   final VoidCallback onTap;
   final bool isSelected;
@@ -749,7 +725,14 @@ class _GoalBox extends StatelessWidget {
     required this.isSelected,
     super.key,
   });
+  const _GoalBox({
+    required this.goal,
+    required this.onTap,
+    required this.isSelected,
+    super.key,
+  });
   @override
+  Widget build(BuildContext context) {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
@@ -760,14 +743,18 @@ class _GoalBox extends StatelessWidget {
               isSelected
                   ? Border.all(color: Color(0xFFDC607A), width: 2)
                   : null,
+          border:
+              isSelected
+                  ? Border.all(color: Color(0xFFDC607A), width: 2)
+                  : null,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           children: [
             Image.asset(
               goal['image']!,
-              width: 60,
-              height: 60,
+              width: 100,
+              height: 100,
               fit: BoxFit.contain,
             ),
             const SizedBox(height: 4),
@@ -781,4 +768,5 @@ class _GoalBox extends StatelessWidget {
       ),
     );
   }
+}
 }
