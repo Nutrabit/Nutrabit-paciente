@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrabit_paciente/presentations/screens/amIPatient.dart';
+import 'package:nutrabit_paciente/presentations/screens/courses/course_list_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/download_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
@@ -136,19 +137,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-
-      GoRoute(
-        path: '/publicidades',
-        builder: (context, state) => Publicidades(),
-        routes: [
-          GoRoute(
-            path: ':id',
-            builder:
-                (context, state) =>
-                    DetallePublicidad(id: state.pathParameters['id'] as String),
-          ),
-        ],
-      ),
       GoRoute(
         path: '/notificaciones',
         builder: (context, state) => Notificaciones(),
@@ -167,8 +155,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => UploadScreen(initialDate: state.extra as DateTime),
       ),
       GoRoute(
-        path: '/listasInteres',
-        builder: (context, state) => ListaInteres(),
+        path: '/courses',
+        builder: (context, state) => CourseListScreen(),
       ),
       GoRoute(
         path: '/recuperar-clave',

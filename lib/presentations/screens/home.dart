@@ -132,8 +132,8 @@ class _HomeState extends ConsumerState<Home> {
                       tag: 'homebutton-talleres',
                       child: HomeButton(
                         imagePath: 'assets/img/ee19a2bb0ba198a476f373bb3ee3f9e64b995714.png',
-                        text: 'Talleres',
-                        onPressed: () => context.push('/publicidades'),
+                        text: 'Cursos',
+                        onPressed: () => context.push('/courses'),
                         width: MediaQuery.of(context).size.width * 0.35,
                         imageHeight: MediaQuery.of(context).size.height * 0.11,
                         baseHeight: MediaQuery.of(context).size.height * 0.05,
