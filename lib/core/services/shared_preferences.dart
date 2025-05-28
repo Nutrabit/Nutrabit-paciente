@@ -4,6 +4,9 @@ import 'dart:async';
 class SharedPreferencesService {
   Future<bool?> getdontShowAgain() async {
     final prefs = await SharedPreferences.getInstance();
+    if(prefs.getBool('dontShowAgain') == null){
+      setdontShowAgain(false);
+    }
     return prefs.getBool('dontShowAgain');
   }
 
