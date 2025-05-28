@@ -11,7 +11,7 @@ class Disclaimer extends StatefulWidget {
 class _DisclaimerState extends State<Disclaimer> {
   final SharedPreferencesService _sharedPreferencesService =
       SharedPreferencesService();
-  bool _estaSeleccionado = false;
+  bool _isSelected = false;
 
   @override
   void initState() {
@@ -22,7 +22,7 @@ class _DisclaimerState extends State<Disclaimer> {
   Future<void> _loadDontShowAgain() async {
     final result = await _sharedPreferencesService.getdontShowAgain();
     setState(() {
-      _estaSeleccionado = (result is bool) ? result : false;
+      _isSelected = (result is bool) ? result : false;
     });
   }
 
@@ -49,12 +49,12 @@ class _DisclaimerState extends State<Disclaimer> {
                     const SizedBox(width: 0.01),
                     Checkbox(
                       visualDensity: VisualDensity.compact,
-                      value: _estaSeleccionado,
+                      value: _isSelected,
                       onChanged:
                           (v) => setState(() {
-                            _estaSeleccionado = v!;
+                            _isSelected = v!;
                             _sharedPreferencesService.dontShowAgain(
-                              _estaSeleccionado,
+                              _isSelected,
                             );
                           }),
                     ),
