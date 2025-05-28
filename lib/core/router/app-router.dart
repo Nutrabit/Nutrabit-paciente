@@ -171,7 +171,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => UploadScreen(initialDate: state.extra as DateTime),
       ),
       GoRoute(
-        path: '/courses',
+        path: '/cursos',
         builder: (context, state) => CourseListScreen(),
       ),
       GoRoute(
