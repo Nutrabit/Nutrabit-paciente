@@ -40,6 +40,11 @@ class HomeButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
         ),
+        side: const BorderSide(
+          
+          color: Color(0xFFDC607A),
+          width: 0.5,
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

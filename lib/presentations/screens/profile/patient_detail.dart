@@ -65,7 +65,6 @@ class PatientDetail extends ConsumerWidget {
             final weight = data['weight']?.toString() ?? '-';
             final height = data['height']?.toString() ?? '-';
             final diet = data['dieta'] ?? '-';
-            final isActive = data['isActive'] ?? true;
             final profilePic = data['profilePic'];
             final birthdayTimestamp = data['birthday'] as Timestamp?;
             String age = '-';
@@ -138,19 +137,11 @@ class PatientDetail extends ConsumerWidget {
                           ),
 
                           const SizedBox(height: 12),
-                          Hero(
-                            tag: 'calendario',
-                            child: PatientActionButton(
-                              title: 'Ver calendario',
-                              onTap: () {
-                                context.push('/calendario');
-                              },
-                            ),
-                          ),
+                          
                         ],
                       ),
                     ),
-                    const SizedBox(height: 180),
+                    const SizedBox(height: 200),
                     ElevatedButton(onPressed: () {context.go('/cambiar-clave');}, style: mainButtonDecoration(), child: const Text('Cambiar contraseña'),),
                   ],
                 ),

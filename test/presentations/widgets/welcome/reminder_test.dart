@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nutrabit_paciente/widgets/welcome/reminder.dart';
+import 'package:nutrabit_paciente/presentations/screens/welcome/reminder.dart';
 
 void main() {
   testWidgets('Reminder widget basic UI test', (WidgetTester tester) async {
