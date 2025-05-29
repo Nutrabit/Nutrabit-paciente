@@ -20,10 +20,12 @@ class DownloadScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    if (appUser is AsyncError || appUser.value == null) {
-      Future.microtask(
-        () => Navigator.of(context).pushReplacementNamed('/login'),
-      );
+   if (appUser is AsyncError || appUser.value == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          Navigator.of(context).pushReplacementNamed('/login');
+        }
+      });
       return const SizedBox.shrink();
     }
 
@@ -137,7 +139,6 @@ class FileListTile extends ConsumerWidget {
               );
             },
             icon: const Icon(Icons.picture_as_pdf, size: 20),
-            // label: const Text(''),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.grey.shade100,
               foregroundColor: Colors.black,
@@ -168,7 +169,6 @@ class FileListTile extends ConsumerWidget {
                   isDownloaded ? Icons.check_circle : Icons.download,
                   size: 20,
                 ),
-                //label: Text(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey.shade100,
                   foregroundColor: Colors.black,
