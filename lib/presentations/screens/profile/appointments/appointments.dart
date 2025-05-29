@@ -63,7 +63,9 @@ class Appointments extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 if (nextAppointment.isNotEmpty)
-                  _AppointmentItem(date: nextAppointment.first.date),
+                  ...nextAppointment.map((appt) {
+                    return _AppointmentItem(date: appt.date);
+                  }).toList(),
                 const Divider(height: 40),
                 Text(
                   'Últimos turnos',
