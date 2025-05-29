@@ -10,7 +10,6 @@ import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
-import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInteres.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
@@ -19,8 +18,6 @@ import 'package:nutrabit_paciente/presentations/screens/password/forgot_password
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/profile_dynamic_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/select_goal_screen.dart';
-import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
-import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcome/welcomeCarousel.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
@@ -53,9 +50,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final seenWelcome = seenWelcomeState;
       final dontShowWelcome = await sharedPreferencesService.getdontShowAgain();
 
-      if (dontShowWelcome == false && seenWelcome == false && isWelcome) {
-        ref.read(welcomeSessionProvider.notifier).state = true;
-      }
+      // Aquí ya no mutas el estado, solo decides rutas
 
       if (!loggedIn && dontShowWelcome == false) {
         if (isWelcome || isAmIPatient || isLogin || isNotPatient) return null;

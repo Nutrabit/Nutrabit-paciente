@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcome/welcome.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcome/reminder.dart';
@@ -50,6 +51,12 @@ class _WelcomeCarouselState extends ConsumerState<WelcomeCarousel> {
   @override
   void initState() {
     super.initState();
+
+    // ✅ Cambiar el estado welcomeSessionProvider al entrar a /welcome
+    Future.microtask(() {
+      ref.read(welcomeSessionProvider.notifier).state = true;
+    });
+
     _startAutoScroll();
 
     _controller.addListener(() {
