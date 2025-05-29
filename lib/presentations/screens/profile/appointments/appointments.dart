@@ -36,6 +36,7 @@ class Appointments extends ConsumerWidget {
                 .toList();
         previousAppointments.sort((a, b) => b.date.compareTo(a.date));
 
+        
         return Scaffold(
           backgroundColor: Color.fromRGBO(253, 238, 219, 1),
           appBar: AppBar(
@@ -58,10 +59,7 @@ class Appointments extends ConsumerWidget {
                           Text(
                             'No tenés ningún turno guardado.\nSi tenés un turno asignado, podés guardarlo desde el calendario.',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18,
-                            ),
+                            style: textStyle
                           ),
                           const SizedBox(height: 24),
                           ElevatedButton(
@@ -93,11 +91,7 @@ class Appointments extends ConsumerWidget {
                         Center(
                           child: Text(
                             'Próximo turno',
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: titleStyle,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -108,20 +102,13 @@ class Appointments extends ConsumerWidget {
                         if (nextAppointment.isEmpty)
                           Text(
                             'No hay turnos registrados',
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18,
-                            ),
+                            style: textStyle,
                           ),
                         const Divider(height: 40),
                         Center(
                           child: Text(
                             'Últimos turnos',
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: titleStyle
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -132,10 +119,7 @@ class Appointments extends ConsumerWidget {
                         if (previousAppointments.isEmpty)
                           Text(
                             'No hay turnos registrados',
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18,
-                            ),
+                            style: textStyle
                           ),
                       ],
                     ),
@@ -188,11 +172,11 @@ class _AppointmentItem extends StatelessWidget {
         children: [
           Text(
             'Fecha: $formattedDate',
-            style: const TextStyle(fontFamily: 'Inter', fontSize: 18),
+            style: textStyle,
           ),
           Text(
             'Hora: $formattedTime',
-            style: const TextStyle(fontFamily: 'Inter', fontSize: 18),
+            style: textStyle,
           ),
         ],
       ),

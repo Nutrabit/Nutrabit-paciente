@@ -12,7 +12,7 @@ class NewEventDialog {
     EventType? initialType,
   }) {
     final EventService _eventService = EventService();
-    EventType? selectedEventType = initialType ?? EventType.DRINK_WATER;
+    EventType? selectedEventType = initialType ?? null;
     DateTime? selectedDate = initialDate ?? DateTime.now();
     if (initialType == EventType.APPOINTMENT && initialDate == null) {
       selectedDate = DateTime.now().copyWith(hour: 9, minute: 0);
