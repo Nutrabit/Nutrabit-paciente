@@ -3,10 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
 
 class Appointments extends ConsumerWidget {
   const Appointments({super.key});
@@ -35,9 +37,9 @@ class Appointments extends ConsumerWidget {
         previousAppointments.sort((a, b) => b.date.compareTo(a.date));
 
         return Scaffold(
-      backgroundColor: Color.fromRGBO(253, 238, 219, 1),
+          backgroundColor: Color.fromRGBO(253, 238, 219, 1),
           appBar: AppBar(
-      backgroundColor: Color.fromRGBO(253, 238, 219, 1),
+            backgroundColor: Color.fromRGBO(253, 238, 219, 1),
 
             leading: BackButton(
               onPressed: () {
@@ -47,43 +49,114 @@ class Appointments extends ConsumerWidget {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                Center(
-                  child: Text(
-                    'Próximo turno',
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+            child:
+                appointmentEvents.isEmpty
+                    ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'No tenés ningún turno guardado.\nSi tenés un turno asignado, podés guardarlo desde el calendario.',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.go(
+                                '/calendario',
+                              );
+                            },
+                            style: mainButtonDecoration(),
+                            child: const Text(
+                              'Ir al calendario',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                    : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.1,
+                        ),
+                        // if()
+                        Center(
+                          child: Text(
+                            'Próximo turno',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        if (nextAppointment.isNotEmpty)
+                          ...nextAppointment.map((appt) {
+                            return _AppointmentItem(date: appt.date);
+                          }).toList(),
+                        if (nextAppointment.isEmpty)
+                          Text(
+                            'No hay turnos registrados',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18,
+                            ),
+                          ),
+                        const Divider(height: 40),
+                        Center(
+                          child: Text(
+                            'Últimos turnos',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        if (previousAppointments.isNotEmpty)
+                          ...previousAppointments.map((appt) {
+                            return _AppointmentItem(date: appt.date);
+                          }).toList(),
+                        if (previousAppointments.isEmpty)
+                          Text(
+                            'No hay turnos registrados',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18,
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                if (nextAppointment.isNotEmpty)
-                  ...nextAppointment.map((appt) {
-                    return _AppointmentItem(date: appt.date);
-                  }).toList(),
-                const Divider(height: 40),
-                Text(
-                  'Últimos turnos',
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                if(previousAppointments.isNotEmpty)
-                  ...previousAppointments.map((appt) {
-                    return _AppointmentItem(date: appt.date);
-                  }).toList(),
-                if(previousAppointments.isEmpty) 
-                  Text('No hay turnos registrados', style: const TextStyle(fontFamily: 'Inter', fontSize: 18))
-              ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
             ),
+            onPressed: () {
+              NewEventDialog.show(
+                context,
+                initialDate: DateTime.utc(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day,
+                  3,
+                ),
+                initialType: EventType.APPOINTMENT,
+              );
+            },
+            child: const Icon(Icons.add),
           ),
         );
       },

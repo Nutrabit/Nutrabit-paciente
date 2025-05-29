@@ -178,7 +178,7 @@ class CalendarDayPatient extends ConsumerWidget {
                                             borderRadius: BorderRadius.circular(12),
                                             child: Image.network(
                                               _event.file,
-                                              width: MediaQuery.of(context).size.width * 0.8,
+                                              width: MediaQuery.of(context).size.width * 0.7,
                                               fit: BoxFit.contain,
                                               errorBuilder: (
                                                 context,

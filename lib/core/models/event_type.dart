@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum EventType {
+  APPOINTMENT,
   DRINK_WATER,
   EXERCISE,
   SUPLEMENT,
   PERIOD,
-  UPLOAD_FILE,
-  APPOINTMENT
+  UPLOAD_FILE
 }
 
 extension EventTypeExtension on EventType {
