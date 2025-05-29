@@ -18,7 +18,7 @@ import 'package:nutrabit_paciente/presentations/screens/password/forgot_password
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/profile_dynamic_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/select_goal_screen.dart';
-import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/appointments/appointments.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcome/welcomeCarousel.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
 import 'package:nutrabit_paciente/presentations/screens/Shipments/upload_screen.dart';
@@ -112,7 +112,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/perfil',
         builder: (context, state) => PatientDetail(id: 'id'),
         routes: [
-          GoRoute(path: 'turnos', builder: (context, state) => Turnos()),
+          GoRoute(path: 'turnos', builder: (context, state) => Appointments()),
           GoRoute(
             path: 'modificar',
             builder:
