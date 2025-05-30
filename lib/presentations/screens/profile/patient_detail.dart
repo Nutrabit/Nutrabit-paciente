@@ -62,11 +62,14 @@ class PatientDetail extends ConsumerWidget {
             final lastname = data['lastname']?.toString().capitalize() ?? '';
             final completeName = '$name $lastname';
             final email = data['email'] ?? '-';
-            final weight = data['weight']?.toString() ?? '-';
-            final height = data['height']?.toString() ?? '-';
+            final weightValue = data['weight'];
+            final heightValue = data['height'];
+            final weight = (weightValue == null || weightValue == 0) ? '-' : '$weightValue';
+            final height = (heightValue == null || heightValue == 0) ? '-' : '$heightValue';
             final diet = data['dieta'] ?? '-';
             final profilePic = data['profilePic'];
             final birthdayTimestamp = data['birthday'] as Timestamp?;
+            final goal = data['goal'];
             String age = '-';
 
             if (birthdayTimestamp != null) {
@@ -112,6 +115,7 @@ class PatientDetail extends ConsumerWidget {
                       height: height,
                       diet: diet,
                       profilePic: profilePic,
+                      goal: goal,
                       onEdit: () {
                         Navigator.push(
                           context,
@@ -164,6 +168,7 @@ class PatientInfoCard extends StatelessWidget {
   final String diet;
   final String? profilePic;
   final VoidCallback onEdit;
+  final String goal;
 
   const PatientInfoCard({
     super.key,
@@ -174,7 +179,8 @@ class PatientInfoCard extends StatelessWidget {
     required this.height,
     required this.diet,
     this.profilePic,
-    required this.onEdit,
+    required this.onEdit, 
+    required this.goal,
   });
 
   @override
@@ -267,7 +273,7 @@ class PatientInfoCard extends StatelessWidget {
                                 thickness: 0.5,
                               ),
                               Text(
-                                diet,
+                                goal,
                                 style: const TextStyle(
                                   fontFamily: 'Inter',
                                   color: Colors.black54,
