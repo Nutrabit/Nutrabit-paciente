@@ -6,10 +6,13 @@ import 'package:nutrabit_paciente/core/services/event_service.dart';
 import 'package:nutrabit_paciente/core/utils/decorations.dart';
 
 class NewEventDialog {
-  static void show(BuildContext context, {DateTime? initialDate}) {
+  static void show(
+    BuildContext context, {
+    DateTime? initialDate,
+  }) {
     final EventService _eventService = EventService();
-    DateTime? selectedDate = initialDate ?? DateTime.now();
     EventType? selectedEventType;
+    DateTime? selectedDate = initialDate ?? DateTime.now();
     final TextEditingController descriptionController = TextEditingController();
     const excludedTypes = {
       EventType.UPLOAD_FILE,

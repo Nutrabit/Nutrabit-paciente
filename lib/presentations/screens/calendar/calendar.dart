@@ -57,7 +57,13 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
         final dayEvents = eventsByDate[selectedDayKey] ?? [];
 
         return Scaffold(
-          appBar: AppBar(title: const Text('')),
+          appBar: AppBar(
+            leading: BackButton(
+              onPressed: () {
+                context.go('/');
+              },
+            ),
+          ),
           body: Column(
             children: [
               CardPatient(
