@@ -9,14 +9,10 @@ class NewEventDialog {
   static void show(
     BuildContext context, {
     DateTime? initialDate,
-    EventType? initialType,
   }) {
     final EventService _eventService = EventService();
-    EventType? selectedEventType = initialType ?? null;
+    EventType? selectedEventType;
     DateTime? selectedDate = initialDate ?? DateTime.now();
-    if (initialType == EventType.APPOINTMENT && initialDate == null) {
-      selectedDate = DateTime.now().copyWith(hour: 9, minute: 0);
-    }
     final TextEditingController descriptionController = TextEditingController();
     const excludedTypes = {
       EventType.UPLOAD_FILE,

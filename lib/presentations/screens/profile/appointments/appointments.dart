@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/utils/decorations.dart';
-import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/appointments/newAppt.dart';
 
 class Appointments extends ConsumerWidget {
   const Appointments({super.key});
@@ -29,14 +27,14 @@ class Appointments extends ConsumerWidget {
         final nextAppointment =
             appointmentEvents
                 .where((e) => e.date.isAfter(DateTime.now().toLocal()))
-                .toList();
+                .toList()
+                ..sort((a, b) => a.date.compareTo(b.date));
         final previousAppointments =
             appointmentEvents
                 .where((e) => e.date.isBefore(DateTime.now().toLocal()))
-                .toList();
-        previousAppointments.sort((a, b) => b.date.compareTo(a.date));
+                .toList()
+                ..sort((a, b) => b.date.compareTo(a.date));
 
-        
         return Scaffold(
           backgroundColor: Color.fromRGBO(253, 238, 219, 1),
           appBar: AppBar(
@@ -129,15 +127,8 @@ class Appointments extends ConsumerWidget {
               borderRadius: BorderRadius.circular(30),
             ),
             onPressed: () {
-              NewEventDialog.show(
+              NewApptDialog.show(
                 context,
-                initialDate: DateTime.utc(
-                  DateTime.now().year,
-                  DateTime.now().month,
-                  DateTime.now().day,
-                  3,
-                ),
-                initialType: EventType.APPOINTMENT,
               );
             },
             child: const Icon(Icons.add),
