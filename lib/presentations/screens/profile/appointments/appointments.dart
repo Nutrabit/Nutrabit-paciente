@@ -6,7 +6,7 @@ import 'package:nutrabit_paciente/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:nutrabit_paciente/presentations/screens/profile/appointments/newAppt.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/appointments/newApptDialog.dart';
 
 class Appointments extends ConsumerWidget {
   const Appointments({super.key});
