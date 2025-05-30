@@ -105,7 +105,9 @@ class _HomeState extends ConsumerState<Home> {
         onItemSelected: (index) {
           switch (index) {
             case 0:
-              context.go('/');
+              if (GoRouterState.of(context).uri.toString() != '/') {
+                    context.go('/');
+                  }
               break;
             case 1:
               // context.push('/notificaciones');

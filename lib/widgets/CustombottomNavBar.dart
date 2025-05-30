@@ -29,12 +29,15 @@ class CustomBottomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(icons.length, (index) {
-          return IconButton(
+          return Material(
+            color: Colors.transparent,
+            child:IconButton(
             icon: Icon(icons[index]),
             color: index == currentIndex
                 ? selectedItemColor
                 : unselectedItemColor,
             onPressed: () => onItemSelected(index),
+          ),
           );
         }),
       ),
