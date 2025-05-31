@@ -4,6 +4,7 @@ enum FileType {
   EXERCISE_PLAN,
   MEAL_PLAN,
   RECOMMENDATIONS,
+  MEASUREMENTS
 }
 
 extension FileTypeExtension on FileType {
@@ -17,6 +18,8 @@ extension FileTypeExtension on FileType {
         return "Plan de alimentación";
       case FileType.RECOMMENDATIONS:
         return "Recomendaciones";
+      case FileType.MEASUREMENTS:
+          return "Mediciones";
     }
   }
 
@@ -30,6 +33,8 @@ extension FileTypeExtension on FileType {
         return "Planes de alimentación";
       case FileType.RECOMMENDATIONS:
         return "Recomendaciones";
+      case FileType.MEASUREMENTS:
+        return "Mediciones";
     }
   }
 
@@ -43,6 +48,8 @@ extension FileTypeExtension on FileType {
         return Icons.restaurant_menu;
       case FileType.RECOMMENDATIONS:
         return Icons.thumb_up;
+      case FileType.MEASUREMENTS:
+        return Icons.straighten;
     }
   }
 }
