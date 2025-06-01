@@ -15,7 +15,29 @@ class CourseService {
         .where('showCourse', isEqualTo: true)
         .get();
 
-    return query.docs.map((doc) => Course.fromFirestore(doc)).toList();
+    final now = DateTime.now();
+
+    final courses = query.docs
+        .map((doc) => Course.fromFirestore(doc))
+        .where((course) {
+          final from = course.showFrom;
+          final until = course.showUntil;
+
+          if (from == null && until == null) return true;
+          if (from == null) return now.isBefore(until!);
+          if (until == null) return now.isAfter(from);
+
+          return now.isAfter(from) && now.isBefore(until);
+        })
+        .toList();
+
+    courses.sort((a, b) {
+      final aDate = a.courseStart ?? DateTime(2100); 
+      final bDate = b.courseStart ?? DateTime(2100);
+      return aDate.compareTo(bDate);
+    });
+
+    return courses;
   }
 }
 

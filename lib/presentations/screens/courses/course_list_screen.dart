@@ -43,7 +43,7 @@ class CourseListScreen extends ConsumerWidget {
   }
 }
 
-// imagen de nutri
+// imagen de nutri + frase
 class _CourseHeaderImage extends StatelessWidget {
   const _CourseHeaderImage();
 
@@ -56,6 +56,16 @@ class _CourseHeaderImage extends StatelessWidget {
           'assets/img/nutriaAbrazo.png',
           height: 140,
         ),
+        const SizedBox(height: 8),
+        const Text(
+          '¡Estos son los talleres que estoy dando!',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 12),
       ],
     );
   }
@@ -145,18 +155,18 @@ class _CourseCard extends StatelessWidget {
       );
 
   Widget _gradientOverlay() => Container(
-      height: 240,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.black.withAlpha((0.65 * 255).round()),
-            Colors.transparent,
-          ],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
+        height: 240,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black.withAlpha((0.65 * 255).round()),
+              Colors.transparent,
+            ],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+          ),
         ),
-      ),
-    );
+      );
 }
 
 // Contenido dentro del card
@@ -198,7 +208,7 @@ class _CardContent extends StatelessWidget {
         const SizedBox(height: 8),
         Row(
           children: [
-            if (course.inscriptionLink?.isNotEmpty == true)
+            if (_shouldShowInscriptionButton(course))
               _LinkButton(
                 icon: Icons.how_to_reg,
                 label: 'Inscribirse',
@@ -215,9 +225,18 @@ class _CardContent extends StatelessWidget {
       ],
     );
   }
+
+  bool _shouldShowInscriptionButton(Course course) {
+    final now = DateTime.now();
+    return course.inscriptionLink?.isNotEmpty == true &&
+        course.inscriptionStart != null &&
+        course.inscriptionEnd != null &&
+        now.isAfter(course.inscriptionStart!) &&
+        now.isBefore(course.inscriptionEnd!);
+  }
 }
 
-// Botones: inscripción y web (evaluarse con flor)
+// Botones: inscripción y web
 class _LinkButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -234,7 +253,7 @@ class _LinkButton extends StatelessWidget {
     return TextButton.icon(
       onPressed: () async {
         final uri = Uri.parse(url);
-        final messenger = ScaffoldMessenger.of(context); // ✔️ capturamos antes del await
+        final messenger = ScaffoldMessenger.of(context);
 
         if (await canLaunchUrl(uri)) {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -249,5 +268,3 @@ class _LinkButton extends StatelessWidget {
     );
   }
 }
-
-
