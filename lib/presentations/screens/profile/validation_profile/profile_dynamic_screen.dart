@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/models/app_user.dart';
 
 class ProfileDynamicScreen extends ConsumerStatefulWidget {
-  const ProfileDynamicScreen({Key? key}) : super(key: key);
+  const ProfileDynamicScreen({super.key});
 
   @override
   ConsumerState<ProfileDynamicScreen> createState() => _ProfileDynamicScreenState();
@@ -201,9 +201,9 @@ class GenderDropdown extends StatelessWidget {
       value: value,
       decoration: const InputDecoration(border: InputBorder.none),
       items: const [
-        DropdownMenuItem(value: 'Masculino', child: Text('Masculino')),
-        DropdownMenuItem(value: 'Femenino', child: Text('Femenino')),
-        DropdownMenuItem(value: 'Otro', child: Text('Otro')),
+        DropdownMenuItem(value: 'Male', child: Text('Masculino')),
+        DropdownMenuItem(value: 'Female', child: Text('Femenino')),
+        DropdownMenuItem(value: 'Other', child: Text('Otro')),
       ],
       onChanged: onChanged,
       validator: (v) => v == null ? 'Obligatorio' : null,

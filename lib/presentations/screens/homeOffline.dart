@@ -72,13 +72,13 @@ class HomeOffline extends StatelessWidget {
                 child: Row(
                   children: [
                     Hero(
-                      tag: 'homebutton-Calendario',
+                      tag: 'homebutton-Recomendacionesv',
                       child: HomeButton(
                         imagePath:
-                            'assets/img/084fb2c3881361e7e5ce3fb5463622843c33bf3b.png',
-                        text: 'Calendario',
+                            'assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png',
+                        text: 'Recomendaciones',
                         onPressed: () {
-                          //context.push('/calendario');
+                          context.push('/listasInteres');
                         },
                         width: MediaQuery.of(context).size.width * 0.35,
                         imageHeight: MediaQuery.of(context).size.height * 0.11,
@@ -101,32 +101,6 @@ class HomeOffline extends StatelessWidget {
                         baseHeight: MediaQuery.of(context).size.height * 0.05,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              
-              Positioned(
-                top: MediaQuery.of(context).size.height * 0.60,
-                left: MediaQuery.of(context).size.width * 0.30,
-                child: Row(
-                  children: [
-                    const SizedBox(width: 10),
-                    Hero(
-                      tag: 'homebutton-Recomendacionesv',
-                      child: HomeButton(
-                        imagePath:
-                            'assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png',
-                        text: 'Recomendaciones',
-                        onPressed: () {
-                          context.push('/listasInteres');
-                        },
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        imageHeight: MediaQuery.of(context).size.height * 0.11,
-                        baseHeight: MediaQuery.of(context).size.height * 0.05,
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
                   ],
                 ),
               ),

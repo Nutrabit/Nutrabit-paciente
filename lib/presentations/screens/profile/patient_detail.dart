@@ -35,128 +35,119 @@ class PatientDetail extends ConsumerWidget {
           });
           return const SizedBox.shrink();
         }
+
         final id = appUser.value!.id;
+        final data = appUser.value!.toMap();
+        final name = data['name']?.toString().capitalize() ?? 'Sin nombre';
+        final lastname = data['lastname']?.toString().capitalize() ?? '';
+        final completeName = '$name $lastname';
+        final email = data['email'] ?? '-';
+        final weightValue = data['weight'];
+        final heightValue = data['height'];
+        final weight =
+            (weightValue == null || weightValue == 0) ? '-' : '$weightValue';
+        final height =
+            (heightValue == null || heightValue == 0) ? '-' : '$heightValue';
+        final diet = data['dieta'] ?? '-';
+        final profilePic = data['profilePic'];
 
-        return StreamBuilder<DocumentSnapshot>(
-          stream:
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(id)
-                  .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
+        if (profilePic != null &&
+            profilePic is String &&
+            profilePic.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            precacheImage(NetworkImage(profilePic), context);
+          });
+        }
 
-            if (!snapshot.hasData || !snapshot.data!.exists) {
-              return Scaffold(
-                appBar: AppBar(),
-                body: const Center(child: Text('Paciente no encontrado')),
-              );
-            }
+        final birthdayTimestamp = data['birthday'] as Timestamp?;
+        final goal = data['goal'];
+        String age = '-';
 
-            final data = snapshot.data!.data() as Map<String, dynamic>;
-            final name = data['name']?.toString().capitalize() ?? 'Sin nombre';
-            final lastname = data['lastname']?.toString().capitalize() ?? '';
-            final completeName = '$name $lastname';
-            final email = data['email'] ?? '-';
-            final weight = data['weight']?.toString() ?? '-';
-            final height = data['height']?.toString() ?? '-';
-            final diet = data['dieta'] ?? '-';
-            final isActive = data['isActive'] ?? true;
-            final profilePic = data['profilePic'];
-            final birthdayTimestamp = data['birthday'] as Timestamp?;
-            String age = '-';
+        if (birthdayTimestamp != null) {
+          age = calculateAge(birthdayTimestamp.toDate()).toString();
+        }
 
-            if (birthdayTimestamp != null) {
-              age = calculateAge(birthdayTimestamp.toDate()).toString();
-            }
-
-            return Scaffold(
-              appBar: AppBar(
-                leading: BackButton(
-                  onPressed: () {
-                    context.go('/');
+        return Scaffold(
+          appBar: AppBar(
+            leading: BackButton(
+              onPressed: () {
+                context.go('/');
+              },
+            ),
+            actions: [Logout()],
+            backgroundColor: Colors.white,
+            elevation: 0,
+          ),
+          bottomNavigationBar: CustomBottomAppBar(
+            currentIndex: 2,
+            onItemSelected: (index) {
+              switch (index) {
+                case 0:
+                  context.go('/');
+                  break;
+                case 1:
+                  //context.go('/notificaciones');
+                  break;
+                case 2:
+                  if (GoRouterState.of(context).uri.toString() != '/perfil') {
+                    context.go('/perfil');
+                  }
+                  break;
+              }
+            },
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                PatientInfoCard(
+                  name: completeName,
+                  email: email,
+                  age: age,
+                  weight: weight,
+                  height: height,
+                  diet: diet,
+                  profilePic: profilePic,
+                  goal: goal,
+                  onEdit: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PatientModifier(id: id),
+                      ),
+                    );
                   },
                 ),
-                actions: [Logout()],
-                backgroundColor: Colors.white,
-                elevation: 0,
-              ),
-              bottomNavigationBar: CustomBottomAppBar(
-                currentIndex: 0,
-                onItemSelected: (index) {
-                  switch (index) {
-                    case 0:
-                      context.go('/');
-                      break;
-                    case 1:
-                      //context.go('/notificaciones');
-                      break;
-                    case 2:
-                      context.go('/perfil');
-                      break;
-                  }
-                },
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    PatientInfoCard(
-                      name: completeName,
-                      email: email,
-                      age: age,
-                      weight: weight,
-                      height: height,
-                      diet: diet,
-                      profilePic: profilePic,
-                      onEdit: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PatientModifier(id: id),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        children: [
-                          Hero(
-                            tag: 'turnos',
-                            child: PatientActionButton(
-                              title: 'Ver historial de turnos',
-                              onTap: () {
-                                context.push('/perfil/turnos');
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(height: 12),
-                          Hero(
-                            tag: 'calendario',
-                            child: PatientActionButton(
-                              title: 'Ver calendario',
-                              onTap: () {
-                                context.push('/calendario');
-                              },
-                            ),
-                          ),
-                        ],
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      Hero(
+                        tag: 'turnos',
+                        child: PatientActionButton(
+                          title: 'Ver historial de turnos',
+                          onTap: () {
+                            context.push('/perfil/turnos');
+                          },
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 180),
-                    ElevatedButton(onPressed: () {context.go('/cambiar-clave');}, style: mainButtonDecoration(), child: const Text('Cambiar contraseña'),),
-                  ],
+
+                      const SizedBox(height: 12),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+                const SizedBox(height: 200),
+                ElevatedButton(
+                  onPressed: () {
+                    context.go('/cambiar-clave');
+                  },
+                  style: mainButtonDecoration(),
+                  child: const Text('Cambiar contraseña'),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -173,6 +164,7 @@ class PatientInfoCard extends StatelessWidget {
   final String diet;
   final String? profilePic;
   final VoidCallback onEdit;
+  final String goal;
 
   const PatientInfoCard({
     super.key,
@@ -184,6 +176,7 @@ class PatientInfoCard extends StatelessWidget {
     required this.diet,
     this.profilePic,
     required this.onEdit,
+    required this.goal,
   });
 
   @override
@@ -210,7 +203,7 @@ class PatientInfoCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     Positioned(
-                      top: MediaQuery.of(context).size.height * 0.001,
+                      top: MediaQuery.of(context).size.height * -0.02,
                       right: MediaQuery.of(context).size.width * 0.001,
                       child: IconButton(
                         icon: const Icon(Icons.edit, color: Colors.grey),
@@ -276,7 +269,7 @@ class PatientInfoCard extends StatelessWidget {
                                 thickness: 0.5,
                               ),
                               Text(
-                                diet,
+                                goal,
                                 style: const TextStyle(
                                   fontFamily: 'Inter',
                                   color: Colors.black54,

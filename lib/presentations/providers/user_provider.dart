@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/models/app_user.dart';
 import '../../../../core/utils/utils.dart';
+import 'dart:io';
 
 final usersProvider = FutureProvider<List<AppUser>>((ref) async {
   final firestore = FirebaseFirestore.instance;
@@ -41,9 +43,9 @@ final searchUsersProvider = FutureProvider.family<List<AppUser>, String>(
     final firestore = FirebaseFirestore.instance;
     final usersCollection = firestore.collection('users');
 
-    final usersByName = await usersCollection.orderBy('name').startAt([query]).endAt([query + '\uf8ff']).get();
-    final usersByLastName = await usersCollection.orderBy('lastname').startAt([query]).endAt([query + '\uf8ff']).get();
-    final usersByEmail = await usersCollection.orderBy('email').startAt([query]).endAt([query + '\uf8ff']).get();
+    final usersByName = await usersCollection.orderBy('name').startAt([query]).endAt(['$query\uf8ff']).get();
+    final usersByLastName = await usersCollection.orderBy('lastname').startAt([query]).endAt(['$query\uf8ff']).get();
+    final usersByEmail = await usersCollection.orderBy('email').startAt([query]).endAt(['$query\uf8ff']).get();
 
     final Map<String, QueryDocumentSnapshot> usersMap = {
       for (var doc in usersByName.docs) doc.id: doc,
@@ -64,6 +66,7 @@ class UserNotifier extends StateNotifier<AppUser?> {
   }
 
   final _firestore = FirebaseFirestore.instance;
+  final _storage = FirebaseStorage.instance;
 
   Future<void> _loadCurrentUser() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -89,8 +92,53 @@ class UserNotifier extends StateNotifier<AppUser?> {
   Future<void> refreshUser() async {
     await _loadCurrentUser();
   }
+
+  Future<void> deleteProfileImage() async {
+  final currentUser = state;
+  if (currentUser == null || currentUser.profilePic == null || currentUser.profilePic!.isEmpty) return;
+
+  try {
+
+    final ref = FirebaseStorage.instance.refFromURL(currentUser.profilePic!);
+    await ref.delete();
+
+    await FirebaseFirestore.instance.collection('users').doc(currentUser.id).update({
+      'profilePic': '',
+      'modifiedAt': Timestamp.now(),
+    });
+    state = currentUser.copyWith(profilePic: '');
+  } catch (e) {
+    print('Error al eliminar la imagen de perfil: $e');
+    rethrow;
+  }
+}
+
+Future<void> uploadProfileImage(File imageFile) async {
+    final currentUser = state;
+    if (currentUser == null) return;
+
+    try {
+      final storageRef = _storage
+          .ref()
+          .child('profile_images')
+          .child('${currentUser.id}-${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final uploadTask = await storageRef.putFile(imageFile);
+      final imageUrl = await uploadTask.ref.getDownloadURL();
+      await _firestore.collection('users').doc(currentUser.id).update({
+        'profilePic': imageUrl,
+        'modifiedAt': Timestamp.now(),
+      });
+      state = currentUser.copyWith(profilePic: imageUrl);
+    } catch (e) {
+      print('Error al subir imagen de perfil: $e');
+      rethrow;
+    }
+  }
 }
 
 final userProvider = StateNotifierProvider<UserNotifier, AppUser?>((ref) {
   return UserNotifier();
 });
+
+
+final welcomeSessionProvider = StateProvider<bool>((_) => false);

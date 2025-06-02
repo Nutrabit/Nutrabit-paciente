@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrabit_paciente/presentations/screens/amIPatient.dart';
+import 'package:nutrabit_paciente/presentations/screens/courses/course_list_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/download_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
@@ -9,7 +10,6 @@ import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
-import 'package:nutrabit_paciente/presentations/screens/interest_list/listaInteres.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
@@ -18,51 +18,70 @@ import 'package:nutrabit_paciente/presentations/screens/password/forgot_password
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/profile_dynamic_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/select_goal_screen.dart';
-import 'package:nutrabit_paciente/presentations/screens/publicity/detallePublicidad.dart';
-import 'package:nutrabit_paciente/presentations/screens/publicity/publicidades.dart';
-import 'package:nutrabit_paciente/presentations/screens/profile/turnos/turnos.dart';
+import 'package:nutrabit_paciente/presentations/screens/profile/appointments/appointments.dart';
 import 'package:nutrabit_paciente/presentations/screens/welcome/welcomeCarousel.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_modifier.dart';
-import 'package:nutrabit_paciente/presentations/screens/Shipments/select_shipments_screen.dart';
-import 'package:nutrabit_paciente/presentations/screens/Shipments/upload__screen.dart';
+import 'package:nutrabit_paciente/presentations/screens/Shipments/upload_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/validation_profile/confirmation_aloha_comunite_screen.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
+import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
+import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
-
+  final SharedPreferencesService sharedPreferencesService =
+      SharedPreferencesService();
+      final seenWelcomeState = ref.read(welcomeSessionProvider);
+  
   return GoRouter(
     initialLocation: '/welcome',
-    
-    redirect: (context, state) {
+
+    redirect: (context, state) async {
       if (authState.isLoading) return null;
 
-      final loggedIn      = authState.asData?.value != null;
-      final loc           = state.uri.toString();
-      final isWelcome     = loc == '/welcome';
-      final isAmIPatient  = loc == '/soyPaciente';
-      final isLogin       = loc == '/login';
-      final isNotPatient  = loc == '/homeOffline';
-      final isSplash      = loc == '/splash';
+      final loggedIn = authState.asData?.value != null;
+      final loc = state.uri.toString();
+      final isWelcome = loc == '/welcome';
+      final isAmIPatient = loc == '/soyPaciente';
+      final isLogin = loc == '/login';
+      final isNotPatient = loc == '/homeOffline';
+      final isSplash = loc == '/splash';
+      final seenWelcome = seenWelcomeState;
+      final dontShowWelcome = await sharedPreferencesService.getdontShowAgain();
 
-      
-      if (!loggedIn) {
+      // Aquí ya no mutas el estado, solo decides rutas
+
+      if (!loggedIn && dontShowWelcome == false) {
         if (isWelcome || isAmIPatient || isLogin || isNotPatient) return null;
         return '/welcome';
+      } else if (!loggedIn && dontShowWelcome == true) {
+        if (isAmIPatient || isLogin || isNotPatient) return null;
+        return '/soyPaciente';
       }
 
-      
-      if (loggedIn && (isWelcome || isAmIPatient || isLogin)) {
+      if (loggedIn && seenWelcome == true && dontShowWelcome == false && isWelcome) {
+        if(authState.value?.createdAt == authState.value?.modifiedAt){
+          return '/login/validation';
+        } else {
+          return '/';
+        }
+      }
+
+      if (loggedIn && dontShowWelcome == false && (isAmIPatient || isLogin)) {
         return '/splash';
-      }
+      } else if (loggedIn && dontShowWelcome == true && (isWelcome || isAmIPatient || isLogin)) {
+        return '/splash';
+      } 
 
-      
       if (loggedIn && isSplash) {
-        return '/';
+        if(authState.value?.createdAt == authState.value?.modifiedAt){
+          return '/login/validation';
+        } else {
+          return '/';
+        }
       }
 
-      
       return null;
     },
 
@@ -101,7 +120,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/perfil',
         builder: (context, state) => PatientDetail(id: 'id'),
         routes: [
-          GoRoute(path: 'turnos', builder: (context, state) => Turnos()),
+          GoRoute(path: 'turnos', builder: (context, state) => Appointments()),
           GoRoute(
             path: 'modificar',
             builder:
@@ -137,19 +156,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-
-      GoRoute(
-        path: '/publicidades',
-        builder: (context, state) => Publicidades(),
-        routes: [
-          GoRoute(
-            path: ':id',
-            builder:
-                (context, state) =>
-                    DetallePublicidad(id: state.pathParameters['id'] as String),
-          ),
-        ],
-      ),
       GoRoute(
         path: '/notificaciones',
         builder: (context, state) => Notificaciones(),
@@ -165,19 +171,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/envios',
-        builder: (context, state) => const SelectShipmentsScreen(),
-        routes: [
-          GoRoute(
-            path: 'subir-comida',
-            builder:
-                (context, state) =>
-                    UploadFoodScreen(initialDate: state.extra as DateTime),
-          ),
-        ],
+        builder: (context, state) => UploadScreen(initialDate: state.extra as DateTime),
       ),
       GoRoute(
-        path: '/listasInteres',
-        builder: (context, state) => ListaInteres(),
+        path: '/cursos',
+        builder: (context, state) => CourseListScreen(),
       ),
       GoRoute(
         path: '/recuperar-clave',

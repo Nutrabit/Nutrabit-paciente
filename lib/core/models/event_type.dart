@@ -6,7 +6,8 @@ enum EventType {
   EXERCISE,
   SUPLEMENT,
   PERIOD,
-  UPLOAD_FILE
+  UPLOAD_FILE,
+  APPOINTMENT
 }
 
 extension EventTypeExtension on EventType {
@@ -22,6 +23,8 @@ extension EventTypeExtension on EventType {
         return "Tengo mi período";
       case EventType.UPLOAD_FILE:
         return "Archivo";
+      case EventType.APPOINTMENT:
+        return "Tengo un turno asignado";
     }
   }
 
@@ -37,6 +40,8 @@ extension EventTypeExtension on EventType {
         return "Subir archivos";
       case EventType.PERIOD:
         return "¿Tienes tu período?";
+      case EventType.APPOINTMENT:
+        return "Tengo un turno asignado";
     }
   }
 
@@ -52,6 +57,8 @@ extension EventTypeExtension on EventType {
         return FaIcon(FontAwesomeIcons.fileArrowUp);
       case EventType.PERIOD:
         return FaIcon(FontAwesomeIcons.droplet);
+      case EventType.APPOINTMENT:
+        return FaIcon(FontAwesomeIcons.calendarDay);
     }
   }
 
@@ -67,6 +74,8 @@ extension EventTypeExtension on EventType {
         return FontAwesomeIcons.droplet;
       case EventType.UPLOAD_FILE:
         return FontAwesomeIcons.fileArrowUp;
+      case EventType.APPOINTMENT:
+        return FontAwesomeIcons.calendarDay;
     }
   }
 
@@ -82,6 +91,8 @@ extension EventTypeExtension on EventType {
         return Color(0xFFFF230A);
       case EventType.UPLOAD_FILE:
         return Color(0xFFf8e61b);
+      case EventType.APPOINTMENT:
+        return Color(0xFFEAC5EF);
     }
   }
 }
