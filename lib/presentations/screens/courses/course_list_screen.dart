@@ -255,9 +255,18 @@ class _LinkButton extends StatelessWidget {
         final uri = Uri.parse(url);
         final messenger = ScaffoldMessenger.of(context);
 
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        } else {
+        try {
+          // Intentamos primero con app externa
+          final success = await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
+
+          // Si falla, usamos WebView interna
+          if (!success) {
+            await launchUrl(uri, mode: LaunchMode.inAppWebView);
+          }
+        } catch (e) {
           messenger.showSnackBar(
             const SnackBar(content: Text('No se pudo abrir el enlace')),
           );
