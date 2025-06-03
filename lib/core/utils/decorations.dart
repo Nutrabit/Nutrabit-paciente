@@ -24,3 +24,20 @@ const titleStyle = const TextStyle(
 );
 
 const textStyle = const TextStyle(fontFamily: 'Inter', fontSize: 18);
+
+InputDecoration inputDecoration(String label, {String? suffix}) {
+  return InputDecoration(
+    labelText: label,
+    labelStyle: const TextStyle(fontSize: 14, color: Colors.grey),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    focusedBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: Color(0xFFDC607A), width: 2.0),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: Color(0xFFDC607A), width: 1.5),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    suffixText: suffix, // Aquí se añade el sufijo opcional
+  );
+  }

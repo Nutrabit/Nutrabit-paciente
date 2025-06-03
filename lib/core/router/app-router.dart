@@ -61,7 +61,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       if (loggedIn && seenWelcome == true && dontShowWelcome == false && isWelcome) {
-        return '/';
+        if(authState.value?.createdAt == authState.value?.modifiedAt){
+          return '/login/validation';
+        } else {
+          return '/';
+        }
       }
 
       if (loggedIn && dontShowWelcome == false && (isAmIPatient || isLogin)) {
@@ -71,7 +75,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       } 
 
       if (loggedIn && isSplash) {
-        return '/';
+        if(authState.value?.createdAt == authState.value?.modifiedAt){
+          return '/login/validation';
+        } else {
+          return '/';
+        }
       }
 
       return null;
