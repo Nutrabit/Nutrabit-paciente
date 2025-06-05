@@ -28,6 +28,8 @@ import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
 import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+
+
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
   final SharedPreferencesService sharedPreferencesService =
@@ -177,6 +179,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/cursos',
         builder: (context, state) => CourseListScreen(),
       ),
+
+///////
       GoRoute(
         path: '/recuperar-clave',
         builder: (context, state) => ForgotPassword(),
