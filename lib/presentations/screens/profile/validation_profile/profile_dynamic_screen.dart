@@ -201,9 +201,9 @@ class GenderDropdown extends StatelessWidget {
       value: value,
       decoration: const InputDecoration(border: InputBorder.none),
       items: const [
-        DropdownMenuItem(value: 'Male', child: Text('Masculino')),
-        DropdownMenuItem(value: 'Female', child: Text('Femenino')),
-        DropdownMenuItem(value: 'Other', child: Text('Otro')),
+        DropdownMenuItem(value: 'Masculino', child: Text('Masculino')),
+        DropdownMenuItem(value: 'Femenino', child: Text('Femenino')),
+        DropdownMenuItem(value: 'Otro', child: Text('Otro')),
       ],
       onChanged: onChanged,
       validator: (v) => v == null ? 'Obligatorio' : null,

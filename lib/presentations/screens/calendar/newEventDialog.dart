@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
+import 'package:nutrabit_paciente/core/models/notification_model.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
 import 'package:nutrabit_paciente/core/utils/decorations.dart';
+import 'package:nutrabit_paciente/presentations/providers/notification_provider.dart';
 
 class NewEventDialog {
   static void show(
@@ -36,9 +39,15 @@ class NewEventDialog {
             type: selectedEventType!.name,
             dateTime: selectedDate!,
           );
+
+          if(selectedEventType == EventType.APPOINTMENT){
+            await _createNotification(selectedDate!);
+          }
         }
       }
     }
+
+
 
     Future<void> pickTime() async {
       final time = await showTimePicker(
@@ -185,3 +194,28 @@ class NewEventDialog {
     );
   }
 }
+
+Future<void> _createNotification(DateTime apptTime) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final oneDayBefore = apptTime.subtract(Duration(hours: 24));
+    final oneMinBefore = apptTime.subtract(Duration(minutes: 1));
+    final model = NotificationModel(
+      id: '',
+      title: 'Proximo turno',
+      topic: _auth.currentUser!.uid,
+      description: "Tenés un turno próximo",
+      scheduledTime: oneDayBefore,
+      endDate: oneMinBefore,
+      repeatEvery: 1,
+      urlIcon: '',
+      cancel: false,
+    );
+
+    final notificationService = NotificationService();
+
+    try {
+      await notificationService.createNotification(model);
+    } catch (e) {
+      print(e);
+    };
+  }
