@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/core/utils/utils.dart';
-import '/presentations/providers/auth_provider.dart';
+import '/presentations/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
@@ -16,143 +16,132 @@ class PatientDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appUser = ref.watch(authProvider);
+    final appUser = ref.watch(userProvider);
 
-    return appUser.when(
-      loading:
-          () =>
-              const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (err, st) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          context.go('/login');
-        });
-        return const SizedBox.shrink();
-      },
-      data: (user) {
-        if (user == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/login');
-          });
-          return const SizedBox.shrink();
-        }
 
-        final id = appUser.value!.id;
-        final data = appUser.value!.toMap();
-        final name = data['name']?.toString().capitalize() ?? 'Sin nombre';
-        final lastname = data['lastname']?.toString().capitalize() ?? '';
-        final completeName = '$name $lastname';
-        final email = data['email'] ?? '-';
-        final weightValue = data['weight'];
-        final heightValue = data['height'];
-        final weight =
-            (weightValue == null || weightValue == 0) ? '-' : '$weightValue';
-        final height =
-            (heightValue == null || heightValue == 0) ? '-' : '$heightValue';
-        final diet = data['dieta'] ?? '-';
-        final profilePic = data['profilePic'];
+    if (appUser == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
-        if (profilePic != null &&
-            profilePic is String &&
-            profilePic.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            precacheImage(NetworkImage(profilePic), context);
-          });
-        }
+    if (appUser == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/login');
+      });
+      return const Scaffold(body: SizedBox.shrink());
+    }
 
-        final birthdayTimestamp = data['birthday'] as Timestamp?;
-        final goal = data['goal'];
-        String age = '-';
+    final data = appUser.toMap();
+    final name = data['name']?.toString().capitalize() ?? 'Sin nombre';
+    final lastname = data['lastname']?.toString().capitalize() ?? '';
+    final completeName = '$name $lastname';
+    final email = data['email'] ?? '-';
+    final weightValue = data['weight'];
+    final heightValue = data['height'];
+    final weight = (weightValue == null || weightValue == 0) ? '-' : '$weightValue';
+    final height = (heightValue == null || heightValue == 0) ? '-' : '$heightValue';
+    final diet = data['dieta'] ?? '-';
+    final profilePic = data['profilePic'];
 
-        if (birthdayTimestamp != null) {
-          age = calculateAge(birthdayTimestamp.toDate()).toString();
-        }
+    if (profilePic != null && profilePic is String && profilePic.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        precacheImage(NetworkImage(profilePic), context);
+      });
+    }
 
-        return Scaffold(
-          appBar: AppBar(
-            leading: BackButton(
-              onPressed: () {
-                context.go('/');
+    final birthdayTimestamp = data['birthday'] as Timestamp?;
+    final goal = data['goal'];
+    String age = '-';
+
+    if (birthdayTimestamp != null) {
+      age = calculateAge(birthdayTimestamp.toDate()).toString();
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: () {
+            context.go('/');
+          },
+        ),
+        actions: [Logout()],
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      bottomNavigationBar: CustomBottomAppBar(
+        currentIndex: 2,
+        onItemSelected: (index) {
+          switch (index) {
+            case 0:
+              context.go('/');
+              break;
+            case 1:
+              //context.go('/notificaciones');
+              break;
+            case 2:
+              if (GoRouterState.of(context).uri.toString() != '/perfil') {
+                context.go('/perfil');
+              }
+              break;
+          }
+        },
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            PatientInfoCard(
+              name: completeName,
+              email: email,
+              age: age,
+              weight: weight,
+              height: height,
+              diet: diet,
+              profilePic: profilePic,
+              goal: goal ?? '',
+              onEdit: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PatientModifier(id: appUser.id),
+                  ),
+                );
               },
             ),
-            actions: [Logout()],
-            backgroundColor: Colors.white,
-            elevation: 0,
-          ),
-          bottomNavigationBar: CustomBottomAppBar(
-            currentIndex: 2,
-            onItemSelected: (index) {
-              switch (index) {
-                case 0:
-                  context.go('/');
-                  break;
-                case 1:
-                  //context.go('/notificaciones');
-                  break;
-                case 2:
-                  if (GoRouterState.of(context).uri.toString() != '/perfil') {
-                    context.go('/perfil');
-                  }
-                  break;
-              }
-            },
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                PatientInfoCard(
-                  name: completeName,
-                  email: email,
-                  age: age,
-                  weight: weight,
-                  height: height,
-                  diet: diet,
-                  profilePic: profilePic,
-                  goal: goal,
-                  onEdit: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PatientModifier(id: id),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      Hero(
-                        tag: 'turnos',
-                        child: PatientActionButton(
-                          title: 'Ver historial de turnos',
-                          onTap: () {
-                            context.push('/perfil/turnos');
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-                    ],
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  Hero(
+                    tag: 'turnos',
+                    child: PatientActionButton(
+                      title: 'Ver historial de turnos',
+                      onTap: () {
+                        context.push('/perfil/turnos');
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 200),
-                ElevatedButton(
-                  onPressed: () {
-                    context.go('/cambiar-clave');
-                  },
-                  style: mainButtonDecoration(),
-                  child: const Text('Cambiar contraseña'),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 200),
+            ElevatedButton(
+              onPressed: () {
+                context.go('/cambiar-clave');
+              },
+              style: mainButtonDecoration(),
+              child: const Text('Cambiar contraseña'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
+
 
 //Card de paciente
 class PatientInfoCard extends StatelessWidget {
@@ -203,7 +192,7 @@ class PatientInfoCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     Positioned(
-                      top: MediaQuery.of(context).size.height * -0.02,
+                      top: MediaQuery.of(context).size.height * -0.01,
                       right: MediaQuery.of(context).size.width * 0.001,
                       child: IconButton(
                         icon: const Icon(Icons.edit, color: Colors.grey),

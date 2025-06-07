@@ -110,7 +110,7 @@ class PatientModifier extends ConsumerWidget {
                     onSelect:
                         (goal) => setState(() => selectedGoal = goal.description),
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 40),
                   SaveButton(
                     onPressed: () async {
                       try {
@@ -190,151 +190,148 @@ class ImagePickerDialog extends ConsumerStatefulWidget {
 }
 
 class _ImagePickerDialogState extends ConsumerState<ImagePickerDialog> {
-  File? _localImage;
+  File? _selectedImage;
+  bool _isUploading = false;
 
   @override
   Widget build(BuildContext context) {
-    final imageName =
-        _localImage?.path.split('/').last ??
-        (widget.profilePicUrl?.isNotEmpty == true
-            ? 'Imagen actual seleccionada'
-            : 'No hay imagen');
-
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Stack(
         children: [
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Color(0xFFD7F1CE),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-            ),
-            child: const Text(
-              'Adjuntar archivo',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-          ),
-          const Divider(height: 1, thickness: 1, color: Colors.black),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Color(0xFFFEECDa),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.black, width: 2),
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                // Header
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 8,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFEECDa),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade400),
-                  ),
-                  child: Text(
-                    imageName,
-                    style: const TextStyle(fontSize: 16, color: Colors.black87),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+                  child: const Text(
+                    'Foto de perfil',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF8B8680),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Text(
-                        'Galería',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Color(0xFF8B8680),
-                        ),
+                const Divider(height: 1, thickness: 1, color: Colors.black),
+
+                if (_selectedImage != null) ...[
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.file(
+                        _selectedImage!,
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.add, size: 28),
-                      onPressed: () async {
-                        final picker = ImagePicker();
-                        final picked = await picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
-                        if (picked != null) {
-                          setState(() => _localImage = File(picked.path));
-                        }
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.remove, size: 28),
-                      onPressed: () async {
-                        await widget
-                            .onDelete(); // Llama al método que borra la imagen en Firebase y Firestore
-                        Navigator.pop(context); // Cierra el popup
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Cancelar',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF8B8680),
-                        ),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (_localImage != null) {
-                          final userNotifier = ref.read(userProvider.notifier);
-                          try {
-                            final newUrl = await userNotifier
-                                .uploadProfileImage(_localImage!);
-                            widget.onImageChanged(_localImage);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Imagen actualizada con éxito'),
-                              ),
-                            );
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Error al subir la imagen: $e'),
-                              ),
-                            );
+                  ),
+                  const Divider(height: 1, thickness: 1, color: Colors.black),
+                ],
+
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFEECDa),
+                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.camera_alt_outlined, size: 30, color: Colors.black87),
+                        onPressed: () async {
+                          final picker = ImagePicker();
+                          final picked = await picker.pickImage(source: ImageSource.camera);
+                          if (picked != null) {
+                            setState(() {
+                              _selectedImage = File(picked.path);
+                            });
                           }
-                        }
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFDC607A),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        },
                       ),
-                      child: const Text(
-                        'Confirmar',
-                        style: TextStyle(fontSize: 18),
+                      IconButton(
+                        icon: const Icon(Icons.photo_library_outlined, size: 30, color: Colors.black87),
+                        onPressed: () async {
+                          final picker = ImagePicker();
+                          final picked = await picker.pickImage(source: ImageSource.gallery);
+                          if (picked != null) {
+                            setState(() {
+                              _selectedImage = File(picked.path);
+                            });
+                          }
+                        },
                       ),
-                    ),
-                  ],
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline, size: 30, color: Colors.black87),
+                        onPressed: () async {
+                          await widget.onDelete();
+                          setState(() {
+                            _selectedImage = null;
+                          });
+                        },
+                      ),
+                      if (_selectedImage != null)
+                        IconButton(
+                          icon: const Icon(Icons.check, size: 30, color: Colors.green),
+                          onPressed: () async {
+                            final userNotifier = ref.read(userProvider.notifier);
+                            setState(() {
+                              _isUploading = true;
+                            });
+
+                            try {
+                              final newUrl = await userNotifier.uploadProfileImage(_selectedImage!);
+                              widget.onImageChanged(_selectedImage!);
+                              if (mounted) Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Imagen actualizada con éxito')),
+                              );
+                            } catch (e) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error al subir la imagen: $e')),
+                                );
+                                setState(() {
+                                  _isUploading = false;
+                                });
+                              }
+                            }
+                          },
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
+          if (_isUploading)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -398,7 +395,6 @@ class _GenderDropdown extends StatelessWidget {
       style: const TextStyle(
         fontSize: 14,
         color: Colors.black87,
-        fontWeight: FontWeight.w600,
       ),
       items:
           validGender
@@ -430,7 +426,7 @@ class GoalSelector extends StatelessWidget {
         const SizedBox(height: 20),
         Center(
           child: Wrap(
-            spacing: 30,
+            spacing: 15,
             runSpacing: 20,
             alignment: WrapAlignment.center,
             children:
@@ -460,22 +456,23 @@ class _GoalBox extends StatelessWidget {
     required this.onTap,
     required this.isSelected,
   });
-
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 100,
+        height: 130,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? const Color(0xFFDC607A) : Colors.grey.shade300,
-            width: 2,
-          ),
+          border: isSelected
+              ? Border.all(color: Color(0xFFDC607A), width: 2)
+              : Border.all(color: Colors.grey.shade300),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(goal.imageUrl, width: 60, height: 60),
             const SizedBox(height: 4),
@@ -490,6 +487,7 @@ class _GoalBox extends StatelessWidget {
     );
   }
 }
+
 
 class SaveButton extends StatelessWidget {
   final VoidCallback onPressed;
