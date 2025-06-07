@@ -1,14 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:nutrabit_paciente/core/models/goal_model.dart';
+import 'package:nutrabit_paciente/core/services/push_notification_service.dart';
 import 'package:nutrabit_paciente/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
-
 
 class PatientModifier extends ConsumerWidget {
   final String id;
@@ -18,107 +18,158 @@ class PatientModifier extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
     final userNotifier = ref.read(userProvider.notifier);
+    final isMobile = !kIsWeb && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS);
 
     if (user == null || user.id != id) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final heightController = TextEditingController(text: user.height.toString());
-    final weightController = TextEditingController(text: user.weight.toString());
+    final heightController = TextEditingController(
+      text: user.height.toString(),
+    );
+    final weightController = TextEditingController(
+      text: user.weight.toString(),
+    );
     final List<String> validGender = ['Masculino', 'Femenino', 'Otro'];
-    final goals = [
-      {'label': 'Perder grasa', 'image': 'assets/img/perder_grasa.png'},
-      {'label': 'Mantener peso', 'image': 'assets/img/mantener_peso.png'},
-      {'label': 'Aumentar peso', 'image': 'assets/img/aumentar_peso.png'},
-      {'label': 'Ganar músculo', 'image': 'assets/img/ganar_musculo.png'},
-      {'label': 'Crear hábitos saludables', 'image': 'assets/img/habitos.png'},
-      
-    ];
-
     String? selectedGender = user.gender;
     String? selectedGoal = user.goal;
     File? pickedImage;
     DateTime? _birthday = user.birthday;
 
+    GoalModel findGoal(String descritpion){
+     return GoalModel.values.firstWhere((g) => g.description == user.goal);
+    }
 
-return Scaffold(
-  appBar: AppBar(
-    title: const Text('Modificar perfil'),
-    centerTitle: true,
-    backgroundColor: Colors.white,
-    leading: const BackButton(),
-    elevation: 0,
-  ),
-  body: StatefulBuilder(
-    builder: (context, setState) => SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          
-          const SizedBox(height: 16),
-          ProfileImagePicker(
-            profilePicUrl: user.profilePic,
-            pickedImage: pickedImage,
-            onPick: (image) => setState(() => pickedImage = image),
-            onDelete: () async {
-              try {
-                await userNotifier.deleteProfileImage();
-                await userNotifier.refreshUser();
-                setState(() {
-                  pickedImage = null;
-                });
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error al eliminar la imagen: $e')),
-                );
-              }
-            },
-            userId: id,
-          ),
-              const SizedBox(height: 24),
-              HeightWeightInputs(heightController: heightController, weightController: weightController),
-              const SizedBox(height: 12),
-              Row(
-                  children: [
-                    Expanded(child: _BirthDayPicker(birthday: _birthday, onDateChanged: (date) => setState(() => _birthday = date))),
-                    const SizedBox(width: 12),
-                    Expanded(child: _GenderDropdown(selectedGender: selectedGender, onChanged: (value) => setState(() => selectedGender = value), validGender: validGender)),
-                  ],
-                ),
-              const SizedBox(height: 12),
-              GoalSelector(
-                goals: goals,
-                selectedGoal: selectedGoal,
-                onSelect: (goal) => setState(() => selectedGoal = goal),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Modificar perfil'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: const BackButton(),
+        elevation: 0,
+      ),
+      body: StatefulBuilder(
+        builder:
+            (context, setState) => SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  ProfileImagePicker(
+                    profilePicUrl: user.profilePic,
+                    pickedImage: pickedImage,
+                    onPick: (image) => setState(() => pickedImage = image),
+                    onDelete: () async {
+                      try {
+                        await userNotifier.deleteProfileImage();
+                        await userNotifier.refreshUser();
+                        setState(() {
+                          pickedImage = null;
+                        });
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error al eliminar la imagen: $e'),
+                          ),
+                        );
+                      }
+                    },
+                    userId: id,
+                  ),
+                  const SizedBox(height: 24),
+                  HeightWeightInputs(
+                    heightController: heightController,
+                    weightController: weightController,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _BirthDayPicker(
+                          birthday: _birthday,
+                          onDateChanged:
+                              (date) => setState(() => _birthday = date),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _GenderDropdown(
+                          selectedGender: selectedGender,
+                          onChanged:
+                              (value) => setState(() => selectedGender = value),
+                          validGender: validGender,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  GoalSelector(
+                    goals: GoalModel.values,
+                    selectedGoal: selectedGoal,
+                    onSelect:
+                        (goal) => setState(() => selectedGoal = goal.description),
+                  ),
+                  const SizedBox(height: 40),
+                  SaveButton(
+                    onPressed: () async {
+                      try {
+                        if (isMobile) {
+                          await PushNotificationService.unsubscribeFromGoalNotification(
+                            findGoal(user.goal),
+                          );
+                        }
+                        await userNotifier.updateFields({
+                          'height':
+                              int.tryParse(
+                                heightController.text.trim().substring(
+                                  0,
+                                  heightController.text.trim().length.clamp(
+                                    0,
+                                    3,
+                                  ),
+                                ),
+                              ) ??
+                              0,
+                          'weight':
+                              int.tryParse(
+                                weightController.text.trim().substring(
+                                  0,
+                                  weightController.text.trim().length.clamp(
+                                    0,
+                                    3,
+                                  ),
+                                ),
+                              ) ??
+                              0,
+                          'gender': selectedGender ?? '',
+                          'goal': selectedGoal ?? '',
+                          'birthday': _birthday,
+                          'deletedAt': null,
+                        });
+                        if (isMobile) {
+                          if (selectedGoal != '') {
+                            await PushNotificationService.subscribeToGoalNotification(
+                              findGoal(selectedGoal!),
+                            );
+                          }
+                        }
+                        showDialog(
+                          context: context,
+                          builder: (_) => SuccessDialog(id: id),
+                        );
+                      } catch (e) {
+                        print('Error al actualizar paciente: $e');
+                      }
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 40),
-              SaveButton(onPressed: () async {
-                try {
-                  await userNotifier.updateFields({
-                    'height': int.tryParse(heightController.text.trim().substring(0, heightController.text.trim().length.clamp(0, 3))) ?? 0,
-                    'weight': int.tryParse(weightController.text.trim().substring(0, weightController.text.trim().length.clamp(0, 3))) ?? 0,
-                    'gender': selectedGender ?? '',
-                    'goal': selectedGoal ?? '',
-                    'birthday': _birthday,
-                    'deletedAt': null,
-                  });
-                  showDialog(
-                    context: context,
-                    builder: (_) => SuccessDialog(id: id),
-                  );
-                } catch (e) {
-                  print('Error al actualizar paciente: $e');
-                }
-              }),
-            ],
-          ),
-        ),
+            ),
       ),
     );
   }
 }
-
 
 class ImagePickerDialog extends ConsumerStatefulWidget {
   final String userId;
@@ -137,6 +188,7 @@ class ImagePickerDialog extends ConsumerStatefulWidget {
   @override
   ConsumerState<ImagePickerDialog> createState() => _ImagePickerDialogState();
 }
+
 class _ImagePickerDialogState extends ConsumerState<ImagePickerDialog> {
   File? _selectedImage;
   bool _isUploading = false;
@@ -307,7 +359,11 @@ class HeightWeightInputs extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, String suffix) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String hint,
+    String suffix,
+  ) {
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
@@ -340,23 +396,26 @@ class _GenderDropdown extends StatelessWidget {
         fontSize: 14,
         color: Colors.black87,
       ),
-      items: validGender
-          .map((sexo) => DropdownMenuItem(
-                value: sexo,
-                child: Text(sexo),
-              ))
-          .toList(),
+      items:
+          validGender
+              .map((sexo) => DropdownMenuItem(value: sexo, child: Text(sexo)))
+              .toList(),
       onChanged: onChanged,
     );
   }
 }
 
 class GoalSelector extends StatelessWidget {
-  final List<Map<String, String>> goals;
+  final List<GoalModel> goals;
   final String? selectedGoal;
-  final ValueChanged<String> onSelect;
+  final ValueChanged<GoalModel> onSelect;
 
-  const GoalSelector({required this.goals, required this.selectedGoal, required this.onSelect, super.key});
+  const GoalSelector({
+    required this.goals,
+    required this.selectedGoal,
+    required this.onSelect,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -370,13 +429,16 @@ class GoalSelector extends StatelessWidget {
             spacing: 15,
             runSpacing: 20,
             alignment: WrapAlignment.center,
-            children: goals.map(
-              (goal) => _GoalBox(
-                goal: goal,
-                isSelected: selectedGoal == goal['label'],
-                onTap: () => onSelect(goal['label']!),
-              ),
-            ).toList(),
+            children:
+                goals
+                    .map(
+                      (goal) => _GoalBox(
+                        goal: goal,
+                        isSelected: selectedGoal == goal.description,
+                        onTap: () => onSelect(goal),
+                      ),
+                    )
+                    .toList(),
           ),
         ),
       ],
@@ -385,7 +447,7 @@ class GoalSelector extends StatelessWidget {
 }
 
 class _GoalBox extends StatelessWidget {
-  final Map<String, String> goal;
+  final GoalModel goal;
   final VoidCallback onTap;
   final bool isSelected;
 
@@ -394,7 +456,7 @@ class _GoalBox extends StatelessWidget {
     required this.onTap,
     required this.isSelected,
   });
-
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -412,23 +474,12 @@ class _GoalBox extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              goal['image']!,
-              width: 70,
-              height: 70,
-              fit: BoxFit.contain,
-            ),
+            Image.asset(goal.imageUrl, width: 60, height: 60),
             const SizedBox(height: 4),
-            Expanded(
-              child: Center(
-                child: Text(
-                  goal['label']!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 12),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+            Text(
+              goal.description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
             ),
           ],
         ),
@@ -453,7 +504,10 @@ class SaveButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: const Text('Guardar cambios', style: TextStyle(color: Colors.white)),
+        child: const Text(
+          'Guardar cambios',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
@@ -473,22 +527,40 @@ class SuccessDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('¡Perfil modificado!', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xFF2F2F2F))),
+            const Text(
+              '¡Perfil modificado!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: Color(0xFF2F2F2F),
+              ),
+            ),
             const SizedBox(height: 10),
             const Divider(thickness: 1),
             const SizedBox(height: 6),
             OutlinedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => PatientDetail(id: id)));
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => PatientDetail(id: id)),
+                );
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: const Color(0xFFB5D6B2),
                 side: const BorderSide(color: Colors.black),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-              child: const Text('VOLVER', style: TextStyle(fontSize: 14, color: Color(0xFF706B66))),
+              child: const Text(
+                'VOLVER',
+                style: TextStyle(fontSize: 14, color: Color(0xFF706B66)),
+              ),
             ),
           ],
         ),
@@ -501,7 +573,8 @@ class _BirthDayPicker extends StatelessWidget {
   final DateTime? birthday;
   final ValueChanged<DateTime> onDateChanged;
 
-  const _BirthDayPicker({super.key, 
+  const _BirthDayPicker({
+    super.key,
     required this.birthday,
     required this.onDateChanged,
   });
@@ -523,9 +596,10 @@ class _BirthDayPicker extends StatelessWidget {
       child: AbsorbPointer(
         child: TextField(
           controller: TextEditingController(
-            text: birthday != null
-                ? "${birthday!.day.toString().padLeft(2, '0')}/${birthday!.month.toString().padLeft(2, '0')}/${birthday!.year}"
-                : '',
+            text:
+                birthday != null
+                    ? "${birthday!.day.toString().padLeft(2, '0')}/${birthday!.month.toString().padLeft(2, '0')}/${birthday!.year}"
+                    : '',
           ),
           decoration: inputDecoration('Nacimiento'),
         ),
@@ -533,27 +607,29 @@ class _BirthDayPicker extends StatelessWidget {
     );
   }
 }
+
 class ProfileImagePicker extends StatelessWidget {
   final String? profilePicUrl;
   final File? pickedImage;
   final ValueChanged<File> onPick;
-  final Future<void> Function() onDelete; 
+  final Future<void> Function() onDelete;
   final String userId;
 
   const ProfileImagePicker({
-  required this.profilePicUrl,
-  required this.pickedImage,
-  required this.onPick,
-  required this.onDelete,
-  required this.userId,
-  super.key,
-});
+    required this.profilePicUrl,
+    required this.pickedImage,
+    required this.onPick,
+    required this.onDelete,
+    required this.userId,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider imageProvider = pickedImage != null
-        ? FileImage(pickedImage!)
-        : (profilePicUrl != null && profilePicUrl!.isNotEmpty)
+    final ImageProvider imageProvider =
+        pickedImage != null
+            ? FileImage(pickedImage!)
+            : (profilePicUrl != null && profilePicUrl!.isNotEmpty)
             ? NetworkImage(profilePicUrl!)
             : const AssetImage('assets/img/avatar.jpg');
 
@@ -568,25 +644,30 @@ class ProfileImagePicker extends StatelessWidget {
               onTap: () async {
                 await showDialog(
                   context: context,
-                  builder: (context) => ImagePickerDialog(
-                  profilePicUrl: profilePicUrl,
-                  userId: userId,
-                  onImageChanged: (file) {
-                    if (file != null) {
-                      onPick(file);
-                    } else {
-
-                    }
-                  },
-                  onDelete: onDelete, 
-                ),
-
+                  builder:
+                      (context) => ImagePickerDialog(
+                        profilePicUrl: profilePicUrl,
+                        userId: userId,
+                        onImageChanged: (file) {
+                          if (file != null) {
+                            onPick(file);
+                          } else {}
+                        },
+                        onDelete: onDelete,
+                      ),
                 );
               },
               child: Container(
-                decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.black54),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black54,
+                ),
                 padding: const EdgeInsets.all(6),
-                child: const Icon(Icons.camera_alt, size: 20, color: Colors.white),
+                child: const Icon(
+                  Icons.camera_alt,
+                  size: 20,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

@@ -13,7 +13,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // Aquí podrías guardar logs o mostrar notificaciones locales
   debugPrint('Notificación recibida en segundo plano: ${message.messageId}');
 }
 
