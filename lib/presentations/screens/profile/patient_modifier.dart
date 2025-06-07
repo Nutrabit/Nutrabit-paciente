@@ -92,7 +92,7 @@ return Scaffold(
                 selectedGoal: selectedGoal,
                 onSelect: (goal) => setState(() => selectedGoal = goal),
               ),
-              const SizedBox(height: 80),
+              const SizedBox(height: 40),
               SaveButton(onPressed: () async {
                 try {
                   await userNotifier.updateFields({
@@ -268,7 +268,6 @@ class _ImagePickerDialogState extends ConsumerState<ImagePickerDialog> {
               ],
             ),
           ),
-          // Spinner solo dentro del diálogo
           if (_isUploading)
             Positioned.fill(
               child: Container(
@@ -340,7 +339,6 @@ class _GenderDropdown extends StatelessWidget {
       style: const TextStyle(
         fontSize: 14,
         color: Colors.black87,
-        fontWeight: FontWeight.w600,
       ),
       items: validGender
           .map((sexo) => DropdownMenuItem(
@@ -369,7 +367,7 @@ class GoalSelector extends StatelessWidget {
         const SizedBox(height: 20),
         Center(
           child: Wrap(
-            spacing: 30,
+            spacing: 15,
             runSpacing: 20,
             alignment: WrapAlignment.center,
             children: goals.map(
@@ -391,7 +389,11 @@ class _GoalBox extends StatelessWidget {
   final VoidCallback onTap;
   final bool isSelected;
 
-  const _GoalBox({required this.goal, required this.onTap, required this.isSelected});
+  const _GoalBox({
+    required this.goal,
+    required this.onTap,
+    required this.isSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -399,22 +401,42 @@ class _GoalBox extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 100,
+        height: 130,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          border: isSelected ? Border.all(color: Color(0xFFDC607A), width: 2) : Border.all(color: Colors.grey.shade300),
+          border: isSelected
+              ? Border.all(color: Color(0xFFDC607A), width: 2)
+              : Border.all(color: Colors.grey.shade300),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(goal['image']!, width: 60, height: 60),
+            Image.asset(
+              goal['image']!,
+              width: 70,
+              height: 70,
+              fit: BoxFit.contain,
+            ),
             const SizedBox(height: 4),
-            Text(goal['label']!, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
+            Expanded(
+              child: Center(
+                child: Text(
+                  goal['label']!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 12),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
 
 class SaveButton extends StatelessWidget {
   final VoidCallback onPressed;
