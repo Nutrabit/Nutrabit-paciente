@@ -215,7 +215,7 @@ class _HomeState extends ConsumerState<Home> {
                         imagePath:
                             'assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png',
                         text: 'Recomendaciones',
-                        onPressed: () => context.push('/listasInteres'),
+                        onPressed: () => context.push('/listaInteres'),
                         width: screenWidth * 0.35,
                         imageHeight: screenHeight * 0.11,
                         baseHeight: screenHeight * 0.05,
