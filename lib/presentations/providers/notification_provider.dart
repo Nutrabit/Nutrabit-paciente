@@ -35,7 +35,7 @@ class NotificationService {
               .get();
 
       final batch = _db.batch();
-
+      print('documentos $querySnapshot.docs');
       for (var doc in querySnapshot.docs) {
         batch.delete(doc.reference);
       }
