@@ -10,6 +10,7 @@ import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
+import 'package:nutrabit_paciente/presentations/screens/interest_list/interest_list.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
@@ -179,8 +180,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/cursos',
         builder: (context, state) => CourseListScreen(),
       ),
-
-///////
+      GoRoute(
+        path: '/listaInteres',
+        builder: (context, state) => InterestList(),
+      ),
       GoRoute(
         path: '/recuperar-clave',
         builder: (context, state) => ForgotPassword(),
