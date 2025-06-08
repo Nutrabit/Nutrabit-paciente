@@ -4,13 +4,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
+import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
+import 'package:nutrabit_paciente/presentations/providers/notification_provider.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
 
 class CalendarDayPatient extends ConsumerWidget {
   final DateTime date;
   final EventService _eventService = EventService();
-
+  final notificationService = NotificationService();
   CalendarDayPatient({required this.date, super.key});
 
   @override
@@ -18,9 +20,13 @@ class CalendarDayPatient extends ConsumerWidget {
     final formattedDate = DateFormat('dd/MM/yyyy').format(date);
     final asyncEventsByDate = ref.watch(eventsByDateProvider);
     final keyDate = DateTime(date.year, date.month, date.day);
+    final user = ref.watch(authProvider).value;
 
-    Future<void> deleteEvent(String eventId) async {
-      await _eventService.deleteEvent(eventId);
+    Future<void> deleteEvent(dynamic event) async {
+      await _eventService.deleteEvent(event.id.toString());
+      if(event.type == EventType.APPOINTMENT.name){
+        await notificationService.deleteNotificationsByTopicAndTime(topic: user!.id, scheduledTime: event.date.subtract(Duration(hours: 24)));
+      }
     }
 
     return Scaffold(
@@ -108,7 +114,7 @@ class _EventsContainer extends StatelessWidget {
   final DateTime keyDate;
   final AsyncValue<Map<DateTime, List<dynamic>>> asyncEventsByDate;
   final Widget Function(String, {double size, Color color}) getIcon;
-  final Future<void> Function(String) deleteEvent;
+  final Future<void> Function(dynamic) deleteEvent;
 
   const _EventsContainer({
     required this.keyDate,
@@ -181,7 +187,7 @@ class _EventsContainer extends StatelessWidget {
 class _EventCard extends StatelessWidget {
   final dynamic event;
   final Widget Function(String, {double size, Color color}) getIcon;
-  final Future<void> Function(String) deleteEvent;
+  final Future<void> Function(dynamic) deleteEvent;
 
   const _EventCard({
     required this.event,
@@ -222,7 +228,7 @@ class _EventCard extends StatelessWidget {
                       context: context,
                       builder: (_) => const DeleteAlertDialog(),
                     );
-                    if (confirm == true) await deleteEvent(event.id);
+                    if (confirm == true) await deleteEvent(event);
                   },
                 ),
               ],
