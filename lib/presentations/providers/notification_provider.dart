@@ -24,26 +24,25 @@ class NotificationService {
     required DateTime scheduledTime,
   }) async {
     try {
-      final querySnapshot =
-          await _db
-              .collection('notifications')
-              .where('topic', isEqualTo: topic)
-              .where(
-                'scheduledTime',
-                isEqualTo: Timestamp.fromDate(scheduledTime),
-              )
-              .get();
+    final querySnapshot = await _db
+        .collection('notifications')
+        .where('topic', isEqualTo: topic)
+        .where(
+          'scheduledTime',
+          isEqualTo: Timestamp.fromDate(scheduledTime),
+        )
+        .limit(1)
+        .get();
 
-      final batch = _db.batch();
-      print('documentos $querySnapshot.docs');
-      for (var doc in querySnapshot.docs) {
-        batch.delete(doc.reference);
-      }
+    if (querySnapshot.docs.isNotEmpty) {
+      final doc = querySnapshot.docs.first;
+      await doc.reference.delete();
 
-      await batch.commit();
-
-      print('Se eliminaron ${querySnapshot.docs.length} notificaciones.');
-    } catch (e) {
+      print('Se eliminó una notificación: ${doc.id}');
+    } else {
+      print('No se encontraron notificaciones para eliminar.');
+    }
+  } catch (e) {
       print('Error al eliminar notificaciones: $e');
     }
   }

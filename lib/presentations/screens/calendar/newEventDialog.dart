@@ -32,10 +32,9 @@ class NewEventDialog {
             fileBytes: Uint8List(0),
             fileName: '',
             title: selectedEventType!.description,
-            description:
-                selectedEventType != EventType.APPOINTMENT
-                    ? descriptionController.text
-                    : '${selectedDate!.hour}:${selectedDate!.minute} hs',
+           description: selectedEventType != EventType.APPOINTMENT
+    ? descriptionController.text
+    : '${selectedDate!.hour.toString().padLeft(2, '0')}:${selectedDate!.minute.toString().padLeft(2, '0')} hs',
             type: selectedEventType!.name,
             dateTime: selectedDate!,
           );

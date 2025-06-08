@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
-import 'package:nutrabit_paciente/core/services/push_notification_service.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/notification_provider.dart';
