@@ -10,6 +10,7 @@ import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
+import 'package:nutrabit_paciente/presentations/screens/interest_list/interest_list.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
@@ -27,6 +28,8 @@ import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
 import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -176,6 +179,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/cursos',
         builder: (context, state) => CourseListScreen(),
+      ),
+      GoRoute(
+        path: '/listaInteres',
+        builder: (context, state) => InterestList(),
       ),
       GoRoute(
         path: '/recuperar-clave',

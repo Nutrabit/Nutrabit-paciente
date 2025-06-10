@@ -175,4 +175,7 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
       );
     }
   }
+
+  
+
 }

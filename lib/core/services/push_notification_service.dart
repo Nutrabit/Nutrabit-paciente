@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:nutrabit_paciente/core/models/goal_model.dart';
 
-
+final FirebaseAuth _auth = FirebaseAuth.instance;
 class PushNotificationService {
+  
   static final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -62,6 +65,12 @@ class PushNotificationService {
 
     // Esto suscribe al topico all (Siempre que se haga el build del main el  usuario ya va a estar suscrito)
     await FirebaseMessaging.instance.subscribeToTopic('all');
+    final user = _auth.currentUser;
+    final userId = user?.uid;
+    if(userId!.isNotEmpty){
+      await FirebaseMessaging.instance.subscribeToTopic(userId.toString());
+    }
+
 
     // Esto escucha las notificaciones cuando la app esta en primer plano.
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -76,6 +85,13 @@ class PushNotificationService {
     });
   }
 
+  static Future<void> subscribeToGoalNotification(GoalModel goal) async {
+    await FirebaseMessaging.instance.subscribeToTopic(goal.name);
+  }
+
+  static Future<void> unsubscribeFromGoalNotification(GoalModel goal) async {
+    await FirebaseMessaging.instance.unsubscribeFromTopic(goal.name);
+  }
 
   // En pocas palabras, aca se crea la notificacion. 
   static void showLocalNotification(RemoteMessage message) {

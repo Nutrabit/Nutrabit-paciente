@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
+import 'package:nutrabit_paciente/core/models/notification_model.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
 import 'package:nutrabit_paciente/core/utils/decorations.dart';
+import 'package:nutrabit_paciente/presentations/providers/notification_provider.dart';
 
 class NewApptDialog {
   static void show(BuildContext context, {DateTime? initialDate}) {
@@ -14,10 +17,11 @@ class NewApptDialog {
         fileBytes: Uint8List(0),
         fileName: '',
         title: EventType.APPOINTMENT.description,
-        description: '${selectedDate.hour}:${selectedDate.minute} hs',
+        description: '${selectedDate.hour.toString().padLeft(2, '0')}:${selectedDate.minute.toString().padLeft(2, '0')} hs',
         type: EventType.APPOINTMENT.name,
         dateTime: selectedDate,
       );
+      await _createNotification(selectedDate);
     }
 
     Future<void> pickTime() async {
@@ -112,4 +116,29 @@ class NewApptDialog {
       },
     );
   }
+}
+
+Future<void> _createNotification(DateTime apptTime) async {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final oneDayBefore = apptTime.subtract(Duration(hours: 24));
+  final oneMinBefore = apptTime.subtract(Duration(minutes: 1));
+  final model = NotificationModel(
+    id: '',
+    title: 'Turno con la Lic. Florencia Cabral',
+    topic: _auth.currentUser!.uid,
+    description: "${apptTime.day.toString().padLeft(2, '0')}-${apptTime.month.toString().padLeft(2, '0')} a las ${apptTime.hour.toString().padLeft(2, '0')}:${apptTime.minute.toString().padLeft(2, '0')} hs",
+    scheduledTime: oneDayBefore,
+    endDate: oneMinBefore,
+    repeatEvery: 1,
+    urlIcon: '',
+    cancel: false,
+  );
+
+  final notificationService = NotificationService();
+
+  try {
+    await notificationService.createNotification(model);
+  } catch (e) {
+    print(e);
+  };
 }
