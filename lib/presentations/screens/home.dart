@@ -92,6 +92,7 @@ class _HomeState extends ConsumerState<Home> {
     }
 
     final appUser = ref.watch(authProvider);
+    final user = appUser.value;
     final bool isLoading = appUser is AsyncLoading;
 
     if (isLoading) {
@@ -102,6 +103,7 @@ class _HomeState extends ConsumerState<Home> {
       backgroundColor: const Color(0xFFFEECDA),
       bottomNavigationBar: CustomBottomAppBar(
         currentIndex: 0,
+        // user: user!,
         onItemSelected: (index) {
           switch (index) {
             case 0:
@@ -110,8 +112,8 @@ class _HomeState extends ConsumerState<Home> {
                   }
               break;
             case 1:
-              // context.push('/notificaciones');
-              sharedPreferencesService.dontShowAgain(false);
+              context.push('/notificaciones');
+              // sharedPreferencesService.dontShowAgain(false);
               break;
             case 2:
               context.push('/perfil');

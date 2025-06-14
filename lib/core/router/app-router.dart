@@ -13,7 +13,7 @@ import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
 import 'package:nutrabit_paciente/presentations/screens/interest_list/interest_list.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
-import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
+import 'package:nutrabit_paciente/presentations/screens/notifications/notifications.dart';
 import 'package:nutrabit_paciente/presentations/screens/password/change_password.dart';
 import 'package:nutrabit_paciente/presentations/screens/password/forgot_password.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
@@ -161,7 +161,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/notificaciones',
-        builder: (context, state) => Notificaciones(),
+        builder: (context, state) => Notifications(),
         routes: [
           GoRoute(
             path: ':id',
