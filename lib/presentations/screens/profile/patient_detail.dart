@@ -77,7 +77,7 @@ class PatientDetail extends ConsumerWidget {
               context.go('/');
               break;
             case 1:
-              //context.go('/notificaciones');
+              context.go('/notificaciones');
               break;
             case 2:
               if (GoRouterState.of(context).uri.toString() != '/perfil') {

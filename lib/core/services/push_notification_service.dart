@@ -67,7 +67,7 @@ class PushNotificationService {
     await FirebaseMessaging.instance.subscribeToTopic('all');
     final user = _auth.currentUser;
     final userId = user?.uid;
-    if(userId!.isNotEmpty){
+    if(userId != null){
       await FirebaseMessaging.instance.subscribeToTopic(userId.toString());
     }
 

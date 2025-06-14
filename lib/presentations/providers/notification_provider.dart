@@ -24,26 +24,62 @@ class NotificationService {
     required DateTime scheduledTime,
   }) async {
     try {
-    final querySnapshot = await _db
-        .collection('notifications')
-        .where('topic', isEqualTo: topic)
-        .where(
-          'scheduledTime',
-          isEqualTo: Timestamp.fromDate(scheduledTime),
-        )
-        .limit(1)
-        .get();
+      final querySnapshot =
+          await _db
+              .collection('notifications')
+              .where('topic', isEqualTo: topic)
+              .where(
+                'scheduledTime',
+                isEqualTo: Timestamp.fromDate(scheduledTime),
+              )
+              .limit(1)
+              .get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      final doc = querySnapshot.docs.first;
-      await doc.reference.delete();
-
-      print('Se eliminó una notificación: ${doc.id}');
-    } else {
-      print('No se encontraron notificaciones para eliminar.');
-    }
-  } catch (e) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final doc = querySnapshot.docs.first;
+        await doc.reference.delete();
+      } else {
+        print('No se encontraron notificaciones para eliminar.');
+      }
+    } catch (e) {
       print('Error al eliminar notificaciones: $e');
     }
+  }
+
+  Future<List<NotificationModel>> getUserNotifications({
+    required String topic,
+    required String userId,
+    required DateTime lastSeenNotf,
+  }) async {
+    try {
+      final userNotifications =
+          await _db
+              .collection('notifications')
+              .where('topic', whereIn: ['ALL', topic, userId])
+              .where('cancel', isEqualTo: false)
+              .where('sent', isEqualTo: true)
+              .where('scheduledTime', isGreaterThan: lastSeenNotf)
+              .get();
+      return userNotifications.docs
+        .map((doc) => NotificationModel.fromDoc(doc))
+        .where((n) => n.scheduledTime.isAfter(lastSeenNotf))
+        .toList()
+        ..sort((a, b) => b.scheduledTime.compareTo(a.scheduledTime));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<int> getUserNotificationsCount({
+    required String topic,
+    required String userId,
+    required DateTime lastSeenNotf,
+  }) async{
+  try {
+    final userNotf = await getUserNotifications(userId: userId, topic: topic, lastSeenNotf: lastSeenNotf);
+    return userNotf.length;
+  } catch (e){
+    return 0;
+  }
   }
 }
