@@ -18,8 +18,8 @@ class Notifications extends ConsumerStatefulWidget {
 
 class _NotificationsState extends ConsumerState<Notifications> {
   DateTime? lastSeenNotf;
-  Future<List<NotificationModel>>? notificationFuture;
   List<NotificationModel> notifications = [];
+  bool isLoading = true;
   bool _initialized = false;
 
   void removeNotification(int index) {
@@ -35,8 +35,7 @@ class _NotificationsState extends ConsumerState<Notifications> {
     return goal.name;
   }
 
-  Future<void> _loadLastSeenAndPrepareNotifications() async {
-    AppUser user = ref.watch(userProvider)!;
+  Future<void> _loadLastSeenAndPrepareNotifications(AppUser user) async {
     final sp = SharedPreferencesService();
     final _lastSeenNotf = await sp.getLastSeenNotifications();
     if (!mounted) return;
@@ -51,31 +50,26 @@ class _NotificationsState extends ConsumerState<Notifications> {
     setState(() {
       lastSeenNotf = _lastSeenNotf;
       notifications = fetchedNotifications;
+      isLoading = false;
     });
 
-    await SharedPreferencesService().setLastSeenNotifications(DateTime.now());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_initialized) {
-      final user = ref.read(userProvider);
-      if (user != null) {
-        _loadLastSeenAndPrepareNotifications();
-        _initialized = true;
-      }
-    }
+    await sp.setLastSeenNotifications(DateTime.now());
   }
 
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider);
 
-    if (user == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+  if (!_initialized && user != null) {
+    _initialized = true;
+    Future.microtask(() => _loadLastSeenAndPrepareNotifications(user));
+  }
 
+  if (user == null || isLoading) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notificaciones'),
@@ -89,15 +83,12 @@ class _NotificationsState extends ConsumerState<Notifications> {
         onItemSelected: (index) {
           switch (index) {
             case 0:
-              if (GoRouterState.of(context).uri.toString() != '/') {
-                context.go('/');
-              }
+              context.go('/');
               break;
             case 1:
-              // context.push('/notificaciones');
               break;
             case 2:
-              context.push('/perfil');
+              context.go('/perfil');
               break;
           }
         },

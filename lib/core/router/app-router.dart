@@ -153,7 +153,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               final fecha =
                   state.extra
-                      as DateTime; // 👈 Recibimos el DateTime correctamente
+                      as DateTime;
               return CalendarDayPatient(date: fecha);
             },
           ),
