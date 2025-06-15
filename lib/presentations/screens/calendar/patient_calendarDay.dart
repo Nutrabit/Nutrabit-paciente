@@ -226,9 +226,9 @@ class _EventCard extends StatelessWidget {
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
                     final confirm = showDialog(
-  context: context,
-  builder: (context) => DeleteAlertDialog(style: defaultAlertDialogStyle),
-);
+                      context: context,
+                      builder: (context) => DeleteAlertDialog(style: defaultAlertDialogStyle),
+                    );
                     if (confirm == true) await deleteEvent(event);
                   },
                 ),

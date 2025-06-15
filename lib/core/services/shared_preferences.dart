@@ -24,4 +24,15 @@ class SharedPreferencesService {
       await setdontShowAgain(false);
     }
   }  
+
+  Future<void> setLastSeenNotifications(DateTime lastSeen) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastSeenNotf', lastSeen.toIso8601String());
+  }
+
+  Future<DateTime> getLastSeenNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastSeenNots = prefs.getString('lastSeenNotf');
+    return lastSeenNots != null ? DateTime.parse(lastSeenNots) : DateTime.parse('1900-01-01');
+  }
 }
