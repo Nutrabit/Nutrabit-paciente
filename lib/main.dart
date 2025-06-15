@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutrabit_paciente/core/router/app-router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';  
 import 'core/services/push_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
