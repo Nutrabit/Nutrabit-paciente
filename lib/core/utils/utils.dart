@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
 
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
+
 String normalize(String value) {
   return value
       .toLowerCase()
@@ -100,3 +102,59 @@ String generateRandomPassword({int length = 6}) {
     (index) => chars[rand.nextInt(chars.length)],
   ).join();
 }
+
+
+Future<void> showGenericPopupBack({
+  required BuildContext context,
+  required String message,
+  required String id,
+  required void Function(BuildContext context, String id) onNavigate,
+}) async {
+  final style = getDefaultPopupStyle();
+
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: style.decoration,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              style.icon,
+              const SizedBox(height: 12),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: style.messageTextStyle,
+              ),
+              const SizedBox(height: 16),
+              const Divider(thickness: 1),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onNavigate(context, id);
+                  },
+                  style: style.buttonStyle,
+                  child: Text(
+                    'VOLVER',
+                    style: style.buttonTextStyle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+
+

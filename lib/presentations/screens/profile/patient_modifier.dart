@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:nutrabit_paciente/core/models/goal_model.dart';
 import 'package:nutrabit_paciente/core/services/push_notification_service.dart';
 import 'package:nutrabit_paciente/core/utils/decorations.dart';
+import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
 
@@ -154,10 +155,17 @@ class PatientModifier extends ConsumerWidget {
                             );
                           }
                         }
-                        showDialog(
+                        await showGenericPopupBack(
                           context: context,
-                          builder: (_) => SuccessDialog(id: id),
+                          message: '¡Perfil actualizado con éxito!',
+                          id: id,
+                          onNavigate: (context, id) {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => PatientDetail(id: id)),
+                            );
+                          },
                         );
+
                       } catch (e) {
                         print('Error al actualizar paciente: $e');
                       }
@@ -507,62 +515,6 @@ class SaveButton extends StatelessWidget {
         child: const Text(
           'Guardar cambios',
           style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-  }
-}
-
-class SuccessDialog extends StatelessWidget {
-  final String id;
-
-  const SuccessDialog({required this.id, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-      content: SizedBox(
-        width: 250,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              '¡Perfil modificado!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: Color(0xFF2F2F2F),
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Divider(thickness: 1),
-            const SizedBox(height: 6),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => PatientDetail(id: id)),
-                );
-              },
-              style: OutlinedButton.styleFrom(
-                backgroundColor: const Color(0xFFB5D6B2),
-                side: const BorderSide(color: Colors.black),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'VOLVER',
-                style: TextStyle(fontSize: 14, color: Color(0xFF706B66)),
-              ),
-            ),
-          ],
         ),
       ),
     );
