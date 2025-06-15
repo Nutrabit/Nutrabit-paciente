@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/notification_provider.dart';
@@ -224,9 +225,9 @@ class _EventCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
-                    final confirm = await showDialog<bool>(
+                    final confirm = showDialog(
                       context: context,
-                      builder: (_) => const DeleteAlertDialog(),
+                      builder: (context) => DeleteAlertDialog(style: defaultAlertDialogStyle),
                     );
                     if (confirm == true) await deleteEvent(event);
                   },
@@ -260,23 +261,36 @@ class _EventCard extends StatelessWidget {
 }
 
 class DeleteAlertDialog extends StatelessWidget {
-  const DeleteAlertDialog({super.key});
+  final AlertDialogStyle style;
+
+  const DeleteAlertDialog({super.key, required this.style});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: style.backgroundColor,
+      elevation: style.elevation,
+      shape: style.shape,
+      titleTextStyle: style.titleTextStyle,
+      contentTextStyle: style.contentTextStyle,
       title: const Text('Eliminar evento'),
       content: const Text('¿Estás seguro de que deseas eliminar el evento del calendario?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black,
+          ),
           child: const Text('Cancelar'),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Eliminar'),
+          style: style.buttonStyle,
+          child: Text('Eliminar', style: style.buttonTextStyle),
         ),
       ],
     );
   }
 }
+
+
