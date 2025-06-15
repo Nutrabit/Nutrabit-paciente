@@ -400,11 +400,11 @@ class GenericLinkCard extends StatelessWidget {
     // volver a comentar si no se usa para evitar llamadas innecesarias a la db 
 
     
-    //if (kIsWeb && (Uri.base.host == 'localhost' || Uri.base.host == '127.0.0.1')) {
-     // const projectId = 'nutrabit-7a4ce';
-     // const region = 'us-central1';
-     // return 'https://$region-$projectId.cloudfunctions.net/faviconProxy?domain=$domain';
-    //}
+    // if (kIsWeb && (Uri.base.host == 'localhost' || Uri.base.host == '127.0.0.1')) {
+    //  const projectId = 'nutrabit-7a4ce';
+    //  const region = 'us-central1';
+    //  return 'https://$region-$projectId.cloudfunctions.net/faviconProxy?domain=$domain';
+    // }
 
     return 'https://www.google.com/s2/favicons?domain=$domain&sz=64';
   } catch (_) {
