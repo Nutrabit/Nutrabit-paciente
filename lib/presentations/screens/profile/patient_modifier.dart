@@ -497,29 +497,55 @@ class _GoalBox extends StatelessWidget {
 }
 
 
-class SaveButton extends StatelessWidget {
-  final VoidCallback onPressed;
+class SaveButton extends StatefulWidget {
+  final Future<void> Function() onPressed;
 
   const SaveButton({required this.onPressed, super.key});
+
+  @override
+  State<SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<SaveButton> {
+  bool isLoading = false;
+
+  void handlePress() async {
+    setState(() => isLoading = true);
+    try {
+      await widget.onPressed();
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : handlePress,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFDC607A),
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: const Text(
-          'Guardar cambios',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Text(
+                'Guardar cambios',
+                style: TextStyle(color: Colors.white),
+              ),
       ),
     );
   }
 }
+
 
 class _BirthDayPicker extends StatelessWidget {
   final DateTime? birthday;
