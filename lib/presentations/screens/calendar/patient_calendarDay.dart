@@ -9,6 +9,7 @@ import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/notification_provider.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 
 class CalendarDayPatient extends ConsumerWidget {
   final DateTime date;
@@ -31,6 +32,7 @@ class CalendarDayPatient extends ConsumerWidget {
     }
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       backgroundColor: const Color(0xFFF4E9F7),
       appBar: _CalendarAppBar(),
       body: Column(
@@ -81,6 +83,16 @@ class _CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       elevation: 0,
       iconTheme: const IconThemeData(color: Colors.black),
+      scrolledUnderElevation: 0, 
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
     );
   }
 

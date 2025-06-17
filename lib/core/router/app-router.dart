@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:nutrabit_paciente/presentations/screens/amIPatient.dart';
 import 'package:nutrabit_paciente/presentations/screens/courses/course_list_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/download_screen.dart';
-import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
-import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
-import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
 import 'package:nutrabit_paciente/presentations/screens/interest_list/interest_list.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
-import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
 import 'package:nutrabit_paciente/presentations/screens/notifications/notifications.dart';
 import 'package:nutrabit_paciente/presentations/screens/password/change_password.dart';
 import 'package:nutrabit_paciente/presentations/screens/password/forgot_password.dart';
@@ -48,6 +44,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isWelcome = loc == '/welcome';
       final isAmIPatient = loc == '/soyPaciente';
       final isLogin = loc == '/login';
+      final isRecoveryPass = loc == '/recuperar-clave';
       final isNotPatient = loc == '/homeOffline';
       final isSplash = loc == '/splash';
       final seenWelcome = seenWelcomeState;
@@ -56,10 +53,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Aquí ya no mutas el estado, solo decides rutas
 
       if (!loggedIn && dontShowWelcome == false) {
-        if (isWelcome || isAmIPatient || isLogin || isNotPatient) return null;
+        if (isWelcome || isAmIPatient || isLogin || isNotPatient || isRecoveryPass) return null;
         return '/welcome';
       } else if (!loggedIn && dontShowWelcome == true) {
-        if (isAmIPatient || isLogin || isNotPatient) return null;
+        if (isAmIPatient || isLogin || isNotPatient || isRecoveryPass) return null;
         return '/soyPaciente';
       }
 
@@ -132,19 +129,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        path: '/archivos',
-        builder: (context, state) => Archivos(),
-        routes: [
-          GoRoute(path: 'subir', builder: (context, state) => SubirArchivos()),
-          GoRoute(
-            path: ':id',
-            builder:
-                (context, state) =>
-                    DetalleArchivo(id: state.pathParameters['id'] as String),
-          ),
-        ],
-      ),
-      GoRoute(
         path: '/calendario',
         builder: (context, state) => Calendar(),
         routes: [
@@ -162,15 +146,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notificaciones',
         builder: (context, state) => Notifications(),
-        routes: [
-          GoRoute(
-            path: ':id',
-            builder:
-                (context, state) => DetalleNotificacion(
-                  id: state.pathParameters['id'] as String,
-                ),
-          ),
-        ],
       ),
       GoRoute(
         path: '/envios',

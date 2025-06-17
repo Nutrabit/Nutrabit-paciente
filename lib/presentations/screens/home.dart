@@ -3,11 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/widgets/contactButton.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 import 'package:nutrabit_paciente/widgets/homeButton.dart';
 import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nutrabit_paciente/core/services/shared_preferences.dart';
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
@@ -85,14 +85,12 @@ class _HomeState extends ConsumerState<Home> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final SharedPreferencesService sharedPreferencesService = SharedPreferencesService();
 
     if (!_assetsLoaded) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final appUser = ref.watch(authProvider);
-    final user = appUser.value;
     final bool isLoading = appUser is AsyncLoading;
 
     if (isLoading) {
@@ -101,6 +99,24 @@ class _HomeState extends ConsumerState<Home> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFEECDA),
+      extendBodyBehindAppBar: true,
+      endDrawer: AppDrawer(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0, 
+        elevation: 0,
+        centerTitle: true,
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
+      ),
       bottomNavigationBar: CustomBottomAppBar(
         currentIndex: 0,
         // user: user!,
@@ -123,7 +139,7 @@ class _HomeState extends ConsumerState<Home> {
       ),
       body: SingleChildScrollView(
         child: SizedBox(
-          height: screenHeight * 1.2,
+          height: screenHeight,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -133,7 +149,7 @@ class _HomeState extends ConsumerState<Home> {
                 fit: BoxFit.cover,
               ),
               Positioned(
-                top: screenHeight * 0.1,
+                top: screenHeight * 0.12,
                 left: screenWidth * 0.06,
                 child: Row(
                   children: [
@@ -161,7 +177,7 @@ class _HomeState extends ConsumerState<Home> {
               ),
               // Mis archivos y Talleres
               Positioned(
-                top: screenHeight * 0.30,
+                top: screenHeight * 0.32,
                 left: screenWidth * 0.1,
                 child: Row(
                   children: [
@@ -194,7 +210,7 @@ class _HomeState extends ConsumerState<Home> {
               ),
               // Calendario y Recomendaciones
               Positioned(
-                top: screenHeight * 0.50,
+                top: screenHeight * 0.52,
                 left: screenWidth * 0.1,
                 child: Row(
                   children: [
