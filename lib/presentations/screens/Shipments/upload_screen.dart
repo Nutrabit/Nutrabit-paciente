@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io'; 
 import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
 import 'package:nutrabit_paciente/core/utils/file_picker_util.dart';
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
 
 class UploadScreen extends StatefulWidget {
   final DateTime initialDate;
@@ -93,6 +94,44 @@ class _UploadScreenState extends State<UploadScreen> {
     );
 
     setState(() => _isLoading = false);
+
+    if (!mounted) return;
+
+    final popupStyle = getDefaultPopupStyle();
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        contentPadding: EdgeInsets.zero,
+        content: Container(
+          decoration: popupStyle.decoration,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              popupStyle.icon,
+              const SizedBox(height: 12),
+              Text(
+                'Evento guardado correctamente',
+                style: popupStyle.messageTextStyle,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: popupStyle.buttonStyle,
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Aceptar', style: popupStyle.buttonTextStyle),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -119,19 +158,7 @@ class _UploadScreenState extends State<UploadScreen> {
                 DescriptionField(controller: descriptionController),
                 const SizedBox(height: 32),
                 SubmitButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () async {
-                          await uploadAndSaveEvent();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Evento guardado correctamente'),
-                              ),
-                            );
-                            Navigator.of(context).pop();
-                          }
-                        },
+                  onPressed: _isLoading ? null : uploadAndSaveEvent,
                 ),
               ],
             ),
