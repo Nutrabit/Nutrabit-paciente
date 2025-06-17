@@ -58,10 +58,15 @@ class _LogoutState extends ConsumerState<Logout> {
 }
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const FaIcon(FontAwesomeIcons.rightFromBracket),
-      tooltip: 'Cerrar sesión',
+    return ElevatedButton.icon(
+      icon: FaIcon(FontAwesomeIcons.rightFromBracket),
+      label: Text('Cerrar sesión'),
       onPressed: () => _confirmLogout(context),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.black, 
+      ),
     );
   }
 }

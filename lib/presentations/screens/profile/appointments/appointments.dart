@@ -7,6 +7,7 @@ import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/appointments/newApptDialog.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 
 class Appointments extends ConsumerWidget {
   const Appointments({super.key});
@@ -15,6 +16,7 @@ class Appointments extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final allEvents = ref.watch(eventsStreamProvider);
     final appUser = ref.watch(authProvider);
+    final screenHeight = MediaQuery.of(context).size.height;
 
     if (appUser is AsyncLoading || allEvents is AsyncLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -28,15 +30,16 @@ class Appointments extends ConsumerWidget {
             appointmentEvents
                 .where((e) => e.date.isAfter(DateTime.now().toLocal()))
                 .toList()
-                ..sort((a, b) => a.date.compareTo(b.date));
+              ..sort((a, b) => a.date.compareTo(b.date));
         final previousAppointments =
             appointmentEvents
                 .where((e) => e.date.isBefore(DateTime.now().toLocal()))
                 .toList()
-                ..sort((a, b) => b.date.compareTo(a.date));
+              ..sort((a, b) => b.date.compareTo(a.date));
 
         return Scaffold(
           backgroundColor: Color.fromRGBO(253, 238, 219, 1),
+          endDrawer: AppDrawer(),
           appBar: AppBar(
             backgroundColor: Color.fromRGBO(253, 238, 219, 1),
 
@@ -45,91 +48,98 @@ class Appointments extends ConsumerWidget {
                 context.go('/perfil');
               },
             ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child:
-                appointmentEvents.isEmpty
-                    ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'No tenés ningún turno guardado.\nSi tenés un turno asignado, podés guardarlo desde el calendario.',
-                            textAlign: TextAlign.center,
-                            style: textStyle
-                          ),
-                          const SizedBox(height: 24),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.go(
-                                '/calendario',
-                              );
-                            },
-                            style: mainButtonDecoration(),
-                            child: const Text(
-                              'Ir al calendario',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                    : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                        ),
-                        // if()
-                        Center(
-                          child: Text(
-                            'Próximo turno',
-                            style: titleStyle,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (nextAppointment.isNotEmpty)
-                          ...nextAppointment.map((appt) {
-                            return _AppointmentItem(date: appt.date);
-                          }).toList(),
-                        if (nextAppointment.isEmpty)
-                          Text(
-                            'No hay turnos registrados',
-                            style: textStyle,
-                          ),
-                        const Divider(height: 40),
-                        Center(
-                          child: Text(
-                            'Últimos turnos',
-                            style: titleStyle
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (previousAppointments.isNotEmpty)
-                          ...previousAppointments.map((appt) {
-                            return _AppointmentItem(date: appt.date);
-                          }).toList(),
-                        if (previousAppointments.isEmpty)
-                          Text(
-                            'No hay turnos registrados',
-                            style: textStyle
-                          ),
-                      ],
+            scrolledUnderElevation: 0,
+            elevation: 0,
+            centerTitle: true,
+            actions: [
+              Builder(
+                builder:
+                    (context) => IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
                     ),
+              ),
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: SizedBox(
+              height: screenHeight,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child:
+                    appointmentEvents.isEmpty
+                        ? Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'No tenés ningún turno guardado.\nSi tenés un turno asignado, podés guardarlo desde el calendario.',
+                                textAlign: TextAlign.center,
+                                style: textStyle,
+                              ),
+                              const SizedBox(height: 24),
+                              ElevatedButton(
+                                onPressed: () {
+                                  context.go('/calendario');
+                                },
+                                style: mainButtonDecoration(),
+                                child: const Text(
+                                  'Ir al calendario',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1,
+                            ),
+                            // if()
+                            Center(
+                              child: Text('Próximo turno', style: titleStyle),
+                            ),
+                            const SizedBox(height: 16),
+                            if (nextAppointment.isNotEmpty)
+                              ...nextAppointment.map((appt) {
+                                return _AppointmentItem(date: appt.date);
+                              }).toList(),
+                            if (nextAppointment.isEmpty)
+                              Text(
+                                'No hay turnos registrados',
+                                style: textStyle,
+                              ),
+                            const Divider(height: 40),
+                            Center(
+                              child: Text('Últimos turnos', style: titleStyle),
+                            ),
+                            const SizedBox(height: 16),
+                            if (previousAppointments.isNotEmpty)
+                              ...previousAppointments.map((appt) {
+                                return _AppointmentItem(date: appt.date);
+                              }).toList(),
+                            if (previousAppointments.isEmpty)
+                              Text(
+                                'No hay turnos registrados',
+                                style: textStyle,
+                              ),
+                          ],
+                        ),
+              ),
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
             onPressed: () {
-              NewApptDialog.show(
-                context,
-              );
+              NewApptDialog.show(context);
             },
             child: const Icon(Icons.add),
           ),
@@ -161,14 +171,8 @@ class _AppointmentItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'Fecha: $formattedDate',
-            style: textStyle,
-          ),
-          Text(
-            'Hora: $formattedTime',
-            style: textStyle,
-          ),
+          Text('Fecha: $formattedDate', style: textStyle),
+          Text('Hora: $formattedTime', style: textStyle),
         ],
       ),
     );

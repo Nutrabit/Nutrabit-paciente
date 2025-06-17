@@ -7,6 +7,7 @@ import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/file_provider.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/pdfViewer.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 
 class DownloadScreen extends ConsumerWidget {
   const DownloadScreen({super.key});
@@ -30,7 +31,9 @@ class DownloadScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       appBar: AppBar(
+        backgroundColor: Color(0xFFFDEEDB),
         title: const Text('Mis archivos'),
         centerTitle: true,
         leading: BackButton(
@@ -38,6 +41,17 @@ class DownloadScreen extends ConsumerWidget {
             context.go('/');
           },
         ),
+        scrolledUnderElevation: 0, 
+        elevation: 0,
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
       ),
       backgroundColor: Color(0xFFFDEEDB),
       body: SingleChildScrollView(

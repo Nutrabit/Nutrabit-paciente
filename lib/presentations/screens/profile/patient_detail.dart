@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 import '/core/utils/utils.dart';
 import '/presentations/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
-import '/widgets/logout.dart';
-import '/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
 import 'patient_modifier.dart';
 
@@ -59,15 +58,26 @@ class PatientDetail extends ConsumerWidget {
     }
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       appBar: AppBar(
         leading: BackButton(
           onPressed: () {
             context.go('/');
           },
         ),
-        actions: [Logout()],
-        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0, 
         elevation: 0,
+        centerTitle: true,
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
+        backgroundColor: Colors.transparent,
       ),
       bottomNavigationBar: CustomBottomAppBar(
         currentIndex: 2,
@@ -127,14 +137,7 @@ class PatientDetail extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 200),
-            ElevatedButton(
-              onPressed: () {
-                context.go('/cambiar-clave');
-              },
-              style: mainButtonDecoration(),
-              child: const Text('Cambiar contraseña'),
-            ),
+            
           ],
         ),
       ),
