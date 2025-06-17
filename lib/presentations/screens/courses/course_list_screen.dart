@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../providers/course_provider.dart';
 import '../../../core/models/course_model.dart';
@@ -14,9 +15,20 @@ class CourseListScreen extends ConsumerWidget {
     final asyncCourses = ref.watch(courseListProvider);
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
+        scrolledUnderElevation: 0, 
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

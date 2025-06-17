@@ -10,6 +10,7 @@ import 'package:nutrabit_paciente/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/presentations/providers/user_provider.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 
 class PatientModifier extends ConsumerWidget {
   final String id;
@@ -42,12 +43,23 @@ class PatientModifier extends ConsumerWidget {
     }
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       appBar: AppBar(
         title: const Text('Modificar perfil'),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         leading: const BackButton(),
         elevation: 0,
+        scrolledUnderElevation: 0, 
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
       ),
       body: StatefulBuilder(
         builder:

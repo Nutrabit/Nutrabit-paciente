@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nutrabit_paciente/presentations/providers/interest_item_provider.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:android_intent_plus/android_intent.dart';
@@ -22,13 +23,25 @@ class _InterestListState extends ConsumerState<InterestList> {
     final notifier = ref.read(interestItemsProvider.notifier);
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        scrolledUnderElevation: 0, 
+        centerTitle: true,
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
       ),
       backgroundColor: const Color(0xFFFFF0F6),
       body: itemsAsync.when(
