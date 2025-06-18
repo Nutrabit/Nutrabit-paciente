@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../providers/auth_provider.dart';
+import 'package:nutrabit_paciente/presentations/providers/change_password_provider.dart';
+import 'package:nutrabit_paciente/core/utils/utils.dart';
 
 class ForgotPassword extends ConsumerStatefulWidget {
   const ForgotPassword({super.key});
@@ -13,7 +14,6 @@ class ForgotPassword extends ConsumerStatefulWidget {
 
 class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
   final TextEditingController _emailController = TextEditingController();
-  bool emailSent = false;
 
   //Se ejecuta al pulsar el botón “Enviar email de recuperación”
   void sendEmail() {
@@ -24,80 +24,28 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Ingrese un email válido.')));
     } else {
-      emailSent = true;
       // Se llama al método del provider
-      ref.read(authProvider.notifier).sendPasswordResetEmail(email);
+      ref.read(changePasswordProvider.notifier).sendPasswordResetEmail(email);
     }
   }
 
   void showPopup() {
-    showDialog(
+    showGenericPopupBack(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(22),
-          ),
-          title: const Text(
-            '¡Email enviado!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              color: Color(0xFF2F2F2F),
-            ),
-          ),
-          content: SizedBox(
-            width: 250,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Revisa tu bandeja de entrada para restablecer tu contraseña.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                    color: Color(0xFF2F2F2F),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Divider(thickness: 1),
-                const SizedBox(height: 6),
-                OutlinedButton(
-                  onPressed: () => context.go('/login'),
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB5D6B2),
-                    side: const BorderSide(color: Colors.black),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Aceptar',
-                    style: TextStyle(fontSize: 14, color: Color(0xFF706B66)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+      message:
+          '¡Email enviado!\nRevisá tu bandeja de entrada para restablecer tu contraseña.',
+      id: '/login',
+      onNavigate: (ctx, route) {
+        ctx.go(route); // va al login
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    final authState = ref.watch(changePasswordProvider);
 
-    ref.listen<AsyncValue<void>>(authProvider, (prev, next) {
-      if (!emailSent) return;
+    ref.listen<AsyncValue<void>>(changePasswordProvider, (prev, next) {
       next.when(
         loading: () {},
         data: (_) {
@@ -106,58 +54,77 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
           }
         },
 
-       error: (err, _) {
-          final msg = (err is FirebaseAuthException)
-              ? err.message ?? err.code
-              : err.toString();
+        error: (err, _) {
+          final msg =
+              (err is FirebaseAuthException)
+                  ? err.message ?? err.code
+                  : err.toString();
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Error: $msg')));
-
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error: $msg')));
         },
-      ); // ← así, dentro de los paréntesis de ref.listen
+      ); 
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Recuperar contraseña')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // ingresar email
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Tu email',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Botón de envío
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: authState is AsyncLoading ? null : sendEmail,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromRGBO(220, 96, 122, 1),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+      appBar: AppBar(
+        title: const Text('Recuperar contraseña'),
+        backgroundColor: const Color(0xFFFEECDA),
+        leading: BackButton(
+          onPressed: () {
+            context.go('/login');
+          },
+        ),
+      ),
+      backgroundColor: const Color(0xFFFEECDA),
+      body: Align(
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // ingresar email
+                  TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      labelText: 'Tu email',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                child:
-                    authState is AsyncLoading
-                        ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                        // ✅ Texto normal si no está cargando
-                        : const Text('Enviar email de recuperación'),
+                  const SizedBox(height: 20),
+                  // Botón de envío
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: authState is AsyncLoading ? null : sendEmail,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromRGBO(220, 96, 122, 1),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child:
+                          authState is AsyncLoading
+                              ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text('Enviar email de recuperación'),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
