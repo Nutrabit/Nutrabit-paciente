@@ -22,7 +22,7 @@ class HomeOffline extends StatelessWidget {
               context.go('/home');
               break;
             case 1:
-              //context.push('/notificaciones');
+              context.push('/login');
               break;
             case 2:
               context.push('/login');
@@ -72,14 +72,11 @@ class HomeOffline extends StatelessWidget {
                 child: Row(
                   children: [
                     Hero(
-                      tag: 'homebutton-Recomendacionesv',
+                      tag: 'homebutton-talleres',
                       child: HomeButton(
-                        imagePath:
-                            'assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png',
-                        text: 'Recomendaciones',
-                        onPressed: () {
-                          context.push('/listasInteres');
-                        },
+                        imagePath: 'assets/img/ee19a2bb0ba198a476f373bb3ee3f9e64b995714.png',
+                        text: 'Cursos',
+                        onPressed: () => context.push('/cursos'),
                         width: MediaQuery.of(context).size.width * 0.35,
                         imageHeight: MediaQuery.of(context).size.height * 0.11,
                         baseHeight: MediaQuery.of(context).size.height * 0.05,
@@ -88,18 +85,16 @@ class HomeOffline extends StatelessWidget {
 
                     SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     Hero(
-                      tag: 'homebutton-talleres',
+                      tag: 'homebutton-recomendaciones',
                       child: HomeButton(
                         imagePath:
-                            'assets/img/ee19a2bb0ba198a476f373bb3ee3f9e64b995714.png',
-                        text: 'Talleres',
-                        onPressed: () {
-                          context.push('/publicidades');
-                        },
+                            'assets/img/602f21c7b3661d6df85fe352c44a38d0007ad10b.png',
+                        text: 'Recomendaciones',
+                        onPressed: () => context.push('/listaInteres'),
                         width: MediaQuery.of(context).size.width * 0.35,
                         imageHeight: MediaQuery.of(context).size.height * 0.11,
                         baseHeight: MediaQuery.of(context).size.height * 0.05,
-                      ),
+                      )
                     ),
                   ],
                 ),

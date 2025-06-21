@@ -49,14 +49,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isSplash = loc == '/splash';
       final seenWelcome = seenWelcomeState;
       final dontShowWelcome = await sharedPreferencesService.getdontShowAgain();
-
-      // Aquí ya no mutas el estado, solo decides rutas
+      final isCourses = loc == '/cursos';
+      final isInterestList = loc == '/listaInteres';
 
       if (!loggedIn && dontShowWelcome == false) {
-        if (isWelcome || isAmIPatient || isLogin || isNotPatient || isRecoveryPass) return null;
+        if (isWelcome || isAmIPatient || isLogin || isNotPatient || isRecoveryPass || isCourses || isInterestList) return null;
         return '/welcome';
       } else if (!loggedIn && dontShowWelcome == true) {
-        if (isAmIPatient || isLogin || isNotPatient || isRecoveryPass) return null;
+        if (isAmIPatient || isLogin || isNotPatient || isRecoveryPass || isCourses || isInterestList) return null;
         return '/soyPaciente';
       }
 

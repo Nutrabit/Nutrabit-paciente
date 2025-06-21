@@ -114,7 +114,7 @@ class _NotificationsState extends ConsumerState<Notifications> {
             ),
           ),
           if (notifications.isEmpty)
-            const Center(child: Text('No hay notificaciones.'))
+            const Center(child: Text('No hay notificaciones pendientes.'))
           else
             ListView.builder(
               padding: const EdgeInsets.all(16),
