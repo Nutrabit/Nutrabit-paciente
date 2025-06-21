@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/interest_item_provider.dart';
 import 'package:nutrabit_paciente/widgets/drawer.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -21,9 +22,11 @@ class _InterestListState extends ConsumerState<InterestList> {
   Widget build(BuildContext context) {
     final itemsAsync = ref.watch(interestItemsProvider);
     final notifier = ref.read(interestItemsProvider.notifier);
+    final authState = ref.watch(authProvider);
+    final loggedIn = authState.asData?.value != null;
 
     return Scaffold(
-      endDrawer: AppDrawer(),
+      endDrawer: loggedIn ? AppDrawer() : null,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -34,6 +37,7 @@ class _InterestListState extends ConsumerState<InterestList> {
         scrolledUnderElevation: 0, 
         centerTitle: true,
         actions: [
+          if(loggedIn)
           Builder(
             builder:
                 (context) => IconButton(
