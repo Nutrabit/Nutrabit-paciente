@@ -45,10 +45,12 @@ class _CustomBottomAppBarState extends ConsumerState<CustomBottomAppBar> {
   }
 
   String getGoalEnum(String description) {
-    GoalModel goal = GoalModel.values.firstWhere(
-      (g) => g.description == description,
-    );
-    return goal.name;
+    for (final g in GoalModel.values) {
+      if (g.description == description) {
+        return g.name;
+      }
+    }
+    return 'ALL';
   }
 
   Future<void> getNotificationsCount() async {
