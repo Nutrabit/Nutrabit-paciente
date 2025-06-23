@@ -3,17 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:nutrabit_paciente/presentations/screens/amIPatient.dart';
 import 'package:nutrabit_paciente/presentations/screens/courses/course_list_screen.dart';
 import 'package:nutrabit_paciente/presentations/screens/files/download_screen.dart';
-import 'package:nutrabit_paciente/presentations/screens/files/archivos.dart';
-import 'package:nutrabit_paciente/presentations/screens/files/detalleArchivo.dart';
-import 'package:nutrabit_paciente/presentations/screens/files/subirArchivos.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/calendar.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/patient_calendarDay.dart';
 import 'package:nutrabit_paciente/presentations/screens/home.dart';
 import 'package:nutrabit_paciente/presentations/screens/homeOffline.dart';
 import 'package:nutrabit_paciente/presentations/screens/interest_list/interest_list.dart';
 import 'package:nutrabit_paciente/presentations/screens/login.dart';
-import 'package:nutrabit_paciente/presentations/screens/notifications/detalleNotificacion.dart';
-import 'package:nutrabit_paciente/presentations/screens/notifications/notificaciones.dart';
+import 'package:nutrabit_paciente/presentations/screens/notifications/notifications.dart';
 import 'package:nutrabit_paciente/presentations/screens/password/change_password.dart';
 import 'package:nutrabit_paciente/presentations/screens/password/forgot_password.dart';
 import 'package:nutrabit_paciente/presentations/screens/profile/patient_detail.dart';
@@ -48,18 +44,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isWelcome = loc == '/welcome';
       final isAmIPatient = loc == '/soyPaciente';
       final isLogin = loc == '/login';
+      final isRecoveryPass = loc == '/recuperar-clave';
       final isNotPatient = loc == '/homeOffline';
       final isSplash = loc == '/splash';
       final seenWelcome = seenWelcomeState;
       final dontShowWelcome = await sharedPreferencesService.getdontShowAgain();
-
-      // Aquí ya no mutas el estado, solo decides rutas
+      final isCourses = loc == '/cursos';
+      final isInterestList = loc == '/listaInteres';
 
       if (!loggedIn && dontShowWelcome == false) {
-        if (isWelcome || isAmIPatient || isLogin || isNotPatient) return null;
+        if (isWelcome || isAmIPatient || isLogin || isNotPatient || isRecoveryPass || isCourses || isInterestList) return null;
         return '/welcome';
       } else if (!loggedIn && dontShowWelcome == true) {
-        if (isAmIPatient || isLogin || isNotPatient) return null;
+        if (isAmIPatient || isLogin || isNotPatient || isRecoveryPass || isCourses || isInterestList) return null;
         return '/soyPaciente';
       }
 
@@ -132,19 +129,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        path: '/archivos',
-        builder: (context, state) => Archivos(),
-        routes: [
-          GoRoute(path: 'subir', builder: (context, state) => SubirArchivos()),
-          GoRoute(
-            path: ':id',
-            builder:
-                (context, state) =>
-                    DetalleArchivo(id: state.pathParameters['id'] as String),
-          ),
-        ],
-      ),
-      GoRoute(
         path: '/calendario',
         builder: (context, state) => Calendar(),
         routes: [
@@ -153,7 +137,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               final fecha =
                   state.extra
-                      as DateTime; // 👈 Recibimos el DateTime correctamente
+                      as DateTime;
               return CalendarDayPatient(date: fecha);
             },
           ),
@@ -161,16 +145,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/notificaciones',
-        builder: (context, state) => Notificaciones(),
-        routes: [
-          GoRoute(
-            path: ':id',
-            builder:
-                (context, state) => DetalleNotificacion(
-                  id: state.pathParameters['id'] as String,
-                ),
-          ),
-        ],
+        builder: (context, state) => Notifications(),
       ),
       GoRoute(
         path: '/envios',

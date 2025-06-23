@@ -4,10 +4,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrabit_paciente/core/models/event_type.dart';
 import 'package:nutrabit_paciente/core/services/event_service.dart';
+import 'package:nutrabit_paciente/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/events_provider.dart';
 import 'package:nutrabit_paciente/presentations/providers/notification_provider.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 
 class CalendarDayPatient extends ConsumerWidget {
   final DateTime date;
@@ -30,6 +32,7 @@ class CalendarDayPatient extends ConsumerWidget {
     }
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       backgroundColor: const Color(0xFFF4E9F7),
       appBar: _CalendarAppBar(),
       body: Column(
@@ -80,6 +83,16 @@ class _CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       elevation: 0,
       iconTheme: const IconThemeData(color: Colors.black),
+      scrolledUnderElevation: 0, 
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
     );
   }
 
@@ -199,84 +212,106 @@ class _EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.symmetric(vertical: 12),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                  child: getIcon(event.type, size: 20),
+
+                Center(child: getIcon(event.type, size: 26)),
+                const SizedBox(height: 8),
+
+                Text(
+                  event.title,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      event.title,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
+
+                const SizedBox(height: 6),
+
+                if (event.file.isNotEmpty && event.type == 'UPLOAD_FILE')
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        event.file,
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.broken_image, size: 80),
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (_) => const DeleteAlertDialog(),
-                    );
-                    if (confirm == true) await deleteEvent(event);
-                  },
-                ),
+
+                if (event.description.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    event.description,
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ],
             ),
-            if (event.file.isNotEmpty && event.type == 'UPLOAD_FILE')
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  event.file,
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 100),
-                ),
-              )
-            else
-              const SizedBox(height: 13),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(event.description, style: const TextStyle(fontSize: 16)),
-                ),
-              ],
+          ),
+
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              icon: const Icon(Icons.delete, color: Colors.grey),
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => DeleteAlertDialog(style: defaultAlertDialogStyle),
+                );
+                if (confirm == true) await deleteEvent(event);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
+
 class DeleteAlertDialog extends StatelessWidget {
-  const DeleteAlertDialog({super.key});
+  final AlertDialogStyle style;
+
+  const DeleteAlertDialog({super.key, required this.style});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: style.backgroundColor,
+      elevation: style.elevation,
+      shape: style.shape,
+      titleTextStyle: style.titleTextStyle,
+      contentTextStyle: style.contentTextStyle,
       title: const Text('Eliminar evento'),
       content: const Text('¿Estás seguro de que deseas eliminar el evento del calendario?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black,
+          ),
           child: const Text('Cancelar'),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Eliminar'),
+          style: style.buttonStyle,
+          child: Text('Eliminar', style: style.buttonTextStyle),
         ),
       ],
     );
   }
 }
+
+

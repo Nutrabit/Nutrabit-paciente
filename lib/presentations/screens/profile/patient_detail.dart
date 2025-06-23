@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 import '/core/utils/utils.dart';
 import '/presentations/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
-import '/widgets/logout.dart';
-import '/core/utils/decorations.dart';
 import 'package:nutrabit_paciente/widgets/custombottomNavBar.dart';
 import 'patient_modifier.dart';
 
@@ -59,15 +58,26 @@ class PatientDetail extends ConsumerWidget {
     }
 
     return Scaffold(
+      endDrawer: AppDrawer(),
       appBar: AppBar(
         leading: BackButton(
           onPressed: () {
             context.go('/');
           },
         ),
-        actions: [Logout()],
-        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0, 
         elevation: 0,
+        centerTitle: true,
+        actions: [
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+          ),
+        ],
+        backgroundColor: Colors.transparent,
       ),
       bottomNavigationBar: CustomBottomAppBar(
         currentIndex: 2,
@@ -77,7 +87,7 @@ class PatientDetail extends ConsumerWidget {
               context.go('/');
               break;
             case 1:
-              //context.go('/notificaciones');
+              context.go('/notificaciones');
               break;
             case 2:
               if (GoRouterState.of(context).uri.toString() != '/perfil') {
@@ -127,14 +137,7 @@ class PatientDetail extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 200),
-            ElevatedButton(
-              onPressed: () {
-                context.go('/cambiar-clave');
-              },
-              style: mainButtonDecoration(),
-              child: const Text('Cambiar contraseña'),
-            ),
+            
           ],
         ),
       ),
@@ -168,116 +171,106 @@ class PatientInfoCard extends StatelessWidget {
     required this.goal,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 32),
-        Row(
-          children: [
-            SizedBox(width: 25),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(top: 25),
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(236, 218, 122, 0.2),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    bottomLeft: Radius.circular(20),
-                    topRight: Radius.circular(0),
-                    bottomRight: Radius.circular(0),
+@override
+Widget build(BuildContext context) {
+  return Column(
+    children: [
+      const SizedBox(height: 32),
+      Row(
+        children: [
+          const SizedBox(width: 15),
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: 40, bottom: 20),
+                  height: 220,
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(236, 218, 122, 0.2),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      bottomLeft: Radius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 15),
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: profilePic != null && profilePic!.isNotEmpty
+                            ? NetworkImage(profilePic!)
+                            : const AssetImage('assets/img/avatar.jpg') as ImageProvider,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              email,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const Divider(thickness: 0.5),
+                            Text(
+                              'Edad: $age',
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const Divider(thickness: 0.5),
+                            Text(
+                              '$weight kg / $height cm',
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const Divider(thickness: 0.5),
+                            Text(
+                              goal,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: MediaQuery.of(context).size.height * -0.01,
-                      right: MediaQuery.of(context).size.width * 0.001,
-                      child: IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.grey),
-                        onPressed: onEdit,
-                      ),
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 15),
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundImage:
-                              profilePic != null && profilePic!.isNotEmpty
-                                  ? NetworkImage(profilePic!)
-                                  : const AssetImage('assets/img/avatar.jpg')
-                                      as ImageProvider,
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                email,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                              const Divider(
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                thickness: 0.5,
-                              ),
-                              Text(
-                                'Edad: $age',
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                              const Divider(
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                thickness: 0.5,
-                              ),
-                              Text(
-                                '$weight kg / $height cm',
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                              const Divider(
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                thickness: 0.5,
-                              ),
-                              Text(
-                                goal,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                Positioned(
+                  top: -1,
+                  right: 8,
+                  child: IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.grey),
+                    onPressed: onEdit,
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ],
-    );
-  }
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 }
 
 /// Botón reutilizable

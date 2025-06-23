@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/models/goal_model.dart';
 import 'package:nutrabit_paciente/core/services/push_notification_service.dart';
+import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import '../../../providers/user_provider.dart';
 
 class SelectGoalScreen extends ConsumerStatefulWidget {
@@ -19,6 +20,8 @@ class _SelectGoalScreenState extends ConsumerState<SelectGoalScreen> {
   Future<void> _handleGoalSelection(GoalModel goal) async {
     try {
       await ref.read(userProvider.notifier).updateFields({'goal': goal.description});
+      // Esto hace que authProvider vuelva a cargar el usuario actualizado
+      ref.invalidate(authProvider);
       if (isMobile) await PushNotificationService.subscribeToGoalNotification(goal);
       if (!mounted) return;
       context.go('/login/validation/select_goal/confirmation');

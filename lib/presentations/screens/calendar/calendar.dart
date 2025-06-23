@@ -6,6 +6,7 @@ import 'package:nutrabit_paciente/presentations/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nutrabit_paciente/core/utils/utils.dart';
 import 'package:nutrabit_paciente/presentations/screens/calendar/newEventDialog.dart';
+import 'package:nutrabit_paciente/widgets/drawer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutrabit_paciente/core/models/calendar_event.dart';
@@ -57,12 +58,25 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
         final dayEvents = eventsByDate[selectedDayKey] ?? [];
 
         return Scaffold(
+          endDrawer: AppDrawer(),
           appBar: AppBar(
             leading: BackButton(
               onPressed: () {
                 context.go('/');
               },
             ),
+            scrolledUnderElevation: 0,
+            elevation: 0,
+            centerTitle: true,
+            actions: [
+              Builder(
+                builder:
+                    (context) => IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
+                    ),
+              ),
+            ],
           ),
           body: Column(
             children: [
@@ -176,13 +190,22 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
                                 ),
                               ),
                               child: ListTile(
+                                onTap: () {
+                                  GoRouter.of(context).push(
+                                    '/calendario/detalle',
+                                    extra: _selectedDay,
+                                  );
+                                },
                                 leading: _getEventTypeIcon(
                                   e.type,
                                   size: screenHeight * 0.02,
                                 ),
                                 title: Text(e.title),
                                 subtitle: Text(e.description),
-                                textColor: Color.fromARGB(255, 0, 0, 0),
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                ),
+                                textColor: const Color(0xFF000000),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -193,7 +216,7 @@ class _CalendarScreenState extends ConsumerState<Calendar> {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton( 
+          floatingActionButton: FloatingActionButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),

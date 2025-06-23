@@ -64,10 +64,10 @@ class PushNotificationService {
         ?.createNotificationChannel(channel);
 
     // Esto suscribe al topico all (Siempre que se haga el build del main el  usuario ya va a estar suscrito)
-    await FirebaseMessaging.instance.subscribeToTopic('all');
+    await FirebaseMessaging.instance.subscribeToTopic('ALL');
     final user = _auth.currentUser;
     final userId = user?.uid;
-    if(userId!.isNotEmpty){
+    if(userId != null){
       await FirebaseMessaging.instance.subscribeToTopic(userId.toString());
     }
 
