@@ -316,7 +316,7 @@ Future<void> _showPopUpFromText(
                                       _showPopUpFromText(
                                         context,
                                         'Términos de servicio',
-                                        'tos.txt',
+                                        tos,
                                       );
                                     },
                             ),
@@ -333,7 +333,7 @@ Future<void> _showPopUpFromText(
                                       _showPopUpFromText(
                                         context,
                                         'Política de privacidad',
-                                        'privacidad.txt',
+                                        privacy,
                                       );
                                     },
                             ),
